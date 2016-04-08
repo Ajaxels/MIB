@@ -1,0 +1,389 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Microscopy Image Browser Release Notes</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-08"><meta name="DC.source" content="im_browser_release_notes.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Release Notes</h1><!--introduction--><p><a href="im_browser_product_page.html">Back to Index</a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">1.10 07.04.2016 (update for 4D datasets)</a></li><li><a href="#2">1.02 20.01.2016</a></li><li><a href="#3">1.00 19.11.2015 Official Release</a></li><li><a href="#4">0.999 30.09.2015</a></li><li><a href="#5">0.998 05.05.2015</a></li><li><a href="#6">0.997 24.03.2015</a></li><li><a href="#7">0.996 06.03.2015</a></li><li><a href="#8">0.995 26.01.2015</a></li><li><a href="#9">0.9941 23.09.2014</a></li><li><a href="#10">0.9932 23.06.2014</a></li><li><a href="#11">0.9931 22.05.2014</a></li><li><a href="#12">0.9930 20.05.2014</a></li><li><a href="#13">0.9923 20.03.2014</a></li><li><a href="#14">0.9922 06.03.2014</a></li><li><a href="#15">0.9921 25.02.2014</a></li><li><a href="#16">0.9919 11.02.2014</a></li><li><a href="#17">0.9917 10.02.2014</a></li><li><a href="#18">0.9916 31.01.2014</a></li><li><a href="#19">0.9915 30.01.2014</a></li><li><a href="#20">0.9914 25.11.2013</a></li><li><a href="#21">0.9913 19.11.2013</a></li><li><a href="#22">0.9912 15.11.2013</a></li><li><a href="#23">0.9911 13.11.2013</a></li><li><a href="#24">0.9910 06.11.2013</a></li><li><a href="#25">0.9909 18.10.2013</a></li><li><a href="#26">0.9908 17.10.2013</a></li><li><a href="#27">0.9907 14.10.2013</a></li><li><a href="#28">0.9906 10.10.2013</a></li><li><a href="#29">0.9905 07.10.2013</a></li><li><a href="#30">0.9904 03.10.2013</a></li><li><a href="#31">0.9903 02.10.2013</a></li><li><a href="#32">0.9902 24.09.2013</a></li><li><a href="#33">0.9901 18.09.2013</a></li></ul></div><h2>1.10 07.04.2016 (update for 4D datasets)<a name="1"></a></h2><div><ul><li>Modification of MIB to work with 4D data (H,W,C,Z,T)</li><li>Replaced imageData.slices(1:4,:) matrix variable with a cell imageData.slices{1:5}(:)</li><li>Replaced imageData.slicesColor variable with imageData.slices{3}(:)</li><li>Renamed functions: getData3D-&gt;getData2D; getData4D-&gt;getData3D; getData5D-&gt;getData4D; setData3D-&gt;setData2D; setData4D-&gt;setData3D; setData5D-&gt;setData4D;</li><li>Added ib_getStack, ib_setStack methods for working with individual stacks of 4D datasets</li><li>Added flip time points of the dataset (Menu-&gt;Dataset-&gt;Transform-&gt;Flip T)</li><li>Added transpose of Z to T dimension (Menu-&gt;Dataset-&gt;Transform-&gt;Transpose Z&lt;-&gt;T)</li><li>Added insert of an empty color channel to the dataset (Menu-&gt;Image-&gt;Color channels-&gt;Insert empty channel)</li><li>Added possibility to delete a time frames (Menu-&gt;Dataset-&gt;Delete slice-&gt;Delete frame(s)...)</li><li>Added additional modes for CLAHE contrast (Menu-&gt;Image-&gt;Contrast-&gt;CLAHE)</li><li>Added Bin2, Bin4, Bin8 buttons to the Snapshot dialog</li><li>Added the link checkbox to the Display adjustment dialog to link modification of settings for all shown color channels</li><li>Added Frangi 2D/3D filters to the Image Filters panel, the panel was also redesigned</li><li>Added t-parameter to imageData.clearSelection</li><li>Added reading/writing of BigDataViewer HDF5 format for Fiji</li><li>Improved data exchange with Imaris, added export of models as volumes to Imaris (Menu-&gt;Models-&gt;Export model to...-&gt;Imaris as volume)</li><li>Improved loading and saving of HDF5 datasets</li><li>Improved performance of many manual segmentation tools</li><li>Modified call of ib_moveLayers</li><li>Updated TIF reader to accept pyramidal TIFs from Zeiss microscopes</li><li>Updated Menu-&gt;Image-&gt;Invert image with various options</li><li>Updated programming tutorials</li><li>Optimized Undo functionality to make it faster and use less memory</li><li>Bug fixes</li></ul></div><h2>1.02 20.01.2016<a name="2"></a></h2><div><ul><li>Added resizing of panels</li><li>Added undo for the brush in the superpixel mode (press Ctrl+Z while drawing to unselect superpixels)</li><li>Added save models using the STL format (Menu-&gt;Models-&gt;Save model as...)</li><li>Added a button to change image interpolation type to the toolbar (nearest/bicubic) and removed bilinear interpolation from the visualization options</li><li>Updated the drawing of scalebars, now they are displayed as round numbers</li><li>Updated the Watershed/Graphcut segmentation tool</li><li>Fixed the length of a scale bar in snapshots after resizing</li><li>Fixed elements of GUI that were not properly resized</li><li>Fixed use of the memory function for non-windows operating systems</li></ul></div><h2>1.00 19.11.2015 Official Release<a name="3"></a></h2><div><ul><li>Added X/Y calibration of the loaded dataset using an existing scale bar printed on images (Menu-&gt;Dataset-&gt;Scale bar)</li><li>Replaced function that calculates adjacency of supervoxels in the graphcut and classifier tools to <a href="http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graph--rag-">Region Adjacency Graph (RAG)</a> by David Legland</li><li>Added Stereology mode to count intersections of materials of the model with a grid lines (Menu-&gt;Tools-&gt;Stereology)</li><li>Added watershed superpixels and supervoxels to the graphcut segmentation</li><li>Added watershed superpixels to the Brush tool</li><li>Added watershed superpixels/supervoxels to the superpixel classifier</li><li>Added customization dialog for key shortcuts (File-&gt;Preference-&gt;Shortcuts)</li><li>Added detection of LUTs for color channels when using the Bio-Formats reader</li><li>Fixes</li></ul></div><h2>0.999 30.09.2015<a name="4"></a></h2><div><ul><li>Added Maxflow/mincut semi-automatic segmentation (Menu-&gt;Tools-&gt;Watershed/Graphcut segmentation)</li><li>Added Supervoxel/superpixel based classifier (Menu-&gt;Tools-&gt;Classifiers-&gt;Supervoxels classification)</li><li>Added a mode for chopping and combining back large images (Menu-&gt;File-&gt;Chop images...)</li><li>Added possibility to calculate multiple properties of objects in the Get Statistics... dialog (Menu-&gt;Models-&gt;Model Statistics...)</li><li>Added rendering of measurements to snapshots</li><li>Added modification of the adaptive coefficient for the brush with the supervoxels mode: while drawing use the mouse wheel to change the coefficient</li><li>Added Undo for the Brush tool with superpixels, while selecting superpixels press the Ctrl+Z shortcut to undo selection of the last superpixel</li><li>Added RegionGrowing mode to the Magic Wand tool</li><li>Added Affine Transformation mode to the Alignment tool</li><li>Added new methods to access the dataset: <i>imageData.getData2D</i>, <i>imageData.getData3D</i>, <i>imageData.getData4D</i>, <i>imageData.setData2D</i>, <i>imageData.setData3D</i>, <i>imageData.setData4D</i> that replace old methods <i>imageData.getDataset</i> and <i>imageData.setDataset</i></li><li>Added possibility to crop dataset based on detected 2D objects: Menu-&gt;Model Statistics...-&gt;Run-&gt;Select objects and press the right mouse button-&gt;Crop to a file/matlab...</li><li>Modified syntax of the imageData.getDatasetDimensions method call</li><li>Modified Make video dialog: now it is not modal; added back-and-forth option</li><li>Preserve the current magnification during the orientation switch using the Alt+1, Alt+2 and Alt+3 shortcuts</li></ul></div><h2>0.998 05.05.2015<a name="5"></a></h2><div><ul><li>Added stand-alone version for Mac OS (tested with OS X Yosemite, ver. 10.10.3 and Matlab R2014b)</li><li>Added Measure Tool (Menu-&gt;Tools-&gt;Measure length-&gt;Measure tool)</li><li>Added superpixels mode for the brush tool</li><li>Added possibility to crop dataset based on detected 3D objects: Menu-&gt;Model Statistics...-&gt;Run-&gt;Select objects and press the right mouse button-&gt;Crop to a file/matlab...</li><li>Completely rewritten roiRegion class to perform faster in the R2014b and later</li><li>Added possibility to change font name in the <tt>Menu-&gt;File-&gt;Preferences</tt> dialog</li><li>Fixed many issues with Linux and MacOS compatibility</li></ul></div><h2>0.997 24.03.2015<a name="6"></a></h2><div><ul><li>Added highlighting of the current file, when switching the buffers</li><li>Added names of series during opening of datasets using Bioformats</li><li>Added morphological filters to the Mask Generators panel: imextendedmax, imextendedmin, imregionalmax, imregionalmin</li><li>Added a context menu to the Pixel Information text of the Path panel for instant jump to desired position within the dataset</li><li>Added a new dialog to define coordinates of the bounding box</li><li>Update: colors of materials are stored with the ImageData class, now the colors are also saved together with the model</li><li>Update: the LUT colors are stored in the imageData class</li><li>Update: Bio-formats library is now bioformats_package.jar</li><li>Update: Connection to Imaris</li><li>Modified the Mask Generators panel</li><li>Fixed opening of images with different XY and color channels using Bioformats</li><li>Fixed generation of JPG snapshots for 16-bit images</li><li>Fixed triggering of the key press callback during the pan mode</li><li>Fixed dublicates of the brush cursor in some situations</li></ul></div><h2>0.996 06.03.2015<a name="7"></a></h2><div><ul><li>Added CZI format to the list of extensions</li><li>Added a custom input dialog</li><li>Annotations and measure tools are available when the model/selection layers are turned off</li><li>Updated to the new server for updates, at <a href="http://mib.helsinki.fi">http://mib.helsinki.fi</a></li><li>Multiple fixes in the mode when the model/selection layers are turned off</li><li>Bug fixes</li></ul></div><h2>0.995 26.01.2015<a name="8"></a></h2><div><ul><li>Adaptation to Matlab R2014b</li><li>Added Smart Watershed to the segmentation tools (Segmentation panel-&gt;Selection type-&gt;Smart watershed); see also <a href="ug_gui_menu_tools_watershed.html">improved watershed tool</a></li><li>Added number of morphological operations for images: Menu-&gt;Image-&gt;Morphological operations</li><li>Added increase of the brush size by ~40% when starting the Erase mode (by holding the Control key)</li><li>Added import/export images from <a href="http://www.bitplane.com">Imaris</a> : Menu-&gt;File-&gt;Import(Export)-&gt;Imaris (requires Imaris and ImarisXT)</li><li>Added import images from URL link: Menu-&gt;File-&gt;Import-&gt;URL</li><li>Added Annotations to the statistical filtering window. The right mouse button above <a href="ug_gui_menu_mask_statistics.html">the Statistics table</a> starts a popup menu with access to annotations.</li><li>Added Gradient 2D and Gradient 3D filters to the Image Filters panel</li><li>Added tools for manipulation with the colormaps in <a href="ug_gui_menu_file_preferences.html#6">the Preferences dialog</a></li><li>Added rendering models with Imaris: Menu-&gt;Models-&gt;Render model...-&gt;Imaris</li><li>Added calculation of the following properties for 3D objects: <i>MajorAxisLength, SecondMajorAxisLength, MinorAxisLength, MeriodionalEccentricity, EquatorialEccentricity</i></li><li>Added Zoom in/out using the <i>Alt+Mouse wheel</i> combination</li><li>Many functions moved from im_browser.m to a separate files located in the GuiTools directory</li><li>Improved rendering of large images using the 'nearest' resampling mode</li><li>Updated and significantly improved the <a href="ug_gui_menu_tools_watershed.html">watershed tool</a></li><li>Renamed the <tt>Mask/Model</tt> segmentation tool to <tt>Object Picker</tt></li><li>Fixed import of models with more colors than defined in MIB</li><li>Fixed rotation of datasets with the Mask or Model layers</li><li>Moved Top and Bottom hat filters to the morphological operations for images: Menu-&gt;Image-&gt;Morphological operations</li></ul></div><h2>0.9941 23.09.2014<a name="9"></a></h2><div><ul><li>Added color palettes for materials of models, Menu-&gt;File-&gt;Preferences-&gt;Colors</li><li>Added conversion to HSV colorspace, test version</li><li>Added possibility to plot a histogram in the Statistics dialog</li><li>Added restore default settings button to the Preferences window</li><li>Added paste from Clipboard: Menu-&gt;File-&gt;Import image from-&gt;Clipboard</li><li>Rearranged files/directories</li><li>Updated BioFormats reader</li><li>Fixed bugs with dynamic sliders in the deployed version</li><li>Fixed bug in the wrong shifts of datasets during alignmen</li><li>Fixed bug with ROI during duplication of datasets</li></ul></div><h2>0.9932 23.06.2014<a name="10"></a></h2><div><ul><li>Added the Random forest classifier for tests, original functions from <a href="http://www.kaynig.de/demos.html">Verena Kaynig</a> and <a href="https://code.google.com/p/randomforest-matlab/">randomforest-matlab</a> by Abhishek Jaiantilal.</li><li>Added EndPointsLength statistics for 3D lines</li><li>Updated EndPointsLength statistics is now reported in the image units</li><li>Updated the Make Snapshot dialog</li><li>Updated the Image Adjustment dialog</li><li>Updated the Magic Wand tool: it is possible to specify an effective radius of for the tool</li><li>Updated the Spot tool: much faster</li><li>Fixed MembraneClickTracker tool for straight lines in 3D with width = 1 and for the points at the edge of the image</li><li>Fixed saving of individual materials of the models</li></ul></div><h2>0.9931 22.05.2014<a name="11"></a></h2><div><ul><li>Added: conversion of multichannel images to greyscale</li><li>Improved: refreshing of the opened auxiliary windows</li><li>Updated: the watershed segmentation was updated to seeded watershed.</li><li>Fixed: image rescaling during resize of the main window</li></ul></div><h2>0.9930 20.05.2014<a name="12"></a></h2><div><ul><li>Added a layer for Annotations, a label that may be placed at desired part of the dataset (<tt>Segmentation panel-&gt;Selection type-&gt;Annotations</tt>).</li><li>Improved speed of image generation when the Show model switch is On</li><li>Some sliders were updated to allow real-time feedback</li><li>Modified the Segmentation panel by introducing the Show all checkbox</li><li>Added possibility to synchronize the views between opened datasets. Use a popup menu for the buffer buttons in the Directory contents panel.</li><li>Added indication of intensity of the 4th color channel during the mouse move above the image</li><li>Added Rectangle, Ellipse and Polyline type of selections to the Lasso segmentation tool</li><li>Added possibility to use original filenames when saving dataset in Jpeg, PNG and TIF formats</li><li>Added possibility to see a single channel using a Ctrl+left mouse click above the checkboxes of the Colors table in the View settings panel.</li><li>Added sorting by slice number to the Get Statistics dialog (right mouse click above the Sort button)</li><li>Updated the Adjust Display dialog with colors and right mouse callbacks for the sliders to set sliders to 0 and maximal possible values</li><li>Improved BioFormats reading dialog</li><li>Fixed saving models (removed the Selection and Mask layers) using the Save Model button in the toolbar</li><li>Fixed generation of statistics for the currently shown slice</li></ul></div><h2>0.9923 20.03.2014<a name="13"></a></h2><div><ul><li>Changed implementation of the Membrane Click Tracker tool. Now Shift+mouse click defines the first point of the membrane domain.</li><li>Fixed very long parameter names in the Dataset Info window; added display in the upper part of the Dataset Info window to show entry in the selected cell.</li><li>The Image Profile functions were updated for multicolored datasets</li></ul></div><h2>0.9922 06.03.2014<a name="14"></a></h2><div><ul><li>Added the Interpolation type button to the toolbar.</li><li>Added possibility to insert another dataset to the opened dataset.</li><li>Skip dataset selection for BioFormats reader, when only one dataset present</li><li>Extended filename information of the current dataset in the View Image Panel</li><li>Several bug fixes and improvements</li></ul></div><h2>0.9921 25.02.2014<a name="15"></a></h2><div><ul><li>Added watershed segmentation, Menu-&gt;Tools-&gt;Watershed</li><li>Added support for NRRD format, a native format of 3D slicer</li><li>Added file name to the title of the Image View panel</li><li>Added landmark alignment mode for the opened datasets, some fixes of the alignment.</li><li>Renamed Menu-&gt;Measure to Menu-&gt;Tools</li><li>Modified formation of Z stacks with datasets of different dimensions, now the data is not cropped.</li><li>The brightness slider in the View settings panel was replaced with the live stretch check box. When enabled im_browser automatically adjust contrast for each shown image; but only for preview, the actual image intensities will not be affected.</li><li>Fixed auto-updater for Matlab release R2012a and older.</li><li>Fixed Delete Slice for multiple slices</li></ul></div><h2>0.9919 11.02.2014<a name="16"></a></h2><div><ul><li>Added posibility to define a step for thresholding sliders in the BW thresholding selection tool, available via a popup menu (right mouse click on the sliders)</li><li>Fixed import models bug</li><li>Set the Column Format in the Value column of the MaskStatsDlg to the 'short g' representation.</li></ul></div><h2>0.9917 10.02.2014<a name="17"></a></h2><div><ul><li>Added possibility to change font size</li><li>Added a context menu to the Adjust channel button of the Display adjustment dialog. The menu allows contrast adjustment of the currenly shown slice.</li><li>Updated selection of the fast-access tools for the "D" key shortcut. Now the tools can be selected using the <b>D</b> checkbox in the <a href="ug_panel_segm.html">Segmentation panel</a></li></ul></div><h2>0.9916 31.01.2014<a name="18"></a></h2><div><ul><li>Improved brush performance for the brush size</li></ul></div><h2>0.9915 30.01.2014<a name="19"></a></h2><div><ul><li>Added Matlab normalized 2-D cross-correlation to the Alignment options for tests</li><li>It is possible to open multiple series using BioFormats reader</li><li>Updated Stop Fiji routine</li><li>Improved sensitivity of the Membrane ClickTracker tool</li><li>Fixed network update for the deployed version</li><li>Fixed background colors in some windows</li></ul></div><h2>0.9914 25.11.2013<a name="20"></a></h2><div><ul><li>Large update of the ROI mode. Now the ROIs are bound to the image dataset, so it is possible to have set of ROI for each opened image</li><li>Added positioning of the logList window to the bottom of the main window</li><li>Fixed ib_maskGenerator.m for multi-colored datasets</li><li>Fixed implementation of BioFormats for the deployed version</li></ul></div><h2>0.9913 19.11.2013<a name="21"></a></h2><div><ul><li>Added store position of the selected mode in the Get Statistics dialog, plus some other modifications in the same dialog</li><li>Fixed a bug in the imageData.plotImage function, when the brightness slider is used</li><li>Added delete the maskStatsDlg and ib_datasetInfoGui dialogs after close of im_browser</li></ul></div><h2>0.9912 15.11.2013<a name="22"></a></h2><div><ul><li>Added Duplicate dataset to the context menu of the buffer buttons: <tt>Directory Contents-&gt;Buffer buttons-&gt;right mouse click-&gt;Duplicate dataset</tt></li><li>Added 'Enter' and 'Esc' shortcuts to Load Bioformats, make snapshot, make movie, morph ops dialogs</li><li>Added synchronozation of Image Info tables between different datasets, using <tt>FindJObj.m</tt> function</li><li>Moved all functions from ImageData class to own files</li><li>Updated coloring of the brush tool during the brush motion for 16bit images</li></ul></div><h2>0.9911 13.11.2013<a name="23"></a></h2><div><ul><li>Added a new window for showing parameters of the dataset (Path panel-&gt;Info button)</li><li>Added ROI mode to the Make snapshot dialog (Menu-&gt;File-&gt;Make Snapshot...)</li><li>Added ROI mode to the Make video dialog (Menu-&gt;File-&gt;Make Movie...)</li><li>Added use of system TEMP folder to store <tt>im_browser</tt> parameters as a second choice, when <i>c:\temp</i> is not available for writing (settings are stored in <i>im_browser.mat</i>)</li><li>Added PNG format to Save image as dialog</li><li>the Adjust Display window does not show histogram for modified gamma, but shows histogram for all color channels</li><li>Combine as color channels - added to the popup menu in the file listing of the Directory contents panel</li><li>Updated saving of multichannel images in Amira Mesh format</li><li>Updated the color table in the View settings panel</li><li>Replaced '\t' character in the ImageDescription field to the '|'</li></ul></div><h2>0.9910 06.11.2013<a name="24"></a></h2><div><ul><li>Added short release notes in the automatic update</li><li>Added LUT (look-up table) for defining a custom set of colors for color channels</li><li>Added copy color channel: Menu-&gt;Image-&gt;Color Channels-&gt;Copy channel...</li><li>Added copy color channel: Menu-&gt;Image-&gt;Color Channels-&gt;Invert channel...</li><li>Updated Preferences dialog: Menu-&gt;File-&gt;Preferences</li><li>Moved some functions from the class to external files</li><li>Renamed <tt>cropImage</tt> to <tt>cropDataset</tt> function in the <tt>imageData</tt> class</li></ul></div><h2>0.9909 18.10.2013<a name="25"></a></h2><div><ul><li>Added tooltips to some toolbar buttons</li><li>Added rehash of files after using web-update of <tt>im_browser</tt></li><li>Added TIF to bio-formats file filter</li><li>Added synchronization of the Material list boxes in the segmentation panel (<tt>Materials List-&gt;right mouse button-&gt;Sync all lists</tt>)</li><li>Updated un-focusing behavior with some edit and combo boxes</li><li>Updated colors of the Preferences dialog;</li><li>Fixed import/export <tt>img_info</tt> containers.Map class object with description of the dataset. The <tt>img_info</tt> map is a handle so it has to be reinitialized: <tt>img_info_new = containers.Map(keys(img_info), values(img_info));</tt></li></ul></div><h2>0.9908 17.10.2013<a name="26"></a></h2><div><ul><li>Added preservation of the bounding box during alignment of stacks</li><li>Fixed bug of the bounding box settings (introduced in 0.9904)</li><li>Minor improvements</li></ul></div><h2>0.9907 14.10.2013<a name="27"></a></h2><div><ul><li>Fixed resizing of the slider responsible for change of slices</li></ul></div><h2>0.9906 10.10.2013<a name="28"></a></h2><div><ul><li>Added 3D Frangi filter (Mask Generators-&gt;Frangi filter)</li></ul></div><h2>0.9905 07.10.2013<a name="29"></a></h2><div><ul><li>Added selection of the first and last points for rendering videos (Menu-&gt;File-&gt;Save as video...)</li></ul></div><h2>0.9904 03.10.2013<a name="30"></a></h2><div><ul><li>Taken into account stage rotation bias when calculating the bounding box (rotation stage bias field in the <tt>Menu-&gt;Dataset-&gt;Bounding Box</tt> dialog).</li></ul></div><h2>0.9903 02.10.2013<a name="31"></a></h2><div><ul><li>Fixed the memory clearance after disabling of the Selection mode in the preference dialog for the uint6 models</li></ul></div><h2>0.9902 24.09.2013<a name="32"></a></h2><div><ul><li>Added fast pan mode, for fast navigation when showing large XY images (<tt>Toolbar-&gt;Fast pan mode</tt>)</li><li>Fixed in the <tt>Menu-&gt;Selection-&gt;Mask</tt> and <tt>Mask-&gt;Selection</tt></li></ul></div><h2>0.9901 18.09.2013<a name="33"></a></h2><div><ul><li>Added ultimate erosion</li><li>Implementated automatic check for updates</li><li>Fixed modification of ROI for large images</li></ul></div><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Microscopy Image Browser Release Notes
+% 
+%
+% <im_browser_product_page.html Back to Index>
+%
+%% 1.10 07.04.2016 (update for 4D datasets)
+%
+% * Modification of MIB to work with 4D data (H,W,C,Z,T)
+% * Replaced imageData.slices(1:4,:) matrix variable with a cell imageData.slices{1:5}(:)
+% * Replaced imageData.slicesColor variable with imageData.slices{3}(:)
+% * Renamed functions: getData3D->getData2D; getData4D->getData3D; getData5D->getData4D; setData3D->setData2D; setData4D->setData3D; setData5D->setData4D;
+% * Added ib_getStack, ib_setStack methods for working with individual stacks of 4D datasets 
+% * Added flip time points of the dataset (Menu->Dataset->Transform->Flip T)
+% * Added transpose of Z to T dimension (Menu->Dataset->Transform->Transpose Z<->T)
+% * Added insert of an empty color channel to the dataset (Menu->Image->Color channels->Insert empty channel)
+% * Added possibility to delete a time frames (Menu->Dataset->Delete slice->Delete frame(s)...)
+% * Added additional modes for CLAHE contrast (Menu->Image->Contrast->CLAHE)
+% * Added Bin2, Bin4, Bin8 buttons to the Snapshot dialog
+% * Added the link checkbox to the Display adjustment dialog to link modification of settings for all shown color channels
+% * Added Frangi 2D/3D filters to the Image Filters panel, the panel was also redesigned
+% * Added t-parameter to imageData.clearSelection
+% * Added reading/writing of BigDataViewer HDF5 format for Fiji
+% * Improved data exchange with Imaris, added export of models as volumes to Imaris (Menu->Models->Export model to...->Imaris as volume)
+% * Improved loading and saving of HDF5 datasets
+% * Improved performance of many manual segmentation tools
+% * Modified call of ib_moveLayers
+% * Updated TIF reader to accept pyramidal TIFs from Zeiss microscopes
+% * Updated Menu->Image->Invert image with various options
+% * Updated programming tutorials
+% * Optimized Undo functionality to make it faster and use less memory
+% * Bug fixes
+%
+%% 1.02 20.01.2016
+% * Added resizing of panels
+% * Added undo for the brush in the superpixel mode (press Ctrl+Z while drawing to unselect superpixels)
+% * Added save models using the STL format (Menu->Models->Save model as...)
+% * Added a button to change image interpolation type to the toolbar
+% (nearest/bicubic) and removed bilinear interpolation from the visualization
+% options
+% * Updated the drawing of scalebars, now they are displayed as round numbers
+% * Updated the Watershed/Graphcut segmentation tool
+% * Fixed the length of a scale bar in snapshots after resizing
+% * Fixed elements of GUI that were not properly resized
+% * Fixed use of the memory function for non-windows operating systems
+%
+%% 1.00 19.11.2015 Official Release
+% * Added X/Y calibration of the loaded dataset using an existing scale bar printed on
+% images (Menu->Dataset->Scale bar)
+% * Replaced function that calculates adjacency of supervoxels in the graphcut and classifier tools to <http://www.mathworks.com/matlabcentral/fileexchange/16938-region-adjacency-graphREPLACE_WITH_DASH_DASHrag- Region Adjacency Graph (RAG)> by David Legland
+% * Added Stereology mode to count intersections of materials of the model with a grid lines (Menu->Tools->Stereology)
+% * Added watershed superpixels and supervoxels to the graphcut segmentation
+% * Added watershed superpixels to the Brush tool
+% * Added watershed superpixels/supervoxels to the superpixel classifier
+% * Added customization dialog for key shortcuts (File->Preference->Shortcuts)
+% * Added detection of LUTs for color channels when using the Bio-Formats reader
+% * Fixes 
+%
+%% 0.999 30.09.2015
+% * Added Maxflow/mincut semi-automatic segmentation (Menu->Tools->Watershed/Graphcut segmentation)
+% * Added Supervoxel/superpixel based classifier (Menu->Tools->Classifiers->Supervoxels classification)
+% * Added a mode for chopping and combining back large images (Menu->File->Chop images...)
+% * Added possibility to calculate multiple properties of objects in the
+% Get Statistics... dialog (Menu->Models->Model Statistics...)
+% * Added rendering of measurements to snapshots
+% * Added modification of the adaptive coefficient for the brush with the
+% supervoxels mode: while drawing use the mouse wheel to change the
+% coefficient
+% * Added Undo for the Brush tool with superpixels, while selecting
+% superpixels press the Ctrl+Z shortcut to undo selection of the last
+% superpixel
+% * Added RegionGrowing mode to the Magic Wand tool
+% * Added Affine Transformation mode to the Alignment tool 
+% * Added new methods to access the dataset: _imageData.getData2D_,
+% _imageData.getData3D_, _imageData.getData4D_, _imageData.setData2D_,
+% _imageData.setData3D_, _imageData.setData4D_ that replace old methods
+% _imageData.getDataset_ and _imageData.setDataset_
+% * Added possibility to crop dataset based on detected 2D objects:
+% Menu->Model Statistics...->Run->Select objects and press the right mouse
+% button->Crop to a file/matlab...
+% * Modified syntax of the imageData.getDatasetDimensions method call
+% * Modified Make video dialog: now it is not modal; added back-and-forth
+% option
+% * Preserve the current magnification during the orientation switch using the Alt+1, Alt+2 and Alt+3 shortcuts
+%
+%% 0.998 05.05.2015
+% * Added stand-alone version for Mac OS (tested with OS X Yosemite, ver. 10.10.3 and Matlab R2014b)
+% * Added Measure Tool (Menu->Tools->Measure length->Measure tool)
+% * Added superpixels mode for the brush tool
+% * Added possibility to crop dataset based on detected 3D objects:
+% Menu->Model Statistics...->Run->Select objects and press the right mouse
+% button->Crop to a file/matlab...
+% * Completely rewritten roiRegion class to perform faster in the R2014b
+% and later
+% * Added possibility to change font name in the |Menu->File->Preferences|
+% dialog
+% * Fixed many issues with Linux and MacOS compatibility
+%
+%% 0.997 24.03.2015
+% * Added highlighting of the current file, when switching the buffers 
+% * Added names of series during opening of datasets using Bioformats
+% * Added morphological filters to the Mask Generators panel:
+% imextendedmax, imextendedmin, imregionalmax, imregionalmin
+% * Added a context menu to the Pixel Information text of the Path panel
+% for instant jump to desired position within the dataset
+% * Added a new dialog to define coordinates of the bounding box
+% * Update: colors of materials are stored with the ImageData class, now
+% the colors are also saved together with the model
+% * Update: the LUT colors are stored in the imageData class
+% * Update: Bio-formats library is now bioformats_package.jar  
+% * Update: Connection to Imaris
+% * Modified the Mask Generators panel
+% * Fixed opening of images with different XY and color channels using Bioformats
+% * Fixed generation of JPG snapshots for 16-bit images
+% * Fixed triggering of the key press callback during the pan mode
+% * Fixed dublicates of the brush cursor in some situations
+%
+%% 0.996 06.03.2015
+% * Added CZI format to the list of extensions
+% * Added a custom input dialog 
+% * Annotations and measure tools are available when the model/selection layers are turned off
+% * Updated to the new server for updates, at http://mib.helsinki.fi
+% * Multiple fixes in the mode when the model/selection layers are turned off
+% * Bug fixes
+%
+%% 0.995 26.01.2015
+% * Adaptation to Matlab R2014b
+% * Added Smart Watershed to the segmentation tools (Segmentation
+% panel->Selection type->Smart watershed); see also <ug_gui_menu_tools_watershed.html improved watershed tool>
+% * Added number of morphological operations for images:
+% Menu->Image->Morphological operations
+% * Added increase of the brush size by ~40% when starting the Erase mode (by holding the Control key)
+% * Added import/export images from <http://www.bitplane.com Imaris> : Menu->File->Import(Export)->Imaris (requires Imaris and ImarisXT)
+% * Added import images from URL link: Menu->File->Import->URL
+% * Added Annotations to the statistical filtering window. The right mouse button above
+% <ug_gui_menu_mask_statistics.html the Statistics table> starts a popup menu with access to annotations.
+% * Added Gradient 2D and Gradient 3D filters to the Image Filters panel
+% * Added tools for manipulation with the colormaps in <ug_gui_menu_file_preferences.html#6 the Preferences dialog>
+% * Added rendering models with Imaris: Menu->Models->Render model...->Imaris
+% * Added calculation of the following properties for 3D objects:
+% _MajorAxisLength, SecondMajorAxisLength, MinorAxisLength,
+% MeriodionalEccentricity, EquatorialEccentricity_
+% * Added Zoom in/out using the _Alt+Mouse wheel_ combination
+% * Many functions moved from im_browser.m to a separate files located in the GuiTools directory
+% * Improved rendering of large images using the 'nearest' resampling mode
+% * Updated and significantly improved the <ug_gui_menu_tools_watershed.html watershed tool>
+% * Renamed the |Mask/Model| segmentation tool to |Object Picker|
+% * Fixed import of models with more colors than defined in MIB
+% * Fixed rotation of datasets with the Mask or Model layers
+% * Moved Top and Bottom hat filters to the morphological operations for images:
+% Menu->Image->Morphological operations 
+%% 0.9941 23.09.2014
+% * Added color palettes for materials of models, Menu->File->Preferences->Colors
+% * Added conversion to HSV colorspace, test version
+% * Added possibility to plot a histogram in the Statistics dialog
+% * Added restore default settings button to the Preferences window
+% * Added paste from Clipboard: Menu->File->Import image from->Clipboard
+% * Rearranged files/directories
+% * Updated BioFormats reader
+% * Fixed bugs with dynamic sliders in the deployed version
+% * Fixed bug in the wrong shifts of datasets during alignmen
+% * Fixed bug with ROI during duplication of datasets
+%% 0.9932 23.06.2014
+% * Added the Random forest classifier for tests, original functions from <http://www.kaynig.de/demos.html Verena Kaynig> and <https://code.google.com/p/randomforest-matlab/ randomforest-matlab> by Abhishek Jaiantilal.
+% * Added EndPointsLength statistics for 3D lines
+% * Updated EndPointsLength statistics is now reported in the image units
+% * Updated the Make Snapshot dialog 
+% * Updated the Image Adjustment dialog 
+% * Updated the Magic Wand tool: it is possible to specify an effective radius of for the tool 
+% * Updated the Spot tool: much faster
+% * Fixed MembraneClickTracker tool for straight lines in 3D with width = 1 and for the points at the edge of the image
+% * Fixed saving of individual materials of the models
+%% 0.9931 22.05.2014
+% * Added: conversion of multichannel images to greyscale
+% * Improved: refreshing of the opened auxiliary windows
+% * Updated: the watershed segmentation was updated to seeded watershed.
+% * Fixed: image rescaling during resize of the main window
+%% 0.9930 20.05.2014
+% * Added a layer for Annotations, a label that may be placed at desired
+% part of the dataset (|Segmentation panel->Selection type->Annotations|).
+% * Improved speed of image generation when the Show model switch is On
+% * Some sliders were updated to allow real-time feedback
+% * Modified the Segmentation panel by introducing the Show all checkbox
+% * Added possibility to synchronize the views between opened datasets. Use
+% a popup menu for the buffer buttons in the Directory contents panel.
+% * Added indication of intensity of the 4th color channel during the mouse move above the image
+% * Added Rectangle, Ellipse and Polyline type of selections to the Lasso segmentation tool
+% * Added possibility to use original filenames when saving dataset in Jpeg, PNG and TIF formats
+% * Added possibility to see a single channel using a Ctrl+left mouse click
+% above the checkboxes of the Colors table in the View settings panel.
+% * Added sorting by slice number to the Get Statistics dialog (right mouse click above the Sort button)
+% * Updated the Adjust Display dialog with colors and right mouse callbacks
+% for the sliders to set sliders to 0 and maximal possible values
+% * Improved BioFormats reading dialog
+% * Fixed saving models (removed the Selection and Mask layers) using the Save Model button in the toolbar
+% * Fixed generation of statistics for the currently shown slice
+%% 0.9923 20.03.2014
+% * Changed implementation of the Membrane Click Tracker tool. Now
+% Shift+mouse click defines the first point of the membrane domain.
+% * Fixed very long parameter names in the Dataset Info window; added display in the upper part of the
+% Dataset Info window to show entry in the selected cell.
+% * The Image Profile functions were updated for multicolored datasets
+%% 0.9922 06.03.2014
+% * Added the Interpolation type button to the toolbar.
+% * Added possibility to insert another dataset to the opened dataset. 
+% * Skip dataset selection for BioFormats reader, when only one dataset
+% present
+% * Extended filename information of the current dataset in the View Image Panel
+% * Several bug fixes and improvements
+%% 0.9921 25.02.2014
+% * Added watershed segmentation, Menu->Tools->Watershed
+% * Added support for NRRD format, a native format of 3D slicer
+% * Added file name to the title of the Image View panel
+% * Added landmark alignment mode for the opened datasets, some fixes of 
+% the alignment.
+% * Renamed Menu->Measure to Menu->Tools
+% * Modified formation of Z stacks with datasets of different dimensions,
+% now the data is not cropped.
+% * The brightness slider in the View settings panel was replaced with the
+% live stretch check box. When enabled im_browser automatically adjust
+% contrast for each shown image; but only for preview, the actual image
+% intensities will not be affected.
+% * Fixed auto-updater for Matlab release R2012a and older.
+% * Fixed Delete Slice for multiple slices
+%% 0.9919 11.02.2014
+% * Added posibility to define a step for thresholding sliders in the BW
+% thresholding selection tool, available via a popup menu (right mouse click on the sliders)
+% * Fixed import models bug
+% * Set the Column Format in the Value column of the MaskStatsDlg to the 'short
+% g' representation.
+%% 0.9917 10.02.2014
+% * Added possibility to change font size
+% * Added a context menu to the Adjust channel button of the Display
+% adjustment dialog. The menu allows contrast adjustment of the currenly
+% shown slice.
+% * Updated selection of the fast-access tools for the "D" key shortcut.
+% Now the tools can be selected using the *D* checkbox in the <ug_panel_segm.html Segmentation panel>
+%% 0.9916 31.01.2014
+% * Improved brush performance for the brush size
+%% 0.9915 30.01.2014
+% * Added Matlab normalized 2-D cross-correlation to the Alignment options for tests
+% * It is possible to open multiple series using BioFormats reader
+% * Updated Stop Fiji routine
+% * Improved sensitivity of the Membrane ClickTracker tool
+% * Fixed network update for the deployed version
+% * Fixed background colors in some windows
+%% 0.9914 25.11.2013
+% * Large update of the ROI mode. Now the ROIs are bound to the image dataset, so it is possible to have set of ROI for each
+% opened image
+% * Added positioning of the logList window to the bottom of the main window
+% * Fixed ib_maskGenerator.m for multi-colored datasets
+% * Fixed implementation of BioFormats for the deployed version
+%% 0.9913 19.11.2013
+% * Added store position of the selected mode in the Get Statistics dialog, plus some other modifications in the same dialog
+% * Fixed a bug in the imageData.plotImage function, when the brightness slider is used 
+% * Added delete the maskStatsDlg and ib_datasetInfoGui dialogs after close of im_browser
+%% 0.9912 15.11.2013
+% * Added Duplicate dataset to the context menu of the buffer buttons: |Directory Contents->Buffer buttons->right mouse
+% click->Duplicate dataset|
+% * Added 'Enter' and 'Esc' shortcuts to Load Bioformats, make snapshot, make movie, morph ops dialogs
+% * Added synchronozation of Image Info tables between different datasets, using |FindJObj.m| function
+% * Moved all functions from ImageData class to own files
+% * Updated coloring of the brush tool during the brush motion for 16bit images
+%% 0.9911 13.11.2013
+% * Added a new window for showing parameters of the dataset (Path panel->Info button)
+% * Added ROI mode to the Make snapshot dialog (Menu->File->Make Snapshot...)
+% * Added ROI mode to the Make video dialog (Menu->File->Make Movie...)
+% * Added use of system TEMP folder to store |im_browser| parameters as a second choice, when _c:\temp_ is not available for
+% writing (settings are stored in _im_browser.mat_)
+% * Added PNG format to Save image as dialog
+% * the Adjust Display window does not show histogram for modified gamma, but shows histogram for all color channels
+% * Combine as color channels - added to the popup menu in the file listing of the Directory contents panel
+% * Updated saving of multichannel images in Amira Mesh format
+% * Updated the color table in the View settings panel
+% * Replaced '\t' character in the ImageDescription field to the '|'
+%% 0.9910 06.11.2013
+% * Added short release notes in the automatic update
+% * Added LUT (look-up table) for defining a custom set of colors for color channels
+% * Added copy color channel: Menu->Image->Color Channels->Copy channel...
+% * Added copy color channel: Menu->Image->Color Channels->Invert channel...
+% * Updated Preferences dialog: Menu->File->Preferences
+% * Moved some functions from the class to external files
+% * Renamed |cropImage| to |cropDataset| function in the |imageData| class
+%% 0.9909 18.10.2013
+% * Added tooltips to some toolbar buttons
+% * Added rehash of files after using web-update of |im_browser|
+% * Added TIF to bio-formats file filter
+% * Added synchronization of the Material list boxes in the segmentation panel (|Materials List->right mouse button->Sync all
+% lists|)
+% * Updated un-focusing behavior with some edit and combo boxes
+% * Updated colors of the Preferences dialog;
+% * Fixed import/export |img_info| containers.Map class object with description of the dataset. The |img_info| map is a handle
+% so it has to be reinitialized: |img_info_new = containers.Map(keys(img_info), values(img_info));|
+%% 0.9908 17.10.2013
+% * Added preservation of the bounding box during alignment of stacks
+% * Fixed bug of the bounding box settings (introduced in 0.9904)
+% * Minor improvements
+%% 0.9907 14.10.2013
+% * Fixed resizing of the slider responsible for change of slices
+%% 0.9906 10.10.2013
+% * Added 3D Frangi filter (Mask Generators->Frangi filter)
+%% 0.9905 07.10.2013
+% * Added selection of the first and last points for rendering videos (Menu->File->Save as video...)
+%% 0.9904 03.10.2013
+% * Taken into account stage rotation bias when calculating the bounding box (rotation stage bias field in the |Menu->Dataset->Bounding Box| dialog).
+%% 0.9903 02.10.2013
+% * Fixed the memory clearance after disabling of the Selection mode in the preference dialog for the uint6 models
+%% 0.9902 24.09.2013
+% * Added fast pan mode, for fast navigation when showing large XY images (|Toolbar->Fast pan mode|)
+% * Fixed in the |Menu->Selection->Mask| and |Mask->Selection|
+%% 0.9901 18.09.2013
+% * Added ultimate erosion
+% * Implementated automatic check for updates
+% * Fixed modification of ROI for large images
+%
+%
+% *Back to* <im_browser_product_page.html *Index*>
+
+##### SOURCE END #####
+--></body></html>

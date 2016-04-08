@@ -1,0 +1,197 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Edge Enhancing Coherence Filter in the Image Filters Panel</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-08"><meta name="DC.source" content="ug_panel_filters_coherence.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Edge Enhancing Coherence Filter in the Image Filters Panel</h1><!--introduction--><p>Perform Anisotropic Non-Linear Diffusion filtering on a 2D gray/color or 3D image stack. Anisotropic Non-Linear Diffusion filtering should reduce the noise while preserving the region edges, and also enhancing the edges by smoothing along them.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_image_filters.html"><b>Image Filters</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">Coherence Filter Toolbox description</a></li><li><a href="#3">Coherence Filter Parameters</a></li><li><a href="#4">Coherence Filter Usage</a></li><li><a href="#7">Coherence Filter References</a></li><li><a href="#8">Parallel processing</a></li></ul></div><p><img vspace="5" hspace="5" src="images\18_panel_AnDiff_filter.jpg" alt=""> </p><h2>Coherence Filter Toolbox description<a name="2"></a></h2><p><b>Image Edge Enhancing Coherence Filter</b> based on the <a href="http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox">Image Edge Enhancing Coherence Filter Toolbox</a> written by Dirk-Jan Kroon and Pascal Getreuer. This is one of the most advanced image enhancement methods available, and also contains HDCS (Hybrid Diffusion With Continuous Switch), from October 2009. The result looks like an artist painted the image, with clear brush strokes along the image edges and ridges.</p><p>The basis of the method used is the one introduced by Weickert.</p><div><ol><li>Calculate Hessian from every pixel of the Gaussian smoothed input image</li><li>Gaussian Smooth the Hessian, and calculate its eigenvectors and values (image edges give large eigenvalues, and the eigenvectors corresponding to those eigenvalues describes the direction of the edge)</li><li>The eigenvectors are used as diffusion tensor directions. The amplitude of the diffusion in those 3 directions is based on the eigen values and determined by Weickerts equation</li><li>A Finite Difference scheme is used to do the diffusion</li><li>Back to step 1, till certain diffusion time is reached</li></ol></div><p><b>Diffusion schemes:</b></p><p>There are several diffusion schemes available: standard, implicit, nonegative discretization, and also a rotation invariant scheme, and a novel diffusion scheme with new optimized derivatives.</p><h2>Coherence Filter Parameters<a name="3"></a></h2><p><b>Schemes</b>, available numerical diffusion schemes:</p><div><ul><li><b>'R'</b>, Rotation Invariant, Standard Discretization (implicit) 5x5 kernel;</li><li><b>'O'</b>, Optimized Derivative Kernels;</li><li><b>'I'</b>, Implicit Discretization (only works in 2D);</li><li><b>'S'</b>, Standard Discretization;</li><li><b>'N'</b>, Non-negativity Discretization.</li></ul></div><p><b>Eigenmode</b>, different equations to make a diffusion tensor:</p><div><ul><li><b>'0'</b>, Weickerts equation, <b>line</b> like kernel (similar to 3);</li><li><b>'1'</b>, Weickerts equation, <b>plane</b> like kernel;</li><li><b>'2'</b>, Edge enhancing diffusion (EED) (similar to 4);</li><li><b>'3'</b>, Coherence-enhancing diffusion (CED) (similar to 0);</li><li><b>'4'</b>, Hybrid Diffusion With Continuous Switch (HDCS) (similar to 2).</li></ul></div><p><b>Other parameters</b></p><div><ul><li><b>'T'</b>, The total diffusion time;</li><li><b>'dt'</b>, Diffusion time stepsize, in case of scheme H,R or I defaults to 1, in case of scheme S or N defaults to 0.15.;</li><li><b>'sigma'</b>, Sigma of gaussian smothing before calculation of the image Hessian;</li><li><b>'rho'</b>,Rho gives the sigma of the Gaussian smoothing of the Hessian;</li><li><b>'C'</b>,  amplitude of the diffusion smoothing in Weickert equation (Default 1e-10);</li><li><b>'m'</b>,  amplitude of the diffusion smoothing in Weickert equation (1);</li><li><b>'alpha'</b>,  amplitude of the diffusion smoothing in Weickert equation (0.001);</li><li><b>'lambda_e'</b>,  Default 0.02, planar structure contrast (CED, EED, HDCS modes);</li><li><b>'lambda_c'</b>,  Default 0.02, tube like structure contrast (CED, EED, HDCS modes);</li><li><b>'lambda_h'</b>,  Default 0.5 , threshold between structure and noise (CED, EED, HDCS modes);</li></ul></div><p><b>Effective combinations</b></p><div><ul><li>Scheme=N, eigenmode=2/4 or 1, T=5, dt=0.15, Sigma=5, rho=1</li><li>Scheme=O, eigenmode=1, T=5, dt=1, Sigma=5, rho=1</li><li>Scheme=R, eigenmode=2/4, T=5, dt=1, Sigma=5, rho=1</li><li>Scheme=S, eigenmode=2 or 4, T=5, dt=0.15, Sigma=5, rho=1</li></ul></div><h2>Coherence Filter Usage<a name="4"></a></h2><p>Anisotropic Diffusion is fairly slow process and search of best parameters may be hard. In order to speed up the process there is a possibility to perform a <tt>Test run</tt> to define the best parameters.</p><p><b>Test run</b></p><div><ul><li>Zoom in into the area of interest with a mouse wheel.</li><li>Press the <b>Test run</b> button.</li><li>Check the region that will be used for the test filtering.</li></ul></div><p><img vspace="5" hspace="5" src="images\18_panel_AnDiff_size.jpg" alt=""> </p><div><ul><li>Define the variation of Parameters (<tt>T, dt, sigma, rho, C, m, alpha, lambda_e, lambda_c, lambda_h</tt>) using standard Matlab notation (start:step:end). By default the script will save middle slice of the selected dataset to a file, however this may be changed in the <tt>Save frame numbers</tt> editbox. The filter parameters for each image are fused into the saved image and will also be added into the <tt>ImageDescription</tt> field.</li></ul></div><p><img vspace="5" hspace="5" src="images\18_panel_AnDiff_Options.jpg" alt=""> </p><div><ul><li>Press the <b>Test Run</b> button.</li><li>Define desired <b>Scheme</b> and <b>Eigenmode</b> values.</li></ul></div><p><img vspace="5" hspace="5" src="images\18_panel_AnDiff_Schemes.jpg" alt=""> </p><div><ul><li>Give a template for saving</li><li>Stay patient...</li></ul></div><h2>Coherence Filter References<a name="7"></a></h2><div><ul><li>Kroon and Slump, "Coherence Filtering to Enhance the Mandibular Canal in Cone-Beam CT Data", <i>IEEE-EMBS Benelux Chapter Symposium</i>, <b>2009</b>.</li><li>Kroon <i>et al</i>, "Optimized Anisotropic Rotational Invariant Diffusion Scheme on Cone-Beam CT", <i>MICCAI</i>, <b>2010</b></li><li>Weickert, "A Scheme for Coherence-Enhancing Diffusion Filtering with Optimized Rotation Invariance"</li><li>Mendrik <i>et al</i>, "Noise Reduction in Computed Tomography Scans Using 3-D Anisotropic Hybrid Diffusion With Continuous Switch", October 2009</li><li>Weickert, "Anisotropic Diffusion in Image Processing", Thesis 1996</li><li>Laura Fritz, "Diffusion-Based Applications for Interactive Medical Image Segmentation"</li><li>Siham Tabik et al, "Multiprocessing of Anisotropic Nonlinear Diffusion for filtering 3D image"</li></ul></div><h2>Parallel processing<a name="8"></a></h2><p>There is a small optimization for parallel processing for final runs in 2D mode. The improvement factor is about x3-5 times for 8 cores. Parallel processing should be enabled by pressing the <tt>Turn on parallel processing</tt> button in the im_browser <a href="ug_gui_toolbar.html">toolbar</a> .</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a> <tt><b>--&gt;</b></tt> <a href="ug_panel_image_filters.html"><b>Image Filters</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Edge Enhancing Coherence Filter in the Image Filters Panel
+% Perform Anisotropic Non-Linear Diffusion filtering on a 2D gray/color or
+% 3D image stack. Anisotropic Non-Linear Diffusion filtering should reduce the noise while 
+% preserving the region edges, and also enhancing the edges by smoothing along them.
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| 
+% <ug_gui_panels.html *Panels*> |*REPLACE_WITH_DASH_DASH>*| <ug_panel_image_filters.html *Image Filters*>
+%% 
+% 
+% <<images\18_panel_AnDiff_filter.jpg>>
+% 
+%% Coherence Filter Toolbox description
+%
+% *Image Edge Enhancing Coherence Filter* based on the <http://www.mathworks.com/matlabcentral/fileexchange/25449-image-edge-enhancing-coherence-filter-toolbox
+% Image Edge Enhancing Coherence Filter Toolbox> written by Dirk-Jan Kroon and Pascal Getreuer.
+% This is one of the most advanced image enhancement methods available, 
+% and also contains HDCS (Hybrid Diffusion With Continuous Switch), from October 2009. 
+% The result looks like an artist painted the image, with clear brush strokes 
+% along the image edges and ridges.
+% 
+% The basis of the method used is the one introduced by Weickert. 
+% 
+% # Calculate Hessian from every pixel of the Gaussian smoothed input image 
+% # Gaussian Smooth the Hessian, and calculate its eigenvectors and values (image edges give large eigenvalues, and the eigenvectors corresponding to those eigenvalues describes the direction of the edge) 
+% # The eigenvectors are used as diffusion tensor directions. The amplitude of the diffusion in those 3 directions is based on the eigen values and determined by Weickerts equation
+% # A Finite Difference scheme is used to do the diffusion 
+% # Back to step 1, till certain diffusion time is reached
+%
+% *Diffusion schemes:* 
+%
+% There are several diffusion schemes available: standard, implicit, 
+% nonegative discretization, and also a rotation invariant scheme, and a 
+% novel diffusion scheme with new optimized derivatives.
+%
+%% Coherence Filter Parameters
+% 
+% *Schemes*, available numerical diffusion schemes:
+% 
+% * *'R'*, Rotation Invariant, Standard Discretization (implicit) 5x5 kernel;
+% * *'O'*, Optimized Derivative Kernels;
+% * *'I'*, Implicit Discretization (only works in 2D);
+% * *'S'*, Standard Discretization;
+% * *'N'*, Non-negativity Discretization.
+% 
+% *Eigenmode*, different equations to make a diffusion tensor:
+%
+% * *'0'*, Weickerts equation, *line* like kernel (similar to 3);
+% * *'1'*, Weickerts equation, *plane* like kernel;
+% * *'2'*, Edge enhancing diffusion (EED) (similar to 4);
+% * *'3'*, Coherence-enhancing diffusion (CED) (similar to 0);
+% * *'4'*, Hybrid Diffusion With Continuous Switch (HDCS) (similar to 2).
+% 
+% *Other parameters*
+% 
+% * *'T'*, The total diffusion time;
+% * *'dt'*, Diffusion time stepsize, in case of scheme H,R or I defaults to 1, 
+% in case of scheme S or N defaults to 0.15.;
+% * *'sigma'*, Sigma of gaussian smothing before calculation of the image Hessian;
+% * *'rho'*,Rho gives the sigma of the Gaussian smoothing of the Hessian;
+% * *'C'*,  amplitude of the diffusion smoothing in Weickert equation (Default 1e-10);
+% * *'m'*,  amplitude of the diffusion smoothing in Weickert equation (1);
+% * *'alpha'*,  amplitude of the diffusion smoothing in Weickert equation (0.001);
+% * *'lambda_e'*,  Default 0.02, planar structure contrast (CED, EED, HDCS modes);
+% * *'lambda_c'*,  Default 0.02, tube like structure contrast (CED, EED, HDCS modes);
+% * *'lambda_h'*,  Default 0.5 , threshold between structure and noise (CED, EED, HDCS modes);
+%
+% *Effective combinations*
+%
+% * Scheme=N, eigenmode=2/4 or 1, T=5, dt=0.15, Sigma=5, rho=1
+% * Scheme=O, eigenmode=1, T=5, dt=1, Sigma=5, rho=1
+% * Scheme=R, eigenmode=2/4, T=5, dt=1, Sigma=5, rho=1
+% * Scheme=S, eigenmode=2 or 4, T=5, dt=0.15, Sigma=5, rho=1
+%
+%% Coherence Filter Usage
+% Anisotropic Diffusion is fairly slow process and search of best
+% parameters may be hard. In order to speed up the process there is a
+% possibility to perform a |Test run| to define the best parameters.
+% 
+% *Test run*
+%
+% * Zoom in into the area of interest with a mouse wheel. 
+% * Press the *Test run* button.
+% * Check the region that will be used for the test filtering.
+% 
+% <<images\18_panel_AnDiff_size.jpg>>
+% 
+% * Define the variation of Parameters (|T, dt, sigma, rho, C, m, alpha, 
+% lambda_e, lambda_c, lambda_h|) using standard Matlab notation
+% (start:step:end). By default the script will save middle slice of the
+% selected dataset to a file, however this may be changed in the |Save
+% frame numbers| editbox. The filter parameters for each image are fused into 
+% the saved image and will also be added into the |ImageDescription| field.
+%%
+% 
+% <<images\18_panel_AnDiff_Options.jpg>>
+% 
+% * Press the *Test Run* button.
+% * Define desired *Scheme* and *Eigenmode* values.
+%%
+% 
+% <<images\18_panel_AnDiff_Schemes.jpg>>
+% 
+% * Give a template for saving
+% * Stay patient...
+% 
+%% Coherence Filter References
+% 
+% * Kroon and Slump, "Coherence Filtering to Enhance the Mandibular Canal in Cone-Beam CT Data", _IEEE-EMBS Benelux Chapter Symposium_, *2009*. 
+% * Kroon _et al_, "Optimized Anisotropic Rotational Invariant Diffusion Scheme on Cone-Beam CT", _MICCAI_, *2010*
+% * Weickert, "A Scheme for Coherence-Enhancing Diffusion Filtering with Optimized Rotation Invariance" 
+% * Mendrik _et al_, "Noise Reduction in Computed Tomography Scans Using 3-D Anisotropic Hybrid Diffusion With Continuous Switch", October 2009 
+% * Weickert, "Anisotropic Diffusion in Image Processing", Thesis 1996 
+% * Laura Fritz, "Diffusion-Based Applications for Interactive Medical Image Segmentation" 
+% * Siham Tabik et al, "Multiprocessing of Anisotropic Nonlinear Diffusion for filtering 3D image"
+%
+%% Parallel processing
+% There is a small optimization for parallel processing for final runs in 2D mode. 
+% The improvement factor is about x3-5 times for 8 cores. 
+% Parallel processing should be enabled by pressing the |Turn on parallel processing| button
+% in the im_browser <ug_gui_toolbar.html toolbar> .
+%
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| 
+% <ug_gui_panels.html *Panels*> |*REPLACE_WITH_DASH_DASH>*| <ug_panel_image_filters.html *Image Filters*>
+##### SOURCE END #####
+--></body></html>

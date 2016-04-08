@@ -1,0 +1,136 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Path Panel</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-04-08"><meta name="DC.source" content="ug_panel_path.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Path Panel</h1><!--introduction--><p>This panel is used to provide the path to the image dataset.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">1. Logical drive combo box.</a></li><li><a href="#3">2. '...' button</a></li><li><a href="#4">3. Current path edit box</a></li><li><a href="#5">4. Pixel Info field</a></li><li><a href="#6">5. Log button</a></li><li><a href="#7">6. Info button</a></li><li><a href="#8">7. Zoom Edit box</a></li><li><a href="#9">8. Help</a></li></ul></div><p><img vspace="5" hspace="5" src="images\04_panel_path.jpg" alt=""> </p><h2>1. Logical drive combo box.<a name="2"></a></h2><p>This combo box is used for fast selection of logical drives. It is initialized during the start of <tt>im_browser</tt> and will show only those logical drives that were available during the initialization.</p><h2>2. '...' button<a name="3"></a></h2><p>This button is one of the ways to select a folder. It uses <tt>uigetdir</tt> Matlab built-in function.</p><h2>3. Current path edit box<a name="4"></a></h2><p>Current path edit box shows the path of the current folder. The contents of the folder is shown in the <a href="ug_panel_dir.html"><tt>Directory Contents panel</tt></a>.</p><h2>4. Pixel Info field<a name="5"></a></h2><p>Pixel info field provides information about pixel location and intensity of pixels under the mouse pointer in <a href="ug_panel_im_view.html">the Image View panel</a> . The format is: <tt>X, Y (Red channel:Green channel:Blue channel)</tt>.</p><p>The right mouse click starts a context menu, that can be used for jumping to any point of the dataset.</p><h2>5. Log button<a name="6"></a></h2><p>Shows the log of actions that were performed with the currently opened dataset. The action log is stored in the <tt>ImageDescription</tt> field in the TIF files. Each entry in the log list has a date/time stamp.</p><p><img vspace="5" hspace="5" src="images\04a_actions_log.jpg" alt=""> </p><p>There are number of actions that are possible to do with the action log:</p><div><ul><li><b>Print to Matlab</b> - prints the action log in the Matlab command window</li><li><b>Copy to Clipboard</b> - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.</li><li><b>Insert after</b> - inserts a new entry after the one which is highlighted</li><li><b>Modify</b> - modifies the highlighted entry</li><li><b>Delete</b> - deletes the highlighted entry</li><li><b>Update</b> - the log is not updated automatically, so press this button to update it manually</li></ul></div><h2>6. Info button<a name="7"></a></h2><p>The <tt>Info</tt> button opens a window with a table of parameters of the opened dataset. It is possible to modify the parameters using the buttons and the right mouse click popup menu.</p><p>The XY image resolution is stored in the <tt>XResolution</tt> and <tt>YResolution</tt> fields, and in the BoundingBox info in the <tt>ImageDescription</tt> field.</p><p><img vspace="5" hspace="5" src="images\05_image_description.jpg" alt=""> </p><h2>7. Zoom Edit box<a name="8"></a></h2><p>Zoom Edit box, allows selection of the desired zoom level.</p><h2>8. Help<a name="9"></a></h2><p>Access to this help page</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Path Panel
+% This panel is used to provide the path to the image dataset.
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+%%
+%%
+% 
+% <<images\04_panel_path.jpg>>
+% 
+%% 1. Logical drive combo box.
+% This combo box is used for fast selection of logical drives. It is initialized during the start of 
+% |im_browser| and will show only those logical drives that were available during the initialization.
+%% 2. '...' button
+% This button is one of the ways to select a folder. It uses |uigetdir| Matlab built-in function.
+%% 3. Current path edit box
+% Current path edit box shows the path of the current folder. The contents of the folder is
+% shown in the <ug_panel_dir.html |Directory Contents panel|>. 
+%% 4. Pixel Info field
+% Pixel info field provides information about pixel location and intensity of pixels under the
+% mouse pointer in <ug_panel_im_view.html the Image View panel> . The format is: |X, Y (Red channel:Green channel:Blue
+% channel)|. 
+% 
+% The right mouse click starts a context menu, that can be used for jumping
+% to any point of the dataset.
+%
+%% 5. Log button
+% Shows the log of actions that were performed with the currently opened dataset. The
+% action log is stored in the |ImageDescription| field in the TIF files. Each entry in the log list has a date/time stamp.
+%
+% <<images\04a_actions_log.jpg>>
+%
+% There are number of actions that are possible to do with
+% the action log:
+% 
+% * *Print to Matlab* - prints the action log in the Matlab command window
+% * *Copy to Clipboard* - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.
+% * *Insert after* - inserts a new entry after the one which is highlighted
+% * *Modify* - modifies the highlighted entry
+% * *Delete* - deletes the highlighted entry
+% * *Update* - the log is not updated automatically, so press this button to update it manually
+% 
+%% 6. Info button
+% The |Info| button opens a window with a table of parameters of the opened dataset. It is possible to modify the parameters
+% using the buttons and the right mouse click popup menu.
+%
+% The XY image resolution is stored in the |XResolution| and |YResolution|
+% fields, and in the BoundingBox info in the |ImageDescription| field.
+% 
+% <<images\05_image_description.jpg>>
+% 
+%
+%% 7. Zoom Edit box
+% Zoom Edit box, allows selection of the desired zoom level.
+%
+%% 8. Help
+% Access to this help page
+%
+%
+%
+% *Back to* <im_browser_product_page.html *Index*> |*REPLACE_WITH_DASH_DASH>*| <im_browser_user_guide.html *User Guide*> |*REPLACE_WITH_DASH_DASH>*| <ug_gui_panels.html *Panels*>
+
+
+
+##### SOURCE END #####
+--></body></html>
