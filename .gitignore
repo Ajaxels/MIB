@@ -1,3 +1,14 @@
+# MIB files
+*.html
+*.fig
+*.mat
+*.mex* 
+*.jar
+*.class
+*.java
+*.dll
+
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
