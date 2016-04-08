@@ -1,0 +1,125 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Tubes vs Sheets analysis</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-09-15"><meta name="DC.source" content="ib_TubesVsSheets_help.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Tubes vs Sheets analysis</h1><!--introduction--><p>This plugin calculates ratio between tubes and sheets from the masked areas.</p><p>The results of the plugin may be seen on the screen or exported to the main Matlab workspace or to Excel.</p><p><img vspace="5" hspace="5" src="ib_TubesVsSheets.jpg" alt=""> </p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">How to Use</a></li></ul></div><h2>How to Use<a name="1"></a></h2><div><ul><li>1. Load datasets, 2D or 3D.</li></ul></div><p><img vspace="5" hspace="5" src="01_open_dataset.jpg" alt=""> </p><div><ul><li>2. Set the pixel size: <tt>Menu-&gt;Dataset-&gt;Parameters</tt>:</li></ul></div><p><img vspace="5" hspace="5" src="02_set_parameters.jpg" alt=""> </p><div><ul><li>3.Segment objects of interest and assign them to the <tt>Mask</tt> layer. For example, the shown dataset was segmented using the random forest classifier: <tt>Menu-&gt;Tools-&gt;Random Forest Classifier</tt></li></ul></div><p><img vspace="5" hspace="5" src="03_segment_mask.jpg" alt=""> </p><div><ul><li>4. Use the ROI tools to select area for the analysis [ <i>optional</i> ].</li></ul></div><p><img vspace="5" hspace="5" src="04_define_roi.jpg" alt=""> </p><div><ul><li>5. Start <tt>ib_TubesVsSheets</tt> from <tt>Menu-&gt;Plugins</tt></li><li>6. Define in pixels width of a typical tube profile and the way to report results.</li><li>7. Press the <b>Calculate</b> button. The function will first erode image to remove tubular components, that is followed with dilation to restore the sheets. The difference between the original mask and the generated sheets defines the tubular areas. The image below shows the idea of such analysis, the value for the width of a typical tube profile should be adjusted</li></ul></div><p><img vspace="5" hspace="5" src="05_workflow.jpg" alt=""> </p><div><ul><li>8. The results are shown as a model with 2 materials: sheets and tubes.</li></ul></div><p><img vspace="5" hspace="5" src="06_results.jpg" alt=""> </p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Tubes vs Sheets analysis 
+% This plugin calculates ratio between tubes and sheets from the masked
+% areas.
+% 
+% The results of the plugin may be seen on the screen or exported to the main Matlab workspace or to Excel.
+%
+% 
+% <<ib_TubesVsSheets.jpg>>
+% 
+%% How to Use
+%
+% * 1. Load datasets, 2D or 3D. 
+%
+% 
+% <<01_open_dataset.jpg>>
+% 
+% * 2. Set the pixel size: |Menu->Dataset->Parameters|:
+%
+% 
+% <<02_set_parameters.jpg>>
+% 
+% * 3.Segment objects of interest and assign them to the |Mask| layer. For
+% example, the shown dataset was segmented using the random forest
+% classifier: |Menu->Tools->Random Forest Classifier|
+%
+% 
+% <<03_segment_mask.jpg>>
+% 
+% * 4. Use the ROI tools to select area for the analysis [ _optional_ ].
+%
+%%
+% 
+% <<04_define_roi.jpg>>
+% 
+% * 5. Start |ib_TubesVsSheets| from |Menu->Plugins|
+% * 6. Define in pixels width of a typical tube profile and the way to report results.
+% * 7. Press the *Calculate* button. The function will first erode image to
+% remove tubular components, that is followed with dilation to restore the
+% sheets. The difference between the original mask and the generated sheets
+% defines the tubular areas. The image below shows the idea of such
+% analysis, the value for the width of a typical tube profile should be
+% adjusted
+%%
+% 
+% <<05_workflow.jpg>>
+% 
+% * 8. The results are shown as a model with 2 materials: sheets and tubes.
+% 
+%%
+% 
+% <<06_results.jpg>>
+% 
+
+
+##### SOURCE END #####
+--></body></html>

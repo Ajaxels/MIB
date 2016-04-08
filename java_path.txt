@@ -1,0 +1,4 @@
+c:\Tools\Science\Fiji.app\
+c:\Matlab\Scripts\OMERO_5\libs
+/Applications/Fiji.app/
+/Users/ibelev/Documents/MATLAB/OMERO_5/libs
