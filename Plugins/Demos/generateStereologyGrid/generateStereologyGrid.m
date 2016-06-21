@@ -28,7 +28,7 @@ if handles.Img{handles.Id}.I.maskExist == 1
     button = questdlg(sprintf('!!! Warning !!!\n\nThe existing mask layer will be replaced with the grid!'),'Generate grid','Continue','Cancel','Cancel');
     if strcmp(button, 'Cancel'); return; end;
 end
-answer = mib_inputdlg(NaN, 'Please enter a step for the grid in pixels','Grid step','50');
+answer = mib_inputdlg(handles, 'Please enter a step for the grid in pixels','Grid step','50');
 if size(answer) == 0; return; end;
 gridStep = str2double(answer{1});
 

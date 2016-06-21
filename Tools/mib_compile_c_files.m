@@ -6,6 +6,10 @@ wb = waitbar(0, sprintf('Compiling Coherence Filter\nPlease wait...'), 'Name', '
 % get MIB directory
 mibDir = fileparts(which('im_browser'));
 
+currDir = fullfile(mibDir, 'GuiTools','volren');
+cd(currDir);
+mex affine_transform_2d_double.c image_interpolation.c -v;
+
 currDir = fullfile(mibDir, 'ImageFilters','Coherence_filter','functions');
 cd(currDir);
 mex('derivatives.c' ,'-v');
@@ -67,6 +71,7 @@ cd(currDir);
 mex('RegionGrowing_mex.cpp' ,'-v');
 waitbar(1, wb);
 delete(wb);
+
 nrrdPath = fullfile(mibDir, 'ImportExportTools','nrrd','compilethis.m');
 forestPath1 = fullfile(mibDir, 'ImageFilters','RandomForest','RF_Class_C');
 forestPath2 = fullfile(mibDir, 'ImageFilters','RandomForest','RF_Reg_C');
@@ -79,6 +84,3 @@ disp(nrrdPath)
 disp('2) Random Forest Classifier for Linux')
 disp(forestPath1)
 disp(forestPath2)
-
-%%
-delete(wb);

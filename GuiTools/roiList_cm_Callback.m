@@ -35,7 +35,7 @@ index = handles.Img{handles.Id}.I.hROI.findIndexByLabel(currentVal);
 
 switch parameter
     case 'rename'  % set brightness on the screen to be the same as in the image
-        answer = mib_inputdlg(NaN, sprintf('Please add a new name for selected ROI:'), 'Rename ROI', currentVal);
+        answer = mib_inputdlg(handles, sprintf('Please add a new name for selected ROI:'), 'Rename ROI', currentVal);
         if isempty(answer); return; end;
         handles.Img{handles.Id}.I.hROI.Data(index).label = answer;
         
@@ -51,13 +51,17 @@ switch parameter
     case 'edit'
         %axes(handles.imageAxes);
         %drawnow;
-        disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
-        handles.preferences.disableSelection = 'yes'; % disable selection
-        guidata(handles.im_browser, handles);   % store handles
+        
+        %disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
+        %handles.preferences.disableSelection = 'yes'; % disable selection
+        %guidata(handles.im_browser, handles);   % store handles
+        brushSize = get(handles.segmSpotSizeEdit,'string');
+        set(handles.segmSpotSizeEdit,'string', '0');
         set(handles.im_browser, 'WindowKeyPressFcn', []); 
         unFocus(hObject);
         handles.Img{handles.Id}.I.hROI.addROI(handles, [], index);
-        handles.preferences.disableSelection = disableSelectionSwitch;
+        %handles.preferences.disableSelection = disableSelectionSwitch;
+        set(handles.segmSpotSizeEdit,'string', brushSize);
         set(handles.im_browser, 'WindowKeyPressFcn', {@im_browser_WindowKeyPressFcn, handles}); 
     case 'remove'
         roiRemoveBtn_Callback(handles.roiRemoveBtn, eventdata, handles);

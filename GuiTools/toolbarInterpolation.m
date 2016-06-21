@@ -54,11 +54,7 @@ else
     set(handles.menuSelectionInterpolate, 'label', 'Interpolate as Shape (I)');
 end
 
-if isdeployed
-    img = load(fullfile(pwd, 'Resources', filename), '-mat');  % load icon
-else
-    img = load(fullfile(fileparts(which('im_browser')), 'Resources', filename), '-mat');  % load icon
-end
+img = load(fullfile(handles.pathMIB, 'Resources', filename), '-mat');  % load icon
 set(handles.toolbarInterpolation,'CData', img.image);
 guidata(handles.im_browser, handles);
 end

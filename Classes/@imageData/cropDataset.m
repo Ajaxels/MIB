@@ -79,7 +79,6 @@ if isKey(obj.img_info, 'SliceName')
     end
 end
 
-obj.clearSelection();
 xyzShift = [(cropF(1)-1)*obj.pixSize.x (cropF(2)-1)*obj.pixSize.y (cropF(5)-1)*obj.pixSize.z];
 % update BoundingBox Coordinates
 obj.updateBoundingBox(NaN, xyzShift);

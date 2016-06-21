@@ -68,9 +68,9 @@ handles.output = hObject;
 handles.h = varargin{1};
 
 if isdeployed
-    img = imread(fullfile(pwd, 'Resources', 'mib_about.jpg'));  % load splash screen
+    img = imread(fullfile(handles.h.pathMIB, 'Resources', 'mib_about.jpg'));  % load splash screen
 else
-    img = imread(fullfile(fileparts(which('im_browser')), 'Resources', 'mib_about.jpg'));  % load splash screen
+    img = imread(fullfile(handles.h.pathMIB, 'Resources', 'mib_about.jpg'));  % load splash screen
 end
 
 addTextOptions.color = [1 1 0];

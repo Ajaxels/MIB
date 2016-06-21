@@ -3,6 +3,23 @@
 %
 % <im_browser_product_page.html Back to Index>
 %
+%
+%% 1.20 20.06.2016 
+% * Added Volume Rendering for small datasets (Toolbar->Volume rendering button)
+% * Added the Crop To mode to the Crop tool (Menu->Dataset->Crop dataset...)
+% * Added split color channels mode for the snapshots
+% * Added possibility to copy ROI areas to the Selection layer (ROI
+% Panel->the ROI to Selection button) (ADD VIDEO)
+% * Added rotation of a single color channel for square-shaped images
+% (Menu->Image->Color channels->Rotate channel...) (ADD VIDEO)
+% * Updated Image Description dialog: Path Panel->Info
+% * Updated the Chop/Rechop modes
+% * Updated Bio-Formats library to 5.1.10
+% * Fixed version check for MacOS Matlab R2012a
+% * Fixed a bug during object unselection in the Object picker tool
+% * Bug fixes
+% * |java_path.txt| was renamed to |mib_java_path.txt| and placed to the first folder on the search path (usually |[username]\Documents\MATLAB|; path to this file will be displayed in the command prompt during start of MIB)
+%
 %% 1.10 07.04.2016 (update for 4D datasets)
 %
 % * Modification of MIB to work with 4D data (H,W,C,Z,T)

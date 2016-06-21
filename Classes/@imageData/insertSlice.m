@@ -25,14 +25,16 @@ function handles = insertSlice(obj, img, handles, insertPosition, img_info)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 13.06.2016, added selection of background color
 
 if nargin < 5; img_info = containers.Map; end;
 if nargin < 4; insertPosition = NaN; end;
 
+bgColor = 0;
 if size(obj.img,1) ~= size(img, 1) || size(obj.img,2) ~= size(img, 2) || size(obj.img,3) ~= size(img, 3)
-    button = questdlg(sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?'),'Dimensions mismatch!','Continue','Cancel','Continue');
-    if strcmp(button,'Cancel'); handles = NaN; return; end;
+    answer = mib_inputdlg(handles, sprintf('Warning!\nSome of the image dimensions mismatch.\nContinue anyway?\n\nBackground color (a single number between: [0-%d])', intmax(class(img))),'Wrong dimensions','0');
+    if isempty(answer); handles = NaN; return; end;
+    bgColor = str2double(answer{1});
 end
 if isnan(insertPosition) || insertPosition > size(obj.img,4)    % define start position at the end of the opened dataset
     insertPosition = size(obj.img,4)+1;
@@ -56,7 +58,11 @@ cMax = max([D1_c D2_c]);
 xMax = max([D1_x D2_x]);
 yMax = max([D1_y D2_y]);
 
-imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z], class(obj.img));
+if bgColor ~= 0
+    imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z], class(obj.img)) + bgColor;
+else
+    imgOut = zeros([yMax, xMax, cMax, D1_z+D2_z], class(obj.img));
+end
 waitbar(.05, wb);
 if insertPosition == 1  % insert dataset in the beginning of the opened dataset
     %Z1_part1 = [size(img,4)+1 size(img,4)+1];

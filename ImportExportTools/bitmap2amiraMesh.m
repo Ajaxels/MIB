@@ -42,6 +42,11 @@ end
 if ~isfield(options, 'overwrite'); options.overwrite = 0; end;
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1; end;
 
+% overwrite lutColors in the img_info
+if isfield(options, 'colors')
+    img_info('lutColors') = options.colors;
+end
+
 if options.overwrite == 0
     if exist(filename,'file') == 2
         choice = questdlg('File exists! Overwrite?', 'Warning!', 'Continue','Cancel','No thank you');
@@ -79,23 +84,38 @@ if isKey(img_info,'SliceName'); remove(img_info,'SliceName'); end;  % remove sli
 fields = keys(img_info);
 fprintf(fid,'\tim_browser {\n');
 for fieldIdx = 1:numel(fields)
+    % modify keys names, i.e. remove spaces and other
+    % special characters, to be compatible with AmiraMesh
+    % format
+    currKey = regexprep(fields{fieldIdx},'[_%! ()[]{}/|\\#?.,]', '_');
+    currKey = strrep(currKey,'Â','A');
+    currKey = strrep(currKey,'µ','u');
+        
     if isstruct(img_info(fields{fieldIdx}))
         extraFields = fieldnames(img_info(fields{fieldIdx}));
         for extraFieldId = 1:numel(extraFields)
-            if isstruct(img_info(fields{fieldIdx}).(extraFields(extraFieldId)))
-                fprintf(fid, '\t\t%s_%s skipped,\n',fields{fieldIdx}, extraFields{extraFieldId});
+            currKey2 = regexprep(extraFields{extraFieldId},'[_%! ()[]{}/|\\#?.,]', '_');
+            currKey2 = strrep(currKey2,'Â','A');
+            currKey2 = strrep(currKey2,'µ','u');
+        
+            if isstruct(img_info(fields{fieldIdx}).(extraFields{extraFieldId}))
+                fprintf(fid, '\t\t%s_%s skipped,\n',currKey, currKey2);
             elseif ~ischar(img_info(fields{fieldIdx}).(extraFields(extraFieldId)))
-                fprintf(fid, '\t\t%s_%s %s,\n',fields{fieldIdx}, extraFields{extraFieldId}, num2str(img_info(fields{fieldIdx}).(extraFields(extraFieldId))));
+                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, num2str(img_info(fields{fieldIdx}).(extraFields(extraFieldId))));
             else
-                fprintf(fid, '\t\t%s_%s %s,\n',fields{fieldIdx}, extraFields{extraFieldId}, img_info(fields{fieldIdx}).(extraFields(extraFieldId)));
+                fprintf(fid, '\t\t%s_%s %s,\n',currKey, currKey2, img_info(fields{fieldIdx}).(extraFields(extraFieldId)));
             end
         end
     elseif iscell(img_info(fields{fieldIdx}))
         continue;
     elseif ~ischar(img_info(fields{fieldIdx}))
-        fprintf(fid, '\t\t%s %s,\n',fields{fieldIdx} ,num2str(img_info(fields{fieldIdx})));
+        if numel(img_info(fields{fieldIdx})) == 1
+            fprintf(fid, '\t\t%s %s,\n',currKey ,num2str(img_info(fields{fieldIdx})));    
+        else
+            fprintf(fid, '\t\t%s %s,\n',currKey ,sprintf('"%s"', mat2str(img_info(fields{fieldIdx}))));    
+        end
     else
-        fprintf(fid, '\t\t%s "%s",\n',fields{fieldIdx} ,img_info(fields{fieldIdx}));
+        fprintf(fid, '\t\t%s "%s",\n',currKey ,img_info(fields{fieldIdx}));
     end
 end
 fprintf(fid,'\t}\n');

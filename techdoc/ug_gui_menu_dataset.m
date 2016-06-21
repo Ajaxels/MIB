@@ -49,6 +49,10 @@
 % |Manual| mode. It is also possible to do cropping based on the selected
 % ROI. Use the <ug_panel_roi.html ROI panel> to make them.
 %
+% The dataset can be just cropped (the |Crop| button) or copied 
+% to another buffer and cropped (the |Crop to| button). The multiple buffer buttons buttons located at
+% the top of the <ug_panel_dir.html Directory Contents panel>.
+%
 % The cropped datasets can be placed back to the original dataset using the
 % _Fuse into existing_ mode of the _Chop image tool_ available at
 % |Menu->File->Chop images...->Import...|. <ug_gui_menu_file_chop.html See more here.>

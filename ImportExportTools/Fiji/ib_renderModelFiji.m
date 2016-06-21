@@ -50,7 +50,7 @@ end;
 
 prompt = {'Reduce the volume down to, width pixels [no volume reduction when 0]?'};
 %answer = inputdlg(prompt, 'Parameters',1,{'512'});
-answer = mib_inputdlg(NaN,prompt, 'Parameters','512');
+answer = mib_inputdlg(NaN, prompt, 'Parameters','512');
 if isempty(answer); return;  end;
 
 wb = waitbar(0, 'Starting...','Name','Fiji rendering');

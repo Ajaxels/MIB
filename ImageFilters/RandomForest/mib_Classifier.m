@@ -356,52 +356,6 @@ set(handles.xSubareaEdit, 'String', sprintf('%d:%d', xMin, xMax));
 set(handles.ySubareaEdit, 'String', sprintf('%d:%d', yMin, yMax));
 end
 
-function imgOut = resizeVolume(img, newDims, method)
-% function imgOut = resizeVolume(img, newDims, method)
-% Function to resize the volume
-% Parameters:
-% img: original 3D volume [1:height, 1:width, 1:thickness]
-% newDims: a vector with new dimensions [height, width, z]
-% method: method to use: 'nearest', 'linear', 'bicubic'
-% Return values:
-% imgOut: resized 3D volume [1:newDims(1), 1:newDims(2), 1:newDims(3)]
-
-newH = newDims(1);
-newW = newDims(2);
-newZ = newDims(3);
-
-currH = size(img,1);
-currW = size(img,2);
-currZ = size(img,3);
-
-imgOut = zeros(newH, newW, newZ, class(img));
-
-% resize xy dimension
-if newW ~= currW || newH ~= currH
-    imgOut2 = zeros([newH, newW, currZ], class(img));
-    for zIndex = 1:currZ
-        imgOut2(:, :, zIndex) = imresize(img(:, :, zIndex), [newH newW], method);
-    end
-end
-if newZ ~= currZ
-    if exist('imgOut2','var') == 0
-        imgOut2 = img;
-    end;
-    if size(imgOut2, 1)*1.82 < size(imgOut2, 2)
-        for hIndex = 1:newH
-            imgOut(hIndex,:,:) = imresize(squeeze(imgOut2(hIndex, :, :)), [newW newZ], method);
-        end
-    else
-        for wIndex = 1:newW
-            imgOut(:,wIndex,:) = imresize(squeeze(imgOut2(:, wIndex, :)), [newH newZ], method);
-        end
-    end
-else
-    imgOut = imgOut2;
-end
-
-end
-
 function superpixelsBtn_Callback(hObject, eventdata, handles)
 handles = guidata(handles.mib_Classifier);
 
@@ -510,7 +464,12 @@ else        % calculate supervoxels
     % bin dataset
     if binVal(1) ~= 1 || binVal(2) ~= 1
         waitbar(.05, wb, sprintf('Binning the dataset\nPlease wait...'));
-        img = resizeVolume(img, [binHeight, binWidth, binThick], 'bicubic');
+        resizeOpt.height = binHeight;
+        resizeOpt.width = binWidth;
+        resizeOpt.depth = binThick;
+        resizeOpt.method = 'bicubic';
+        resizeOpt.algorithm = 'imresize';
+        img = mib_resize3d(img, [], resizeOpt);
     end
     
     if slicSuperpixelsRadio
@@ -587,7 +546,12 @@ binVal = handles.slic.properties(1).binVal;     %#ok<ST2NM> % vector to bin the 
 
 if get(handles.mode2dRadio, 'value') % show superpixels
     if binVal(1) ~= 1   % re-bin mask
-        L2 = resizeVolume(handles.slic.slic, [diff(getDataOptions.y)+1, diff(getDataOptions.x)+1, diff(getDataOptions.z)+1], 'nearest');
+        resizeOpt.height = diff(getDataOptions.y)+1;
+        resizeOpt.width = diff(getDataOptions.x)+1;
+        resizeOpt.depth = diff(getDataOptions.z)+1;
+        resizeOpt.method = 'nearest';
+        resizeOpt.algorithm = 'imresize';
+        L2 = mib_resize3d(handles.slic.slic, [], resizeOpt);
     else
         L2 = handles.slic.slic;
     end
@@ -597,7 +561,12 @@ if get(handles.mode2dRadio, 'value') % show superpixels
     handles.h.Img{handles.h.Id}.I.setData3D('selection', uint8(L2), NaN, 4, NaN, getDataOptions);   % set dataset
 else    % show supervoxels
     if binVal(1) ~= 1 || binVal(2) ~= 1
-        L2 = resizeVolume(handles.slic.slic, [diff(getDataOptions.y)+1, diff(getDataOptions.x)+1, diff(getDataOptions.z)+1], 'nearest');
+        resizeOpt.height = diff(getDataOptions.y)+1;
+        resizeOpt.width = diff(getDataOptions.x)+1;
+        resizeOpt.depth = diff(getDataOptions.z)+1;
+        resizeOpt.method = 'nearest';
+        resizeOpt.algorithm = 'imresize';
+        L2 = mib_resize3d(handles.slic.slic, [], resizeOpt);
     else
         L2 = handles.slic.slic;
     end
@@ -644,6 +613,9 @@ binThick = ceil((getDataOptions.z(2)-getDataOptions.z(1)+1)/binVal(2));
 
 getSliceOptions.x = getDataOptions.x;
 getSliceOptions.y = getDataOptions.y;
+
+indexOut = [];  % list of features to exclude, those that are NaN
+
 if get(handles.mode2dRadio, 'value') % calculate features for superpixels
     updateLoglist('======= Calculating features for superpixels... =======', handles);
     waitbar(0, wb, sprintf('Calculating features for superpixels\nPlease wait...'));
@@ -666,7 +638,7 @@ if get(handles.mode2dRadio, 'value') % calculate features for superpixels
         img = img - minVal;
         img = img*(255/double(max(max(max(img)))));
     
-        STATS = regionprops(handles.slic.slic(:,:,sliceNo), img, 'BoundingBox','MeanIntensity','MaxIntensity','MinIntensity','PixelValues','Centroid');
+        STATS = regionprops(handles.slic.slic(:,:,sliceNo), img, 'BoundingBox','MeanIntensity','MaxIntensity','MinIntensity','PixelValues','Centroid','PixelIdxList');
         % store bounding box
         bb = arrayfun(@(ind) STATS(ind).BoundingBox, 1:numel(STATS),'UniformOutput', 0);
         bb = reshape(cell2mat(bb), [4, numel(bb)])';
@@ -686,65 +658,158 @@ if get(handles.mode2dRadio, 'value') % calculate features for superpixels
         histVal = reshape(cell2mat(histVal), [10, numel(histVal)])';
         [FEATURES(sliceNo).fm(:,7:16)] = histVal;
         
-%         entropyImg = entropyfilt(img);
-%         STATS2 = regionprops(handles.slic.slic(:,:,sliceNo), entropyImg, 'MeanIntensity');
-%         FEATURES(sliceNo).fm(:,17) = [STATS2.MeanIntensity];
-%         
-%         L2 = imdilate(handles.slic.slic(:,:,sliceNo), ones([3,3], class(handles.slic.slic(:,:,sliceNo)))) > handles.slic.slic(:,:,sliceNo);
-%         currSlic = handles.slic.slic(:,:,sliceNo);
-%         for j=1:handles.slic.noPix(sliceNo)
-%             val = mean(img(currSlic==j & L2==1));
-%             if ~isnan(val)
-%                 FEATURES(sliceNo).fm(j,17) = val;
-%             else
-%                 FEATURES(sliceNo).fm(j,17) = 1;
-%             end
-%         end
+        %         entropyImg = entropyfilt(img);
+        %         STATS2 = regionprops(handles.slic.slic(:,:,sliceNo), entropyImg, 'MeanIntensity');
+        %         FEATURES(sliceNo).fm(:,17) = [STATS2.MeanIntensity];
+        %
+        %         L2 = imdilate(handles.slic.slic(:,:,sliceNo), ones([3,3], class(handles.slic.slic(:,:,sliceNo)))) > handles.slic.slic(:,:,sliceNo);
+        %         currSlic = handles.slic.slic(:,:,sliceNo);
+        %         for j=1:handles.slic.noPix(sliceNo)
+        %             val = mean(img(currSlic==j & L2==1));
+        %             if ~isnan(val)
+        %                 FEATURES(sliceNo).fm(j,17) = val;
+        %             else
+        %                 FEATURES(sliceNo).fm(j,17) = 1;
+        %             end
+        %         end
         
-        shift = 18;
-        gap = 0;    % regions are connected, no gap in between
-        Edges = imRAG(handles.slic.slic(:,:,sliceNo), gap);
-        Edges2 = fliplr(Edges);    % complement for both ways
-        Edges = [Edges; Edges2];
-        for idx = 1:numel(STATS)
-            uInd = Edges(Edges(:,1)==idx,2);
-            FEATURES(sliceNo).fm(idx,shift:shift+15) = mean(FEATURES(sliceNo).fm(uInd,1:16));
-            FEATURES(sliceNo).fm(idx,shift+16) = std(FEATURES(sliceNo).fm(uInd,1));
+        if 0
+            shift = 18;
+            gap = 0;    % regions are connected, no gap in between
+            Edges = imRAG(handles.slic.slic(:,:,sliceNo), gap);
+            Edges2 = fliplr(Edges);    % complement for both ways
+            Edges = [Edges; Edges2];
+            for idx = 1:numel(STATS)
+                uInd = Edges(Edges(:,1)==idx,2);
+                FEATURES(sliceNo).fm(idx,shift:shift+15) = mean(FEATURES(sliceNo).fm(uInd,1:16));
+                FEATURES(sliceNo).fm(idx,shift+16) = std(FEATURES(sliceNo).fm(uInd,1));
+            end
         end
         
-        %         if 0    % test to use information from bigger superpixels
-%             [slic2, noPixCurrent] = slicmex(img, ceil(handles.slic.noPix/10), handles.slic.properties.spCompact);
-%             % % remove superpixel with 0-index
-%             slic2 = slic2 + 1;
-%             slic2 = double(slic2);
-%             
-%             slic1 = handles.slic.slic(:,:,sliceNo);
-%             occuranceMatrix = zeros([handles.slic.noPix(sliceNo), noPixCurrent]);    % matrix of occurance of small superpixels in bigger superpixels
-%             for sPixId=1:noPixCurrent
-%                 sPixIndices = unique(slic1(slic2==sPixId));
-%                 occuranceMatrix(sPixIndices, sPixId) = histc(slic1(slic2==sPixId),sPixIndices);
+        % test of downsampling where each pixel is a superpixel
+        if 0
+            shift2 = size(FEATURES(sliceNo).fm, 2);
+            centVec = cat(1, STATS.Centroid);   % vector of centroids
+            
+            samplingRate = sqrt(handles.slic.properties.spSize/pi);     % get sampling rate for convertion to uniform points
+            [xq,yq] = meshgrid(1:samplingRate:size(img,2), 1:samplingRate:size(img,1));
+            slicImg = griddata(centVec(:,1),centVec(:,2), FEATURES(sliceNo).fm(:,1), xq, yq, 'nearest');    % FEATURES(sliceNo).fm(:,1) - mean intensity
+            slicImg = uint8(slicImg);
+            
+            % alternatively just resize image to size of the superpixels...
+            %slicImg = imresize(img, 1/samplingRate, 'bicubic');
+            
+            % % checks
+            % figure(15)
+            % mesh(xq,yq,slicImg);
+            % hold on
+            % plot3(centVec(:,1),centVec(:,2),meanInt,'o');
+            % imtool(slicImg);
+            
+            % calculate features
+            cs = 5; % context size
+            ms = 1; % membrane thickness
+            csHist = cs;
+            fmTemp  = membraneFeatures(slicImg, cs, ms, csHist);
+            % fmTemp - feature matrix [h, w, feature_id]
+            noExtraFeatures = size(fmTemp,3);
+            
+            for idx=1:size(centVec,1)
+                indX = ceil(centVec(idx,1)/samplingRate);
+                indY = ceil(centVec(idx,2)/samplingRate);
+                FEATURES(sliceNo).fm(idx,shift2+1:shift2+noExtraFeatures) = squeeze(fmTemp(indY, indX, :));
+            end
+            % find and remove NaNs
+            for idx=shift2+1:shift2+noExtraFeatures
+                if ~isempty(find(isnan(FEATURES(sliceNo).fm(:,idx))==1,1))
+                    indexOut = [indexOut idx];
+                end
+            end
+        end
+        
+        if 0
+            shift2 = size(FEATURES(sliceNo).fm, 2);
+            d_image = double(img);
+            f00=[1, 1, 1; 1, -8, 1; 1, 1, 1];
+            BETA=5; % to avoid that center pixture is equal to zero
+            ALPHA=3; % like a lens to magnify or shrink the difference between neighbors
+            
+            LOG=conv2(d_image, f00, 'same'); %convolve with f00
+            LOG_scaled=atan(ALPHA*LOG./(d_image+BETA)); %perform the tangent scaling
+            LOG_norm=255*(LOG_scaled-min(min(LOG_scaled)))/(max(max(LOG_scaled))-min(min(LOG_scaled)));
+            
+            for idx=1:numel(STATS)
+                FEATURES(sliceNo).fm(idx,shift2+1) = mean(LOG_norm(STATS(idx).PixelIdxList));
+            end
+        end
+        
+        % test of gabor filters
+        if 0
+            shift2 = size(FEATURES(sliceNo).fm, 2);
+            
+            wavelength = 4;
+            %orientation = [0 15 30 45 60 75 90];
+            orientation = 0:15:180;
+            gaborBank = gabor(wavelength,orientation);
+            noExtraFeatures = numel(orientation)*numel(wavelength);
+%           % opt 1            
+%             for idx = 1:numel(STATS)
+%                 bb = ceil(FEATURES(sliceNo).BoundingBox(1,:));
+%                 imgTemp = img(bb(2):bb(2)+bb(4)-1, bb(1):bb(1)+bb(3)-1);
+%                 imgTemp = imgaborfilt(imgTemp, gaborBank);
+%                 for idx2 = 1:noExtraFeatures
+%                     absGabor = abs(imgTemp(:,:,idx2));
+%                     FEATURES(sliceNo).fm(idx, shift2+idx2) = mean(mean((absGabor-mean(absGabor(:)))/std(absGabor(:))));
+%                 end
 %             end
-%             %[~, FEATURES(1).fm(:,17)] = max(occuranceMatrix,[],2);
-%             [~, occuranceIndex] = max(occuranceMatrix,[],2); % correlates number of each small supervoxel with number of a bigger one
-%             
-%             shift = 16;
-%             STATS = regionprops(slic2, img, 'MeanIntensity','PixelValues');
-%             % convert PixelValues to doubles
-%             STATS = arrayfun(@(s) setfield(s,'PixelValues',double(s.PixelValues)),STATS);
-%             
-%             FEATURES(sliceNo).fm(:,shift+1) = arrayfun(@(ind) STATS(occuranceIndex(ind)).MeanIntensity, 1:numel(occuranceIndex),'UniformOutput',1);
-%             tempVal = arrayfun(@(ind) var(STATS(ind).PixelValues), 1:numel(STATS),'UniformOutput',1);
-%             FEATURES(sliceNo).fm(:,shift+2)=arrayfun(@(ind) tempVal(occuranceIndex(ind)), 1:numel(occuranceIndex),'UniformOutput',1);
-%             
-%             histVal =  arrayfun(@(ind) hist(STATS(ind).PixelValues, [0:26:255]), 1:numel(STATS),'UniformOutput',0);
-%             histVal = reshape(cell2mat(histVal), [10, numel(histVal)])';
-%             histVal = arrayfun(@(ind) histVal(occuranceIndex(ind),:), 1:numel(occuranceIndex),'UniformOutput',0);
-%             histVal = reshape(cell2mat(histVal), [10, numel(histVal)])';
-%             FEATURES(sliceNo).fm(:,shift+3:shift+12)= histVal;
-%         end
+
+            % opt 2
+            imgTemp = imgaborfilt(img, gaborBank);
+            imgTemp = mean(imgTemp, 3);  % sum all directions
+            for idx=1:numel(STATS)
+                FEATURES(sliceNo).fm(idx,shift2+1) = mean(imgTemp(STATS(idx).PixelIdxList));
+            end
+
+        end
+%         
+        
+        %         if 0    % test to use information from bigger superpixels
+        %             [slic2, noPixCurrent] = slicmex(img, ceil(handles.slic.noPix/10), handles.slic.properties.spCompact);
+        %             % % remove superpixel with 0-index
+        %             slic2 = slic2 + 1;
+        %             slic2 = double(slic2);
+        %
+        %             slic1 = handles.slic.slic(:,:,sliceNo);
+        %             occuranceMatrix = zeros([handles.slic.noPix(sliceNo), noPixCurrent]);    % matrix of occurance of small superpixels in bigger superpixels
+        %             for sPixId=1:noPixCurrent
+        %                 sPixIndices = unique(slic1(slic2==sPixId));
+        %                 occuranceMatrix(sPixIndices, sPixId) = histc(slic1(slic2==sPixId),sPixIndices);
+        %             end
+        %             %[~, FEATURES(1).fm(:,17)] = max(occuranceMatrix,[],2);
+        %             [~, occuranceIndex] = max(occuranceMatrix,[],2); % correlates number of each small supervoxel with number of a bigger one
+        %
+        %             shift = 16;
+        %             STATS = regionprops(slic2, img, 'MeanIntensity','PixelValues');
+        %             % convert PixelValues to doubles
+        %             STATS = arrayfun(@(s) setfield(s,'PixelValues',double(s.PixelValues)),STATS);
+        %
+        %             FEATURES(sliceNo).fm(:,shift+1) = arrayfun(@(ind) STATS(occuranceIndex(ind)).MeanIntensity, 1:numel(occuranceIndex),'UniformOutput',1);
+        %             tempVal = arrayfun(@(ind) var(STATS(ind).PixelValues), 1:numel(STATS),'UniformOutput',1);
+        %             FEATURES(sliceNo).fm(:,shift+2)=arrayfun(@(ind) tempVal(occuranceIndex(ind)), 1:numel(occuranceIndex),'UniformOutput',1);
+        %
+        %             histVal =  arrayfun(@(ind) hist(STATS(ind).PixelValues, [0:26:255]), 1:numel(STATS),'UniformOutput',0);
+        %             histVal = reshape(cell2mat(histVal), [10, numel(histVal)])';
+        %             histVal = arrayfun(@(ind) histVal(occuranceIndex(ind),:), 1:numel(occuranceIndex),'UniformOutput',0);
+        %             histVal = reshape(cell2mat(histVal), [10, numel(histVal)])';
+        %             FEATURES(sliceNo).fm(:,shift+3:shift+12)= histVal;
+        %         end
         
         
         waitbar(sliceNo/depth, wb, sprintf('Calculating...\nPlease wait...'));
+    end
+    % remove possible NaNs
+    for sliceNo=1:depth
+        FEATURES(sliceNo).fm(:,indexOut) = [];
     end
 else                                 % calculate features for supervoxels
     updateLoglist('======= Calculating features for supervoxels... =======', handles);
@@ -752,7 +817,12 @@ else                                 % calculate features for supervoxels
     % bin dataset
     if binVal(1) ~= 1 || binVal(2) ~= 1
         waitbar(.05, wb, sprintf('Binning the dataset\nPlease wait...'));
-        img = resizeVolume(img, [binHeight, binWidth, binThick], 'bicubic');
+        resizeOpt.height = binHeight;
+        resizeOpt.width = binWidth;
+        resizeOpt.depth = binThick;
+        resizeOpt.method = 'bicubic';
+        resizeOpt.algorithm = 'imresize';
+        img = mib_resize3d(img, [], resizeOpt);
     end
     
     % calculate supervoxels
@@ -766,7 +836,7 @@ else                                 % calculate features for supervoxels
     % preallocating space
     FEATURES = struct;
     
-    STATS = regionprops(handles.slic.slic, img, 'BoundingBox','MeanIntensity','MaxIntensity','MinIntensity','PixelValues');
+    STATS = regionprops(handles.slic.slic, img, 'BoundingBox','MeanIntensity','MaxIntensity','MinIntensity','PixelValues', 'Centroid');
     % store bounding box
     bb = arrayfun(@(ind) STATS(ind).BoundingBox, 1:numel(STATS),'UniformOutput', 0);
     bb = reshape(cell2mat(bb), [6, numel(bb)])';
@@ -806,12 +876,54 @@ else                                 % calculate features for supervoxels
         FEATURES(1).fm(idx,33) = std(FEATURES(1).fm(uInd,1));
     end
     
-%     if 0    % test to use information from bigger supervoxels
-%         [slic2, noPixCurrent] = slicsupervoxelmex_byte(img, ceil(handles.slic.noPix/216), handles.slic.properties.spCompact);
-%         % % remove superpixel with 0-index
-%         slic2 = slic2 + 1;
-%         slic2 = double(slic2);
-%         occuranceMatrix = zeros([handles.slic.noPix, noPixCurrent]);    % matrix of occurance of small superpixels in bigger superpixels
+    if 0
+        shift2 = size(FEATURES(1).fm, 2);
+        centVec = cat(1, STATS.Centroid);   % vector of centroids
+        
+        samplingRate = sqrt(handles.slic.properties.spSize/pi);     % get sampling rate for convertion to uniform points
+        [xq,yq,zq] = meshgrid(1:samplingRate:size(img,2), 1:samplingRate:size(img,1),1:samplingRate:size(img,3));
+        slicImg = griddata(centVec(:,1),centVec(:,2),centVec(:,3), FEATURES(1).fm(:,1), xq, yq, zq, 'nearest');    % FEATURES(sliceNo).fm(:,1) - mean intensity
+        slicImg = uint8(slicImg);
+        
+        % alternatively just resize image to size of the superpixels...
+        %slicImg = imresize(img, 1/samplingRate, 'bicubic');
+        
+        % % checks
+        % figure(15)
+        % mesh(xq,yq,slicImg);
+        % hold on
+        % plot3(centVec(:,1),centVec(:,2),meanInt,'o');
+        % imtool(slicImg);
+        
+        % calculate features
+        cs = 5; % context size
+        ms = 1; % membrane thickness
+        csHist = cs;
+        fmTemp  = membraneFeatures(slicImg, cs, ms, csHist);
+        % fmTemp - feature matrix [h, w, feature_id]
+        noExtraFeatures = size(fmTemp,3);
+        
+        for idx=1:size(centVec,1)
+            indX = ceil(centVec(idx,1)/samplingRate);
+            indY = ceil(centVec(idx,2)/samplingRate);
+            indZ = ceil(centVec(idx,3)/samplingRate);
+            FEATURES(1).fm(idx,shift2+1:shift2+noExtraFeatures) = squeeze(fmTemp(indY, indX, indZ, :));
+        end
+        % find and remove NaNs
+        for idx=shift2+1:shift2+noExtraFeatures
+            if ~isempty(find(isnan(FEATURES(1).fm(:,idx))==1,1))
+                indexOut = [indexOut idx];
+            end
+        end
+    end
+    
+    
+    %     if 0    % test to use information from bigger supervoxels
+    %         [slic2, noPixCurrent] = slicsupervoxelmex_byte(img, ceil(handles.slic.noPix/216), handles.slic.properties.spCompact);
+    %         % % remove superpixel with 0-index
+    %         slic2 = slic2 + 1;
+    %         slic2 = double(slic2);
+    %         occuranceMatrix = zeros([handles.slic.noPix, noPixCurrent]);    % matrix of occurance of small superpixels in bigger superpixels
 %         for sPixId=1:noPixCurrent
 %             sPixIndices = unique(handles.slic.slic(slic2==sPixId));
 %             occuranceMatrix(sPixIndices, sPixId) = histc(handles.slic.slic(slic2==sPixId),sPixIndices);
@@ -976,7 +1088,12 @@ if get(handles.mode2dRadio, 'value') % train for superpixels
 else    % train for supervoxels
     % bin dataset
     if binVal(1) ~= 1 || binVal(2) ~= 1
-        model = resizeVolume(model, [binHeight, binWidth, binThick], 'nearest');
+        resizeOpt.height = binHeight;
+        resizeOpt.width = binWidth;
+        resizeOpt.depth = binThick;
+        resizeOpt.method = 'nearest';
+        resizeOpt.algorithm = 'imresize';
+        model = mib_resize3d(model, [], resizeOpt);
     end
     
     updateLoglist('Extracting features for object and background...', handles);
@@ -1073,18 +1190,7 @@ guidata(handles.mib_Classifier, handles);
 end
 
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-helpbrowser');
-    end
-else
-    path = fileparts(which('im_browser'));
-    web(fullfile(path, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-helpbrowser');
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_tools_random_forest_superpixels.html'), '-helpbrowser');
 end
 
 
@@ -1224,14 +1330,22 @@ else                                 % predict in 3D
     updateLoglist('Removing background pixels...', handles);
     model = handles.h.Img{handles.h.Id}.I.getData3D('model', NaN, 4, NaN, getDataOptions);   % get dataset
     % bin dataset
+    resizeOpt.height = binHeight;
+    resizeOpt.width = binWidth;
+    resizeOpt.depth = binThick;
+    resizeOpt.method = 'nearest';
+    resizeOpt.algorithm = 'imresize';
     if binVal(1) ~= 1 || binVal(2) ~= 1
-        model = resizeVolume(model, [binHeight, binWidth, binThick], 'nearest');
+        model = mib_resize3d(model, [], resizeOpt);
     end
     Mask(model==negModel) = 0;    % remove background pixels
     
     if binVal(1) ~= 1 || binVal(2) ~= 1
         updateLoglist('Re-binning the mask...', handles);
-        Mask = resizeVolume(Mask, [diff(getDataOptions.y)+1, diff(getDataOptions.x)+1, diff(getDataOptions.z)+1], 'nearest');
+        resizeOpt.height = diff(getDataOptions.y)+1;
+        resizeOpt.width = diff(getDataOptions.x)+1;
+        resizeOpt.depth = diff(getDataOptions.z)+1;
+        Mask = mib_resize3d(Mask, [], resizeOpt);
     end
     handles.h.Img{handles.h.Id}.I.setData3D('mask', Mask, NaN, 4, NaN, getDataOptions);   % set dataset
 end

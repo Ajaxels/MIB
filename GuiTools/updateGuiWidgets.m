@@ -29,7 +29,17 @@ function handles = updateGuiWidgets(handles)
 %     delete(cursors(i));
 % end
 
-delete(handles.cursor);
+% if isfield(handles, 'cursor'); 
+%     %delete(handles.cursor); 
+%     handles.cursor = [];
+%     set(handles.cursor, 'XData', [],'YData', []);
+% end;
+
+% try
+%     delete(handles.cursor); 
+% catch err
+%     
+% end
 handles = ib_updateCursor(handles);
 
 % update checkboxes in the menu
@@ -221,7 +231,8 @@ else
     set(handles.roiList,'Value',1);
 end
 set(handles.roiList,'String',str2);
-roiShowCheck_Callback(NaN, NaN, handles);
+
+roiShowCheck_Callback(handles.roiShowCheck, NaN, handles, 'noplot');    % noplot means do not redraw image inside this function
 
 % add a label to the image view panel
 strVal1 = 'Image View    >>>>>    ';
@@ -268,6 +279,7 @@ for i=1:numel(windowList)
         hGui = guidata(windowList(i));
         cb = get(hGui.refreshTableBtn,'callback');
         feval(cb, hGui.refreshTableBtn, []);
+        %handles = guidata(hGui.h.im_browser);   % needed to update handles, otherwise brush cursor is still visible
     end
 end
 
@@ -279,8 +291,15 @@ else
 end
 
 %% update handles of GUI callbacks
-set(handles.im_browser, 'WindowKeyPressFcn', {@im_browser_WindowKeyPressFcn, handles}); 
-set(handles.im_browser, 'WindowButtonDownFcn', {@im_browser_WindowButtonDownFcn, handles});
+%set(handles.im_browser, 'WindowKeyPressFcn', {@im_browser_WindowKeyPressFcn, handles}); 
+%set(handles.im_browser, 'WindowButtonDownFcn', {@im_browser_WindowButtonDownFcn, handles});
+
+%guidata(handles.im_browser, handles);
+handles.Img{handles.Id}.I.volren.previewImg = [];
+volrenToolbarSwitch_ClickedCallback(handles.volrenToolbarSwitch, struct(), handles);
+%handles = guidata(handles.im_browser);
+%guidata(handles.im_browser, handles);
+%handles = ib_updateCursor(handles);
 
 % import java.awt.Robot;
 % import java.awt.event.*;

@@ -32,7 +32,7 @@ function varargout = mib_chopDatasetGui(varargin)
 
 % Edit the above text to modify the response to help mib_chopDatasetGui
 
-% Last Modified by GUIDE v2.5 16-May-2015 16:17:44
+% Last Modified by GUIDE v2.5 03-May-2016 12:15:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -202,17 +202,7 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
-    end
-else
-    web(fullfile(fileparts(which('im_browser')),'techdoc','html','ug_gui_menu_file_chop.html'));
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
 end
 
 % --- Executes on button press in chopBtn.
@@ -230,6 +220,21 @@ switch get(handles.formatPopup, 'value');
         ext = '.nrrd';
     case 3  % tif
         ext = '.tif';
+    case 4  % xml
+        ext = '.xml';        
+end
+
+switch get(handles.formatModelsPopup, 'value');
+    case 1
+        modelExt = '.mat';      % Matlab default
+    case 2  
+        modelExt = '.am';       % amira mesh
+    case 3  
+        modelExt = '.nrrd';     % NRRD (Nearly Raster Raw Data)
+    case 4  % tif
+        modelExt = '.tif';      % TIF (uncompressed)
+    case 5  % xml
+        modelExt = '.xml';      % XML (HDF5 with XML header)    
 end
 
 % get dataset dimensions
@@ -241,6 +246,7 @@ yStep = ceil(height/tilesY);
 zStep = ceil(stacks/tilesZ);
 
 timePnt = handles.h.Img{handles.h.Id}.I.slices{5}(1);
+index = 1;
 for z=1:tilesZ
     for x=1:tilesX
         for y=1:tilesY
@@ -295,28 +301,147 @@ for z=1:tilesZ
                     savingOptions = struct('Resolution', [imgOut2.img_info('XResolution') imgOut2.img_info('YResolution')],...
                         'overwrite', 1, 'Saving3d', 'multi', 'cmap', cmap, 'Compression', compression);
                     ib_image2tiff(filename, imgOut2.img, savingOptions, ImageDescription);
+                case '.xml'
+                    % getting parameters for saving dataset
+                    if index == 1
+                        optionsHDF = mib_saveHDF5Dlg(handles.h, handles.h.preferences.Font);
+                        if isempty(optionsHDF); return; end;
+                    end
+                    optionsHDF.filename = filename;
+                    ImageDescription = imgOut2.img_info('ImageDescription');  % initialize ImageDescription
+                    
+                    % permute dataset if needed
+                    if strcmp(optionsHDF.Format, 'bdv.hdf5')
+                        % permute image to swap the X and Y dimensions
+                        imgOut2.img = permute(imgOut2.img, [2 1 3 4 5]);
+                    end
+                    
+                    optionsHDF.height = size(imgOut2.img,1);
+                    optionsHDF.width = size(imgOut2.img,2);
+                    optionsHDF.colors = size(imgOut2.img,3);
+                    optionsHDF.depth = size(imgOut2.img,4);
+                    optionsHDF.time = 1;
+                    optionsHDF.pixSize = handles.h.Img{handles.h.Id}.I.pixSize;    % !!! check .units = 'um'
+                    optionsHDF.showWaitbar = 1;        % show or not waitbar in data saving function
+                    optionsHDF.lutColors = handles.h.Img{handles.h.Id}.I.lutColors;    % store LUT colors for channels
+                    optionsHDF.ImageDescription = ImageDescription;
+                    optionsHDF.DatasetName = 'MIB_Export';
+                    optionsHDF.overwrite = 1;
+                    %optionsHDF.DatasetType = 'image';
+                    
+                    % saving xml file if needed
+                    if optionsHDF.xmlCreate
+                        saveXMLheader(optionsHDF.filename, optionsHDF);
+                    end
+                    
+                    switch optionsHDF.Format
+                        case 'bdv.hdf5'
+                            optionsHDF.pixSize.units = 'µm';
+                            saveBigDataViewerFormat(optionsHDF.filename, imgOut2.img, optionsHDF);
+                        case 'matlab.hdf5'
+                            [localDir, localFn] = fileparts(filename);
+                            image2hdf5(fullfile(localDir, [localFn '.h5']), imgOut2.img, optionsHDF);
+                    end
             end
             
             % crop and save model
             if get(handles.chopModelCheck, 'value')
-                fn = sprintf('Labels_%s_Z%.2d-X%.2d-Y%.2d.mat', fnTemplate, z, x, y);
-                fnModel = fullfile(outputDir, fn);
-                
                 imgOut2.hLabels = copy(handles.h.Img{handles.h.Id}.I.hLabels);
                 % crop labels
                 imgOut2.hLabels.crop([xMin, yMin, NaN, NaN, zMin, NaN]);
                 
-                imOut = handles.h.Img{handles.h.Id}.I.getData3D('model', timePnt, 4, 0, options); %#ok<NASGU>
+                imOut = handles.h.Img{handles.h.Id}.I.getData3D('model', timePnt, 4, NaN, options); %#ok<NASGU>
                 material_list = handles.h.Img{handles.h.Id}.I.modelMaterialNames; %#ok<NASGU>
                 color_list = handles.h.Img{handles.h.Id}.I.modelMaterialColors; %#ok<NASGU>
                 
                 bounding_box = imgOut2.getBoundingBox(); %#ok<NASGU>
+
+                % generate filename
+                fn = sprintf('Labels_%s_Z%.2d-X%.2d-Y%.2d%s', fnTemplate, z, x, y, modelExt);
+                fnModel = fullfile(outputDir, fn);
                 
-                if handles.h.Img{handles.h.Id}.I.hLabels.getLabelsNumber() > 1  % save annotations
-                    [labelText, labelPosition] = handles.h.Img{handles.Id}.I.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                    save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelPosition', '-mat', '-v7.3');
-                else    % save without annotations
-                    save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
+                switch modelExt
+                    case '.mat'     % matlab
+                        if handles.h.Img{handles.h.Id}.I.hLabels.getLabelsNumber() > 1  % save annotations
+                            [labelText, labelPosition] = handles.h.Img{handles.Id}.I.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelPosition', '-mat', '-v7.3');
+                        else    % save without annotations
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
+                        end
+                    case '.am'      % Amira Mesh
+                        pixStr = handles.h.Img{handles.h.Id}.I.pixSize;
+                        pixStr.minx = bounding_box(1);
+                        pixStr.miny = bounding_box(3);
+                        pixStr.minz = bounding_box(5);
+                        bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, color_list, material_list, 1, 1);
+                    case '.nrrd'    % NRRD
+                        savingNRRDOptions.overwrite = 1;
+                        savingNRRDOptions.showWaitbar = 1;  % show or not waitbar in bitmap2nrrd
+                        bitmap2nrrd(fnModel, imOut, bounding_box, savingNRRDOptions);
+                    case '.tif'     % uncompressed TIF
+                        ImageDescription = imgOut2.img_info('ImageDescription');  % initialize ImageDescription
+                        resolution(1) = imgOut2.img_info('XResolution');
+                        resolution(2) = imgOut2.img_info('YResolution');
+                        if exist('savingTIFOptions', 'var') == 0   % define parameters for the first time use
+                            savingTIFOptions = struct('Resolution', resolution, 'overwrite', 1, 'Saving3d', 'multi', 'cmap', NaN);
+                        end
+                        savingTIFOptions.showWaitbar = 1;  % show or not waitbar in ib_image2tiff
+                        imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
+                        
+                        [result, savingTIFOptions] = ib_image2tiff(fnModel, imOut, savingTIFOptions, ImageDescription);
+                    case '.xml'     % hdf5
+                        % getting parameters for saving dataset
+                        if index == 1
+                            optionsModelHDF = mib_saveHDF5Dlg(handles.h, handles.h.preferences.Font);
+                            if isempty(optionsModelHDF); return; end;
+                        end
+                        optionsModelHDF.filename = fnModel;
+                        ImageDescription = imgOut2.img_info('ImageDescription');  % initialize ImageDescription
+                        
+                        if strcmp(optionsModelHDF.Format, 'bdv.hdf5')
+                            button = questdlg(sprintf('Export of models in using the Big Data Viewer format is not implemented!\nSave as ordinary HDF5?'),'Warning','Save as HDF5', 'Cancel','Save as HDF5');
+                            if strcmp(button, 'Cancel'); return; end;
+                            optionsModelHDF.Format = 'matlab.hdf5';
+                        end
+                        
+                        % permute dataset if needed
+                        if strcmp(optionsModelHDF.Format, 'bdv.hdf5')
+                            % permute image to swap the X and Y dimensions
+                            %imOut = permute(imOut, [2 1 5 3 4]);
+                        else
+                            % permute image to add color dimension to position 3
+                            imOut = permute(imOut, [1 2 4 3]);
+                        end
+                        
+                        optionsModelHDF.height = size(imOut,1);
+                        optionsModelHDF.width = size(imOut,2);
+                        optionsModelHDF.colors = 1;
+                        if strcmp(optionsModelHDF.Format, 'bdv.hdf5')
+                            %optionsModelHDF.depth = size(imOut,4);
+                        else
+                            optionsModelHDF.depth = size(imOut,4);
+                        end
+                        optionsModelHDF.time = 1;
+                        optionsModelHDF.pixSize = handles.h.Img{handles.h.Id}.I.pixSize;    % !!! check .units = 'um'
+                        optionsModelHDF.showWaitbar = 1;        % show or not waitbar in data saving function
+                        optionsModelHDF.lutColors = color_list;    % store LUT colors for materials
+                        optionsModelHDF.ImageDescription = ImageDescription;
+                        optionsModelHDF.DatasetName = 'Model';
+                        optionsModelHDF.overwrite = 1;
+                        optionsModelHDF.ModelMaterialNames = material_list; % names for materials
+                        % saving xml file if needed
+                        if optionsModelHDF.xmlCreate
+                            saveXMLheader(optionsModelHDF.filename, optionsModelHDF);
+                        end
+                        
+                        switch optionsModelHDF.Format
+                            case 'bdv.hdf5'
+                                optionsModelHDF.pixSize.units = 'µm';
+                                saveBigDataViewerFormat(optionsModelHDF.filename, imgOut2.img, optionsModelHDF);
+                            case 'matlab.hdf5'
+                                [localDir, localFn] = fileparts(optionsModelHDF.filename);
+                                image2hdf5(fullfile(localDir, [localFn '.h5']), imOut, optionsModelHDF);
+                        end
                 end
             end
             
@@ -327,6 +452,7 @@ for z=1:tilesZ
                 imOut = handles.h.Img{handles.h.Id}.I.getData3D('mask', timePnt, 4, 0, options); %#ok<NASGU>
                 save(fnModel, 'imOut','-mat', '-v7.3');
             end
+            index = index + 1;
         end
     end
 end

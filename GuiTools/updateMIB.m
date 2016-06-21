@@ -83,10 +83,14 @@ if ~isdeployed;
 else
     set(handles.releaseTypePopup, 'value', 2);
     if ismac()
-        [~, user_name] = system('whoami');
-        destinationDir = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
+        %[~, user_name] = system('whoami');
+        %destinationDir = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
+        [status, result] = system('path');
+        destinationDir = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
     else
-        destinationDir = pwd;
+        %destinationDir = pwd;
+        [status, result] = system('path');
+        destinationDir = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
     end
 end
 set(handles.destinationEdit, 'String', destinationDir);
@@ -120,7 +124,7 @@ destination = get(handles.destinationEdit, 'string');
 wb = waitbar(0,sprintf('Updating Microscopy Image Browser...\nIt may take up to few minutes \ndepending on network connection.\n\nPlease wait...'), 'Name', 'Updating...');
 
 % store java_path.txt
-javaPathFile = fullfile(destination, 'java_path.txt');
+javaPathFile = fullfile(destination, 'mib_java_path.txt');
 JavaPathText = NaN;
 try
     fileID = fopen(javaPathFile, 'r');
@@ -140,7 +144,8 @@ waitbar(0.05, wb);
 if get(handles.releaseTypePopup, 'value') == 1  % matlab functions
     unzip('http://mib.helsinki.fi/web-update/im_browser.zip',destination);
 else
-    unzip('http://mib.helsinki.fi/web-update/im_browser_distrib.zip',destination);
+    %unzip('http://mib.helsinki.fi/web-update/im_browser_distrib.zip',destination);
+    web('http://mib.helsinki.fi/web-update/MIB_distrib.exe', '-browser');
 end
 waitbar(0.95, wb);
 

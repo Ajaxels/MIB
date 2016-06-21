@@ -250,7 +250,7 @@ if get(handles.matlabExportRadio, 'value') == 1     % export to Matlab
     title = 'Input variable to export';
     [~,def] = fileparts(handles.h.Img{handles.h.Id}.I.img_info('Filename'));
     prompt = {'A variable for the measurements structure:'};
-    answer = mib_inputdlg(NaN, prompt,title,[def '_stgy']); 
+    answer = mib_inputdlg(handles.h, prompt,title,[def '_stgy']); 
     if size(answer) == 0; return; end;
     fn_out = answer{1};
 else        % export to Excel
@@ -287,7 +287,7 @@ if strcmp(matNames{end}, 'Unassigned')  % define material for unassigned points
     Occurrence = zeros([time, depth, nMat]);  % allocate space for results
 else
     unassId = nMat + 1;
-    matNames{unassId} = 'Unassigned';
+    matNames{unassId, :} = 'Unassigned';
     Occurrence = zeros([time, depth, nMat+1]);    % allocate space for results
 end
 

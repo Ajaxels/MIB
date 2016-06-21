@@ -120,12 +120,11 @@ end
 
 % check the header for proper CoordType and ContentType fields
 HxMultiChannelField3_sw = 0;
-for i=1:numel(par)
-    %if ~isempty(strfind(par(i).Name,'ContentType'))
-    if strcmp(par(i).Name,'ContentType')
-        if strcmp(par(i).Value,'HxMultiChannelField3') == 1
-            HxMultiChannelField3_sw = 1;
-        end
+parNames = {par.Name};
+parIndex = find(ismember(parNames, 'ContentType'));
+if ~isempty(parIndex)
+    if strcmp(par(parIndex(1)).Value,'HxMultiChannelField3') == 1
+        HxMultiChannelField3_sw = 1;
     end
 end
 

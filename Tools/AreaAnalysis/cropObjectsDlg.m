@@ -435,7 +435,7 @@ for t=uniqueTime'   % has to be a horizontal vector
         
         % export to Matlab
         if get(handles.matlabRadio, 'value')
-            answer = mib_inputdlg(NaN, sprintf('Enter name for the export:\n(it should start with a letter)'),'Variable name:', matlabVarName);
+            answer = mib_inputdlg(handles.h, sprintf('Enter name for the export:\n(it should start with a letter)'),'Variable name:', matlabVarName);
             if isempty(answer); return; end
             matlabVarName = answer{1};
             

@@ -1,5 +1,5 @@
 Microscopy Image Browser (MIB) a handy tool for image management
-Copyright (c) 2010-2015
+Copyright (c) 2010-2016
 Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
 http://mib.helsinki.fi
 

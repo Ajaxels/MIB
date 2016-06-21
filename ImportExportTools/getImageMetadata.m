@@ -50,8 +50,7 @@ pixSize.t = 1;
 pixSize.tunits = 's';
 
 img_info = containers.Map;
-matlabVersion = ver('Matlab');
-if str2double(matlabVersion.Version) < 8.0
+if handles.matlabVersion < 8.0
     video_formats = mmreader.getFileFormats(); %#ok<DMMR>
 else
     video_formats = VideoReader.getFileFormats();
@@ -81,13 +80,13 @@ files = struct();   % structure that keeps info about each file in the series
 % end
 
 for fn_index = 1:no_files
-    [~, ~, ext] = fileparts(filenames{fn_index});
+    [dirId, fnId, ext] = fileparts(filenames{fn_index});
     ext = lower(ext);
     files(fn_index).extension = ext;
     % get image information
     if strfind([video_formats.Extension], ext(2:end)) > 0 & options.bioformatsCheck == 0      %#ok<AND2> % movie object
         files(fn_index).filename = cell2mat(filenames(fn_index));
-        if matlabVersion.Version < 8.0
+        if handles.matlabVersion < 8.0
             xyloObj = mmreader(files(fn_index).filename); %#ok<DMMR>
         else
             xyloObj = VideoReader(files(fn_index).filename); 
@@ -149,7 +148,7 @@ for fn_index = 1:no_files
             
             if noLevels > 1
                 prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
-                answer = mib_inputdlg(NaN,prompt,'Select image','1');
+                answer = mib_inputdlg(handles, prompt, 'Select image', '1');
                 if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end;
                 level = str2double(answer);
                 if level < 1 || level > noLevels
@@ -193,7 +192,7 @@ for fn_index = 1:no_files
     elseif strfind('h5hdf', ext(2:end)) > 0 & options.bioformatsCheck == 0         %#ok<AND2> % HDF5 format
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'hdf5_image';
-        [files(fn_index).seriesName, metadata_sw, dim_xyczt, transMatrix] = selectHDFSeries(cellstr(files(fn_index).filename), handles.preferences.Font);
+        [files(fn_index).seriesName, metadata_sw, dim_yxczt, transMatrix] = selectHDFSeries(cellstr(files(fn_index).filename), handles.preferences.Font);
         pause(.1);
         if strcmp(files(fn_index).seriesName,'Cancel')
             img_info = containers.Map;
@@ -203,7 +202,7 @@ for fn_index = 1:no_files
         
         % dataset should be transposed
         if ~isnan(transMatrix(1))
-            dim_xyczt = dim_xyczt(transMatrix);
+            dim_yxczt = dim_yxczt(transMatrix);
         end
         
         info = struct();
@@ -252,14 +251,14 @@ for fn_index = 1:no_files
 
 
         % read a single point to determine the class of the dataset
-        I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_xyczt>0)),ones(1,sum(dim_xyczt>0)));
+        I = h5read(files(fn_index).filename, cell2mat(files(fn_index).seriesName),ones(1,sum(dim_yxczt>0)),ones(1,sum(dim_yxczt>0)));
         
         fields = sort(fieldnames(info));
         for ind = 1:numel(fields)
             img_info(fields{ind}) = info.(fields{ind});
         end
         
-        if dim_xyczt(3) == 1
+        if dim_yxczt(3) == 1
             currentColorType = 'grayscale';
         else
             currentColorType = 'truecolor';
@@ -276,13 +275,13 @@ for fn_index = 1:no_files
             img_info('ColorType') = currentColorType;
         end
         
-        files(fn_index).noLayers = dim_xyczt(4);
-        files(fn_index).height = dim_xyczt(1);
-        files(fn_index).width = dim_xyczt(2);
-        files(fn_index).color = dim_xyczt(3);
-        files(fn_index).time = dim_xyczt(5);
+        files(fn_index).noLayers = dim_yxczt(4);
+        files(fn_index).height = dim_yxczt(1);
+        files(fn_index).width = dim_yxczt(2);
+        files(fn_index).color = dim_yxczt(3);
+        files(fn_index).time = max([dim_yxczt(5) 1]);
         files(fn_index).imgClass = class(I);
-        files(fn_index).dim_xyczt = dim_xyczt;
+        files(fn_index).dim_xyczt = dim_yxczt;
         if ~isnan(transMatrix(1))
             files(fn_index).transMatrix = transMatrix;
         end
@@ -408,7 +407,13 @@ for fn_index = 1:no_files
         info('Filename') = files(fn_index).filename;
         fields = sort(keys(info));
         for ind = 1:numel(fields)
-            img_info(fields{ind}) = info(fields{ind});
+            if ~strcmp(fields{ind}, 'lutColors')
+                img_info(fields{ind}) = info(fields{ind});
+            else
+                if ischar(info(fields{ind}))  
+                    img_info(fields{ind}) = str2num(info(fields{ind})); %#ok<ST2NM>
+                end
+            end
         end
     elseif strfind(cell2mat([image_formats.ext]), ext(2:end)) > 0 & options.bioformatsCheck == 0 %#ok<AND2> % standard image types
         files(fn_index).filename = cell2mat(filenames(fn_index));
@@ -422,7 +427,7 @@ for fn_index = 1:no_files
                         resText = sprintf('%s%dx%d; ', resText, info(ii).Width, info(ii).Height);
                     end
                     prompt = sprintf('This is pyramidal TIF that has %d sub-images [%s]\nPlease choose the one to take (enter "1" to get image in the original size):', numel(info),resText);
-                    answer = mib_inputdlg(NaN,prompt,'Select image','1');
+                    answer = mib_inputdlg(handles, prompt, 'Select image', '1');
                     if isempty(answer); if options.waitbar==1; delete(wb); end; return; end;
                     files(fn_index).level = str2double(answer);
                 end
@@ -580,21 +585,46 @@ for fn_index = 1:no_files
             return;
         end
     elseif options.bioformatsCheck == 1    % load meta for bio-image formats
+%         if ~isdeployed
+%             javapath = javaclasspath('-all');
+%             if isempty(cell2mat(strfind(javapath, 'bioformats_package.jar')));
+%                 javaaddpath(fullfile(fileparts(mfilename('fullpath')),'bioformats_package.jar'));
+%             end
+%         end
+        
         if fn_index == 1
-            [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
-                selectLociSeries(filenames(fn_index), handles.preferences.Font);  % select series with BioFormats
-            
-            if max(filesTemp.dim_xyczt(:,4)) > 1 && max(filesTemp.dim_xyczt(:,5)) > 1
-                msgbox('5D stacks are not supported!','Error!','error');
-                img_info =  containers.Map;
-                for i=1:numel(files)
-                    if ~isempty(files(i).hDataset)
-                        files(i).hDataset.close();
-                    end;
-                end;
-                if options.waitbar==1; delete(wb); end; 
-                return;
+            r = loci.formats.ChannelFiller();
+            r = loci.formats.ChannelSeparator(r);
+            r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
+            r.setId(filenames(fn_index));
+            numSeries = r.getSeriesCount();
+            if numSeries > 1
+                [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
+                    selectLociSeries(filenames(fn_index), handles.preferences.Font);  % select series with BioFormats
+            else    % do not show the series selection dialog
+                filesTemp.seriesIndex = 1;
+                r.setSeries(0);
+                filesTemp.hDataset = r;
+                metaSwitch = 1;
+                filesTemp.dim_xyczt(1) = r.getSizeX();
+                filesTemp.dim_xyczt(2) = r.getSizeY();
+                filesTemp.dim_xyczt(3) = r.getSizeC();    % number of color layers
+                filesTemp.dim_xyczt(4) = r.getSizeZ();
+                filesTemp.dim_xyczt(5) = r.getSizeT();    % number of time layers
+                filesTemp.seriesRealName{1} = char(r.getMetadataStore().getImageName(0));
             end
+            
+%             if max(filesTemp.dim_xyczt(:,4)) > 1 && max(filesTemp.dim_xyczt(:,5)) > 1
+%                 msgbox('5D stacks are not supported!','Error!','error');
+%                 img_info =  containers.Map;
+%                 for i=1:numel(files)
+%                     if ~isempty(files(i).hDataset)
+%                         files(i).hDataset.close();
+%                     end;
+%                 end;
+%                 if options.waitbar==1; delete(wb); end; 
+%                 return;
+%             end
         else
             %files(fn_index).seriesName = files(1).seriesName;
             %files(fn_index).noLayers = numel(files(fn_index).seriesName);
@@ -633,48 +663,80 @@ for fn_index = 1:no_files
             files(layer_id).seriesName = filesTemp.seriesIndex(fileSubIndex);
             files(layer_id).seriesRealName = filesTemp.seriesRealName{fileSubIndex};
             
-            if metaSwitch == 1 && fileSubIndex == 1  % read full metadata for the first file
+            if metaSwitch == 1 && fn_index == 1 && fileSubIndex == 1 % read full metadata for the first file
                 % extract metadata table for this series
                 metadataList = filesTemp.hDataset.getGlobalMetadata();
                 if metadataList.isEmpty
                     % metadataList = filesTemp.hDataset.getMetadata(); % for old bio-formats
                     metadataList = filesTemp.hDataset.getSeriesMetadata();
                 end
-                keySet = metadataList.keySet();
-                keySet = keySet.toArray();
-                warning off; %#ok<WNOFF>
-                for keyIndex=1:numel(keySet)
-                    key = keySet(keyIndex);
-                    if isempty(key); continue; end;
-                    value =  metadataList.get(key);
-                    if isempty(value); continue; end;
+                
+%                 % test of work with OME-metadata
+%                 omeMeta = filesTemp.hDataset.getMetadataStore();
+%                 omeXML = char(omeMeta.dumpXML());    % to xml
+%                 omeXML = strrep(omeXML,'µ','u');     % replace utf-8 characters
+%                 omeXML = strrep(omeXML,'Â','A');
+%                 dummyXMLFilename = fullfile(dirId, 'dummy.xml');    % save xml to a file
+%                 fid = fopen(dummyXMLFilename, 'w');
+%                 fprintf(fid,'%s',omeXML);
+%                 fclose(fid);
+%                 omeStruct = xml2struct(dummyXMLFilename);           % load and convert xml to structure
+%                 delete(dummyXMLFilename);           % delete dummy xml file
+                
+                metadataKeys = metadataList.keySet().iterator();
+                for i=1:metadataList.size()
+                    currKey = metadataKeys.nextElement();
+                    if isempty(currKey); continue; end;
+                    value = metadataList.get(currKey);
                     
-                    % modify keys names to allow use them as field names
-                    field = key;
-                    field = strrep(field,'_','');
-                    field = strrep(field,'[','_');
-                    field = strrep(field,']',' ');
-                    field = strrep(field,'(','_');
-                    field = strrep(field,')',' ');
-                    field = strrep(field,'-','_');
-                    field = strrep(field,'/','_');
-                    field = strrep(field,'\','_');
-                    field = strrep(field,'|','_');
-                    field = strrep(field,'#','');
-                    field = strrep(field,'?','');
-                    field = strrep(field,'Â','A');
-                    field = strrep(field,'µ','u');
-                    field = strrep(field,'.','_');
-                    field = strrep(field,65533,'');
-                    field = strtrim(field);
-                    field = strrep(field,' ','_');
-                    if numel(field) < 1; continue; end;
-                    
-                    img_info(field) = value;
-                    
+                    % modify keys names, i.e. remove spaces and other
+                    % special characters, to be compatible with AmiraMesh
+                    % format
+                    %currKey = regexprep(currKey,'[_%! ()[]{}/|\\#?.,]', '_');
+                    %currKey = strrep(currKey,'Â','A');
+                    %currKey = strrep(currKey,'µ','u');
+
+                    img_info(currKey) = value;
                 end
-                warning on; %#ok<WNON>
+
+%                 keySet = metadataList.keySet();
+%                 keySet = keySet.toArray();
+%                 warning off; %#ok<WNOFF>
+%                 
+%                 for keyIndex=1:numel(keySet)
+%                     key = keySet(keyIndex);
+%                     if isempty(key); continue; end;
+%                     value =  metadataList.get(key);
+%                     if isempty(value); continue; end;
+%                     
+%                     % modify keys names to allow use them as field names
+%                     field = key;
+%                     field = strrep(field,'_','');
+%                     field = strrep(field,'[','_');
+%                     field = strrep(field,']',' ');
+%                     field = strrep(field,'(','_');
+%                     field = strrep(field,')',' ');
+%                     field = strrep(field,'-','_');
+%                     field = strrep(field,'/','_');
+%                     field = strrep(field,'\','_');
+%                     field = strrep(field,'|','_');
+%                     field = strrep(field,'#','');
+%                     field = strrep(field,'?','');
+%                     field = strrep(field,'Â','A');
+%                     field = strrep(field,'µ','u');
+%                     field = strrep(field,'.','_');
+%                     field = strrep(field,' ','_');
+%                     field = strrep(field, 65533, '');
+%                     field = strtrim(field);
+% 
+%                     if numel(field) < 1; continue; end;
+%                     
+%                     img_info(field) = value;
+%                     
+%                 end
+%                 warning on; %#ok<WNON>
             end
+            
             img_info('Filename') = files(layer_id).filename;
             img_info('SeriesNumber') = files(layer_id).seriesName;
             %img_info('SeriesName') = files(layer_id).seriesRealName;
@@ -698,9 +760,14 @@ for fn_index = 1:no_files
             
             files(layer_id).height = filesTemp.dim_xyczt(fileSubIndex, 2);
             files(layer_id).width = filesTemp.dim_xyczt(fileSubIndex, 1);
-            files(layer_id).noLayers = max([filesTemp.dim_xyczt(fileSubIndex, 4) filesTemp.dim_xyczt(fileSubIndex, 5)]);
+            if filesTemp.dim_xyczt(fileSubIndex, 4) == 1 && filesTemp.dim_xyczt(fileSubIndex, 5) > 1
+                files(layer_id).noLayers = max([filesTemp.dim_xyczt(fileSubIndex, 4) filesTemp.dim_xyczt(fileSubIndex, 5)]);
+                files(fn_index).time = 1;
+            else
+                files(layer_id).noLayers = filesTemp.dim_xyczt(fileSubIndex, 4);
+                files(fn_index).time = filesTemp.dim_xyczt(fileSubIndex, 5);
+            end
             files(layer_id).color = filesTemp.dim_xyczt(fileSubIndex, 3);
-            files(fn_index).time = filesTemp.dim_xyczt(fileSubIndex, 5);
             
             bpp = filesTemp.hDataset.getBitsPerPixel();
             if bpp <= 8
@@ -721,6 +788,19 @@ for fn_index = 1:no_files
         
         % update pixel size
         omeMeta = filesTemp.hDataset.getMetadataStore();
+        if fn_index == 1
+            omeMeta = filesTemp.hDataset.getMetadataStore();
+            omeXML = char(omeMeta.dumpXML());    % to xml
+            omeXML = strrep(omeXML,'µ','u');     % replace utf-8 characters
+            omeXML = strrep(omeXML,'Â','A');
+            dummyXMLFilename = fullfile(dirId, 'dummy.xml');    % save xml to a file
+            fid = fopen(dummyXMLFilename, 'w');
+            fprintf(fid,'%s',omeXML);
+            fclose(fid);
+            meta = xml2struct(dummyXMLFilename);           % load and convert xml to structure
+            delete(dummyXMLFilename);           % delete dummy xml file
+            img_info('meta') = meta.OME;
+        end
         xVal = double(omeMeta.getPixelsPhysicalSizeX(filesTemp.seriesIndex(fileSubIndex)-1).value(ome.units.UNITS.MICROM));
         if isempty(xVal)
             pixSize.x = 1;   % in um
@@ -749,7 +829,8 @@ for fn_index = 1:no_files
         % get colors for the color channels
         colorsVec = [files.color];
         maxColorChannel = max(colorsVec);
-        indexOfDataset = find(colorsVec==maxColorChannel,1)-1;     % index with largest number of colors
+        indexOfDataset = find(colorsVec==maxColorChannel,1);     % index with largest number of colors
+        indexOfDataset = files(indexOfDataset).seriesName-1;
         if ~isempty(omeMeta.getChannelColor(indexOfDataset, 0))
             rgb = zeros(maxColorChannel, 3);
             for colCh=1:maxColorChannel
@@ -798,5 +879,4 @@ end
 if options.waitbar==1; delete(wb); end;
 %img_info('Filename') = files(1).filename;
 img_info('Filename') = filenames{1};
-
 end

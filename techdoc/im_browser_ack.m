@@ -30,6 +30,7 @@
 % watershed regions
 % * *John Heumann*, The Boulder Laboratory For 3-D Electron Microscopy of
 % Cells for help with Mattomo
+% * *Tom Boissonnet*, EMBL for extensive testing
 %
 % Microscopy Image Browser team would like to acknowledge the <http://www.mathworks.se/matlabcentral/ User Community of Matlab-Central> and the authors whose code was used during MIB development. 
 % Microscopy Image Browser adapts partially or completely codes from the
@@ -120,6 +121,9 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/20922-stlwrite-filename--varargin-
 % *STLWRITE*> by Sven Holcombe, University of Michigan 2008-2015 for saving models
 % using the STL format
+% * <http://se.mathworks.com/matlabcentral/fileexchange/21993-viewer3d 
+% *VIEWER3D*> by Dirk-Jan Kroon, Focal Machine Vision en Optical Systems
+% was used as a basis for the volume rendering of datasets
 % * <http://www.mathworks.com/matlabcentral/fileexchange/27236-improved-xlswrite-m 
 % *XLSWRITE mod*> by Barry Dillon, AON Insurance Brokers 2010
 % * <http://www.mathworks.com/matlabcentral/fileexchange/28518-xml2struct 

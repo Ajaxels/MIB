@@ -229,7 +229,7 @@ function insertBtn_Callback(hObject, eventdata, handles)
 pos = get(handles.logList,'value')+1;
 pos = pos(end);
 %answer = inputdlg('Please type here new entry text','Insert new entry',1);
-answer = mib_inputdlg(NaN, 'Please type here new entry text','Insert new entry','type here');
+answer = mib_inputdlg(handles.hMain, 'Please type here new entry text','Insert new entry','type here');
 if isempty(answer)
     return;
 elseif numel(answer{1}) == 0
@@ -252,7 +252,7 @@ currEntry = currentList{pos};
 colon = strfind(currEntry,':');
 currEntry = currEntry(colon(1)+2:end);
 %answer = inputdlg('Modify the text:','Modify the entry',1,cellstr(currEntry));
-answer = mib_inputdlg(NaN, 'Modify the text:','Modify the entry',currEntry);
+answer = mib_inputdlg(handles.hMain, 'Modify the text:','Modify the entry',currEntry);
 if isempty(answer); return;  end;
 handles.hMain.Img{handles.hMain.Id}.I.updateImgInfo(answer{1},'modify',pos);
 updateLog(handles);

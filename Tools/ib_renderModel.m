@@ -209,7 +209,7 @@ if Options.slice ~= 0
     [xValue, yValue] = meshgrid(xValue, yValue);
     
     zValue = Options.slice*pixSize.z*factorZ+bb(5);
-    surf(xValue, yValue, zValue*ones([size(img, 1) size(img, 2)]), img, 'EdgeColor', 'none')
+    surf(xValue, yValue, zValue+zeros([size(img, 1) size(img, 2)]), img, 'EdgeColor', 'none')
     colormap('gray');   
     hold off;
     % update the z-limits

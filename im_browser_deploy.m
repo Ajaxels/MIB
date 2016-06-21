@@ -1,5 +1,4 @@
 function im_browser_deploy
-
 % try
 %     javaaddpath('c:\Science\Fiji\jars\', '-end');
 % catch err
@@ -28,50 +27,65 @@ function im_browser_deploy
 fijiJavaPath = 0;
 omeroJavaPath = 0;
 
-if isunix()
-    [~, user_name] = system('whoami'); 
-    pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-else
-    pathName = pwd;
+% % the following code finds where MIB is installed
+% if isunix()
+%     %[~, user_name] = system('whoami'); 
+%     %pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
+%     [status, result] = system('path');
+%     pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+% else
+%     %pathName = pwd;
+%     [status, result] = system('path');
+%     pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+% end
+
+pathName = userpath();
+if pathName(end) == ';'; pathName(end) = []; end;
+
+javaPathfn = fullfile(pathName, 'mib_java_path.txt');
+if exist(javaPathfn,'file') ~= 2
+    fid = fopen(javaPathfn, 'w');
+    if fid == -1; 
+        warndlg(sprintf('A Java-path file for Java libraries can not be created in\n%s\n\nPlease modify permissions for this folder', javaPathfn),'Can not create file');
+    end
+    fprintf(fid, 'c:\\Tools\\Science\\Fiji.app\\\nc:\\Matlab\\Scripts\\OMERO_5\\libs\n/Applications/Fiji.app/\n/Users/ibelev/Documents/MATLAB/OMERO_5/libs');
+    fclose(fid);
+    warndlg(sprintf('A path-file for Java libraries was not found!\n\nA template file (mib_java_path.txt) was created in %s\n\nPlease modify it with the list of JAR directories (for example: "C:\\Fiji.app" or "c:\\OMERO\\libs")', javaPathfn),'Missing Fiji JARs');
 end
 
+sprintf('Reading java-directories from:\n%s', javaPathfn)
 
-javaPathfn = fullfile(pathName, 'java_path.txt');
-if exist(javaPathfn,'file') ~= 2
-    msgbox(sprintf('A path-file for Java libraries was not found!\n\nPlease add "java_path.txt" file with the list of JAR directories (for example: "C:\\Fiji\\jars") to the im_browser directory (%s)', javaPathfn),'Missing Fiji JARs','error');
-else
-    fid = fopen(javaPathfn);
-    tline = fgetl(fid);
-    while ischar(tline)
-        if isunix()   % in MacOS the path should not have :  
-            if ~isempty(strfind(lower(tline), 'fiji')) && isempty(strfind(tline, ':'))
-                fijiJavaPath = tline;
-            elseif ~isempty(strfind(lower(tline), 'omero')) && isempty(strfind(tline, ':'))
-                omeroJavaPath = tline;  
-            end
-        else
-            if ~isempty(strfind(lower(tline), 'fiji')) && ~isempty(strfind(tline, ':'))
-                fijiJavaPath = tline;
-            elseif ~isempty(strfind(lower(tline), 'omero')) && ~isempty(strfind(tline, ':'))
-                omeroJavaPath = tline;
-            elseif ~isempty(strfind(lower(tline), 'imaris')) && ~isempty(strfind(tline, ':'))
-                imarisJavaPath = tline;
-                if exist(imarisJavaPath, 'file') == 0   % check presense of imaris library
-                    imarisJavaPath = 0;
-                end
+fid = fopen(javaPathfn);
+tline = fgetl(fid);
+while ischar(tline)
+    if isunix()   % in MacOS the path should not have :
+        if ~isempty(strfind(lower(tline), 'fiji')) && isempty(strfind(tline, ':'))
+            fijiJavaPath = tline;
+        elseif ~isempty(strfind(lower(tline), 'omero')) && isempty(strfind(tline, ':'))
+            omeroJavaPath = tline;
+        end
+    else
+        if ~isempty(strfind(lower(tline), 'fiji')) && ~isempty(strfind(tline, ':'))
+            fijiJavaPath = tline;
+        elseif ~isempty(strfind(lower(tline), 'omero')) && ~isempty(strfind(tline, ':'))
+            omeroJavaPath = tline;
+        elseif ~isempty(strfind(lower(tline), 'imaris')) && ~isempty(strfind(tline, ':'))
+            imarisJavaPath = tline;
+            if exist(imarisJavaPath, 'file') == 0   % check presense of imaris library
+                imarisJavaPath = 0;
             end
         end
-        tline = fgetl(fid);
     end
-    fclose(fid);
+    tline = fgetl(fid);
 end
+fclose(fid);
 
 % Load Fiji libraries
 if fijiJavaPath == 0
-    sprintf('Fiji path was not found!\n\nPlease add it (for example: "C:\\Fiji\\") to "java_path.txt" file at the im_browser directory (%s)', javaPathfn)
+    sprintf('Fiji path was not found!\n\nPlease add it (for example: "C:\\Fiji.app\\") to "mib_java_path.txt" file at (%s)', javaPathfn)
 else
     if exist(fijiJavaPath,'dir') ~= 7    % not a folder
-        sprintf('Fiji path was not correct!\n\nPlease fix it (for example: "C:\\Fiji\\") in "java_path.txt" file at the im_browser directory (%s)', javaPathfn);
+        sprintf('Fiji path was not correct!\n\nPlease fix it (for example: "C:\\Fiji.app\\") in "mib_java_path.txt" file at (%s)', javaPathfn);
     else
         % add Fiji libraries
         % Get the Fiji directory
@@ -100,10 +114,10 @@ end
 
 % Load Omero libraries
 if omeroJavaPath == 0
-    sprintf('Omero Java libraries path was not found!\n\nPlease add it (for example: "C:\\Omero\\libs") to "java_path.txt" file at the im_browser directory (%s)', javaPathfn)
+    sprintf('Omero Java libraries path was not found!\n\nPlease add it (for example: "C:\\Omero\\libs") to "mib_java_path.txt" file at the im_browser directory (%s)', javaPathfn)
 else
     if exist(omeroJavaPath,'dir') ~= 7    % not a folder
-        sprintf('Fiji Java libraries path was not correct!\n\nPlease fix it (for example: "C:\\Omero\\libs") in "java_path.txt" file at the im_browser directory (%s)', javaPathfn);
+        sprintf('Fiji Java libraries path was not correct!\n\nPlease fix it (for example: "C:\\Omero\\libs") in "mib_java_path.txt" file at the im_browser directory (%s)', javaPathfn);
     else
         % add Omero libraries
         OmeroClient_Jar = fullfile(omeroJavaPath, 'omero_client.jar');

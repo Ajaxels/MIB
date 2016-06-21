@@ -103,6 +103,6 @@ switch selectedTool
             handles.showBrushCursor = 1;
         end
 end
-handles = ib_updateCursor(handles);
-guidata(handles.im_browser, handles);
+ib_updateCursor(handles);
+%guidata(handles.im_browser, handles);
 end

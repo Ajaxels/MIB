@@ -4,9 +4,14 @@
 %
 %% Computer
 % Microscopy Image Browser is a program written under Matlab environment and it
-% was tested to work under Windows/Linux installation of Matlab. In addition a compiled (standalone) version for Windows 64-bit OS is distributed. 
-% The standalone version of Microscopy Image Browser may not have complete functionality of the original program but does not require to purchase Matlab license.
-% To standalone |im_browser| requires <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime (MCR)> to be installed.
+% was tested to work under Windows/Linux/Mac installation of Matlab.
+%
+%
+% In addition compiled (standalone) versions of MIB are available for Windows and Mac 64-bit OS. 
+% The standalone versions of MIB may not have complete functionality of the original program but do not require to purchase Matlab license. 
+% The standalone MIB requires
+% <http://www.mathworks.se/products/compiler/mcr/ MATLAB Compiler Runtime
+% (MCR)> that will be automatically installed during installation. 
 %
 % It is highly recommended to use 64 bit operating system with sufficient amount of memory.
 %% MATLAB
@@ -64,7 +69,7 @@
 % * *FOR MATLAB VERSION* Add this directory (|C:\Matlab\Scripts\OMERO_5|) with subfolders to Matlab path (|Matlab->Home tab->Set Path...->Add with Subfolders...|) or run
 % |pathtool| in Matlab command window
 % * *FOR DEPLOYED VERSION* Modify path to the |omero_client.jar| library in
-% |java_path.txt| (located in the |im_browser| directory). For example,
+% |mib_java_path.txt| (located in the first folder on the search path. Uusually |[username]\Documents\MATLAB|; path to this file will be displayed in the command prompt during start of MIB). For example,
 % _|C:\Matlab\Scripts\OMERO_5\libs\|_ for Omero version 5, or
 % _|C:\Matlab\Scripts\OMERO_4\libs\|_ for Omero verison 4
 %
@@ -111,8 +116,9 @@
 % *Note 3*, the Fiji 3D viewer may not work when started for the first
 % time. In this case, Matlab should be restarted.
 %
-% *Note 4*, to use Fiji with the deployed version of |im_browser| please
-% add a path to your Fiji application to the |java_path.txt| file.
+% *FOR DEPLOYED VERSION*, to use Fiji with the deployed version of MIB please add path to your Fiji application 
+% to the |mib_java_path.txt| file located in the first folder on the search path. 
+% Usually |[username]\Documents\MATLAB|; path to this file will be displayed in the command prompt during start of MIB.
 %
 %% Membrane Click Tracker
 % Compiled files are required to use Membrane Click Tracker tool. Please compile them for your OS. Most of C-functions can be compiled using a single script:
@@ -188,5 +194,15 @@
 % * _im_browser\ImageFilters\RF_Class_C\README.txt_
 % * _im_browser\ImageFilters\RF_Reg_C\README.txt_
 % 
+%
+%% Volume Rendering
+% Compiled |affine_transform_2d_double.c| function is required for volume rendering. Please compile it for your OS.
+% Most of C-functions can be compiled using a single script:
+% 
+% * In Matlab command window change directory to _im_browser\Tools\_, where im_browser is path where MIB is stored, 
+%   for example _c:\MATLAB\Scripts\im_browser_
+% * To compile, type in Matlab command window _mib_compile_c_files_
+%
+% *Note!* This file is already pre-compiled for win64.
 %
 % *Back to* <im_browser_product_page.html *Index*>

@@ -572,21 +572,9 @@ guidata(handles.ib_MembraneDetection, handles);
 
 end
 
-
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_tools_random_forest.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_tools_random_forest.html'), '-helpbrowser');
-    end
-else
-    path = fileparts(which('im_browser'));
-    web(fullfile(path, 'techdoc/html/ug_gui_menu_tools_random_forest.html'), '-helpbrowser');
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_tools_random_forest.html'), '-helpbrowser');
 end
 
 

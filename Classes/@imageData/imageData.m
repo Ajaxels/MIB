@@ -153,6 +153,12 @@ classdef imageData < matlab.mixin.Copyable
         % @li .max - a vector with maximal intensities for contrast adjustment
         % @li .gamma - a vector with gamma factor for contrast adjustment
         % @note Dimensions of each field is @code [1:colors] @endcode
+		volren
+        % a structure with parameters for the volume rendering the fields are
+        % @li .viewer_matrix - a viewer matrix generated from the Rotation, Translation and Scaling vectors using makeViewMatrix function
+        % @li .previewScale - scaledown factor for dataset preview during volren
+        % @li .previewIng - scaled down image
+        % @li .showFullRes - switch whether or not render image in full resolution or just preview
         width
         % image width, px
     end
@@ -164,7 +170,7 @@ classdef imageData < matlab.mixin.Copyable
     
     methods
         % declaration of functions in the external files, keep empty line in between for the doc generator
-        handles = addColorChannel(obj, img, handles, channelId);    
+        handles = addColorChannel(obj, img, handles, channelId, lutColors);    
 
         clearContents(obj, handles);   
 
@@ -253,6 +259,8 @@ classdef imageData < matlab.mixin.Copyable
         handles = replaceImageColor(obj, handles, type);             % Replace image intensities in the @em Masked or @em Selected areas with new intensity value
         
         resizeImage(obj, new_width, new_height, method);             % Resize all layers using specified @em method
+        
+        rotateColorChannel(obj, channel1);          % Rotate color channel of the dataset
         
         clearSelection(obj, height, width, z, t); % Clear the 'Selection' layer. 
         

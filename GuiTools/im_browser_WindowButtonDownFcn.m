@@ -55,13 +55,8 @@ if strcmp(seltype,'normal') %& strcmp(modifier,'alt')
     ylim = get(handles.imageAxes,'ylim');
     if xy(1,1) < xlim(1) || xy(1,2) < ylim(1) || xy(1,1) > xlim(2) || xy(1,2) > ylim(2); return; end;
     
-    % delete the existing cursor
-    %oldversion     cursors = findall(0,'Tag','brushCursor');
-    %%oldversion     for i=1:numel(cursors)
-    %%oldversion         delete(cursors(i));
-    %%oldversion     end
     if ishandle(handles.cursor)
-        set(handles.cursor, 'XData', [],'YData', []);
+        set(handles.cursor, 'Visible', 'off');
     end
     
     % get full image:

@@ -76,6 +76,13 @@ for fnId = 1:numel(filename)
         delete(wb);
         return;
     end
+    % check H/W/Z dimensions
+    if size(res,1) ~= handles.Img{handles.Id}.I.height || size(res,2) ~= handles.Img{handles.Id}.I.width || size(res,3) ~= handles.Img{handles.Id}.I.no_stacks
+        if exist('wb','var'); delete(wb); end;
+        msgbox(sprintf('Mask and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nMask (HxWxZ) = %d x %d x %d pixels',...
+            handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, handles.Img{handles.Id}.I.no_stacks, size(res,1), size(res,2), size(res,3)),'Error!','error','modal');
+        return;
+    end
     
     if size(res, 4) > 1 && size(res, 4) == handles.Img{handles.Id}.I.time   % update complete 4D dataset
         handles.Img{handles.Id}.I.setData4D('mask', res, 4, 0, setDataOptions);

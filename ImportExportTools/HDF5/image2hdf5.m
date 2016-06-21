@@ -6,10 +6,12 @@ function result = image2hdf5(filename, imageS, options)
 % filename: filename for hdf file
 % imageS: original dataset [1:height, 1:width, 1:colors, 1:no_stacks] or [1:height, 1:width, 1:no_stacks]
 % options: [@em optional] a structure with additional parameters
+%  - .ChunkSize - a matrix [y, x, z] of chunk size
+%  - .Deflate - a number 0-9, defines gzip compression level (0-9)
 %  - .overwrite, if @b 1 do not check whether file with provided filename alaready exists
 %  - .showWaitbar, @b 1 - show the progress bar, @b 0 - do not show
-%  - .lutColors,
-%  - .pixSize,
+%  - .lutColors, - not yet implemented
+%  - .pixSize, - not yet implemented
 %  - .ImageDescription, - a cell string with dataset description
 %  - .DatasetName, - a cell string or a containers.Map with metadata
 %  - .order, - a string with order of the axes, 'yxczt'
@@ -43,6 +45,8 @@ result = 0;
 if nargin < 3; options = struct(); end;
 if nargin < 2; error('Please provide filename and image!'); end;
 
+if ~isfield(options, 'ChunkSize'); options.ChunkSize = [];    end;
+if ~isfield(options, 'Deflate'); options.Deflate = 0;    end;
 if ~isfield(options, 'overwrite'); options.overwrite = 0;    end;
 if ~isfield(options, 'showWaitbar'); options.showWaitbar = 1;    end;
 if ~isfield(options, 'height'); options.height = size(imageS, 1);    end;
@@ -62,7 +66,10 @@ else
     end
 end;
 if ~isfield(options, 'ImageDescription'); options.ImageDescription = '';    end;
-if ~isfield(options, 'order'); options.order = 'yxczt';    end;
+
+if ~isfield(options, 'order'); 
+    options.order = 'yxczt';    
+end;
 
 if options.overwrite == 0
     if exist(filename,'file') == 2
@@ -92,16 +99,21 @@ end
 % create dataset
 if options.t == 1
     if options.showWaitbar; waitbar(.05,wb,sprintf('%s\nCreate file container...',filename)); end;
-    h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
-        'Deflate', options.Deflate, 'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);
+    if ~isempty(options.ChunkSize)   % do not chunk the data
+        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
+                'Deflate', options.Deflate, 'ChunkSize', [options.ChunkSize(1) options.ChunkSize(2) 1 options.ChunkSize(3) 1]);
+    else
+        h5create(filename, options.DatasetName, [options.height, options.width, options.colors, options.depth, options.time], 'Datatype', class(imageS),...
+                'Deflate', options.Deflate);
+    end
 end
 
 if options.showWaitbar; waitbar(.1,wb,sprintf('%s\nSaving images...',filename)); end;
 h5write(filename, options.DatasetName, imageS, ...
-    [options.y, options.x, 1, options.z, options.t],...
-    [size(imageS,1), size(imageS,2), size(imageS,3), size(imageS,4),size(imageS,5)]);
+        [options.y, options.x, 1, options.z, options.t],...
+        [size(imageS,1), size(imageS,2), size(imageS,3), size(imageS,4),size(imageS,5)]);
 
-if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end;
+    if options.showWaitbar; waitbar(.9,wb,sprintf('%s\nSaving metadata...',filename)); end;
 
 % generate axistags to be compatible with Ilastik
 % see more here:

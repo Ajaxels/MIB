@@ -19,6 +19,7 @@ function menuModelsSaveAs(hObject, eventdata, handles)
 % 04.09.2015, Ilya Belevich, adapted to use getData3D method
 % 08.01.2016, Ilya Belevich, added export using the STL format
 % 11.02.2016, IB, updated for 4D data (only for *.mat)
+% 12.04.2016, IB, updated for saving in HDF5 format
 
 if  handles.Img{handles.Id}.I.modelExist == 0 || strcmp(handles.Img{handles.Id}.I.model_type, 'int8'); disp('Cancel: No segmentation model detected'); return; end;
 if isnan(handles.Img{handles.Id}.I.model(1,1,1)); errordlg('No model found!','Error!'); return; end;
@@ -28,22 +29,28 @@ if get(handles.seeAllMaterialsCheck, 'value');     selMaterial = 0;  end;
 if isempty(fn_out)
     fn_out = handles.mypath;
 end
-[filename, path, FilterIndex] = uiputfile(...
-    {'*.mat;',  'Matlab format (*.mat)'; ...
-    '*.tif;',  'TIF format (*.tif)'; ...
+
+Filters = {'*.mat;',  'Matlab format (*.mat)'; ...
     '*.am;',  'Amira mesh binary RLE compression SLOW (*.am)'; ...
     '*.am;',  'Amira mesh binary (*.am)'; ...
     '*.am;',  'Amira mesh ascii (*.am)'; ...
+    '*.h5',   'Hierarchical Data Format (*.h5)'; ...
     '*.mod;',  'Contours for IMOD (*.mod)'; ...
     '*.mrc;',  'Volume for IMOD (*.mrc)'; ...
     '*.nrrd;',  'NRRD for 3D Slicer (*.nrrd)'; ...
     '*.stl',  'Isosurface as binary STL (*.stl)'; ...
-    '*.*',  'All Files (*.*)'}, ...
-    'Save model data...',fn_out);
+    '*.tif;',  'TIF format (*.tif)'; ...
+    '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
+    '*.*',  'All Files (*.*)'
+    };
+
+[filename, path, FilterIndex] = uiputfile(Filters, 'Save model data...', fn_out);
 if isequal(filename,0); return; end; % check for cancel
 tic
 
 getDataOptions.blockModeSwitch = 0;     % get the full dataset
+
+handles.Img{handles.Id}.I.model_var = strrep(handles.Img{handles.Id}.I.model_var, '-', '_');
 
 if FilterIndex == 1     % matlab file
     %model = permute(handles.Img{handles.Id}.I.model,[2 1 3]); %#ok<NASGU>  % earlier the models were permuted
@@ -71,17 +78,27 @@ if FilterIndex == 1     % matlab file
     delete(wb);
     set(0, 'DefaulttextInterpreter', curInt);
 else
+    [~, filename, ext] = fileparts(filename);
+    ext = lower(ext);
     t1 = handles.Img{handles.Id}.I.slices{5}(1);
     t2 = t1;
+    
     if handles.Img{handles.Id}.I.time > 1
-        %button = questdlg(sprintf('!!! Warning !!!\nIt is not yet possible to save 4D data in this format!\nHowever it is possible to save the currently shown Z-stack.\nProceed?'),'Save as 4D','Proceed','Cancel','Proceed');
-        button = questdlg(sprintf('!!! Warning !!!\nIt is not possible to save 4D dataset into a single file!\n\nHowever it is possible to save the currently shown Z-stack, or to make a series of files'),'Save model','Save as series of 3D datasets','Save the currently shown Z-stack','Cancel','Save as series of 3D datasets');
-        if strcmp(button, 'Cancel'); return; end;
-        if strcmp(button, 'Save as series of 3D datasets');
-            t1 = 1;
-            t2 = handles.Img{handles.Id}.I.time;
+        if ~ismember(ext, {'.xml', '.h5'})
+            button = questdlg(sprintf('!!! Warning !!!\nIt is not possible to save 4D dataset into a single file!\n\nHowever it is possible to save the currently shown Z-stack, or to make a series of files'),'Save model','Save as series of 3D datasets','Save the currently shown Z-stack','Cancel','Save as series of 3D datasets');
+            if strcmp(button, 'Cancel'); return; end;
         end
+        t1 = 1;
+        t2 = handles.Img{handles.Id}.I.time;
     end
+    
+    showLocalWaitbar = 0;   % switch to show or not wait bar in this function
+    if t1 ~= t2
+        showLocalWaitbar = 1;
+        wb = waitbar(0,sprintf('Saving %s\nPlease wait...',Filters{FilterIndex,2}),'Name','Saving images...','WindowStyle','modal');
+        dT = t2-t1+1;
+    end
+    
     multCoefficient = 1;    % multiply material by this number
     color_list = handles.Img{handles.Id}.I.modelMaterialColors;
     color_list = color_list(1:numel(handles.Img{handles.Id}.I.modelMaterialNames),:);
@@ -99,51 +116,100 @@ else
         selMaterial = NaN;  % reassign materials to take them all
     end
     
-    [~,filename, ext] = fileparts(filename);
-    
     for t=t1:t2
         if t1~=t2   % generate filename
             fnOut = generateSequentialFilename(filename, t, t2-t1+1, ext);
         else
             fnOut = [filename ext];
-        end        
+        end
         
         model = handles.Img{handles.Id}.I.getData3D('model', t, 4, selMaterial, getDataOptions);
         if multCoefficient > 1      % make intensity of the output model as 255
             model = model*multCoefficient;
         end
         
-        if FilterIndex == 2     % as tif
-            ImageDescription = {handles.Img{handles.Id}.I.img_info('ImageDescription')};
-            resolution(1) = handles.Img{handles.Id}.I.img_info('XResolution');
-            resolution(2) = handles.Img{handles.Id}.I.img_info('YResolution');
-            if exist('savingOptions', 'var') == 0   % define parameters for the first time use
-                savingOptions = struct('Resolution', resolution, 'overwrite', 1, 'Saving3d', NaN, 'cmap', NaN);
+        if FilterIndex == 2     % Amira mesh binary RLE compression
+            bb = handles.Img{handles.Id}.I.getBoundingBox();
+            pixStr = handles.Img{handles.Id}.I.pixSize;
+            pixStr.minx = bb(1);
+            pixStr.miny = bb(3);
+            pixStr.minz = bb(5);
+            showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binaryRLE', pixStr, color_list,modelMaterialNames, 1, showWaitbar);
+        elseif FilterIndex == 3     % Amira mesh binary
+            bb = handles.Img{handles.Id}.I.getBoundingBox();
+            pixStr = handles.Img{handles.Id}.I.pixSize;
+            pixStr.minx = bb(1);
+            pixStr.miny = bb(3);
+            pixStr.minz = bb(5);
+            showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binary', pixStr, color_list,modelMaterialNames, 1, showWaitbar);
+        elseif FilterIndex == 4     % Amira mesh ascii
+            bb = handles.Img{handles.Id}.I.getBoundingBox();
+            pixStr = handles.Img{handles.Id}.I.pixSize;
+            pixStr.minx = bb(1);
+            pixStr.miny = bb(3);
+            pixStr.minz = bb(5);
+            showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2amiraMesh
+            bitmap2amiraLabels(fullfile(path, fnOut), model, 'ascii', pixStr, color_list,modelMaterialNames, 1, showWaitbar);
+        elseif FilterIndex == 5 || FilterIndex == 11          % hdf5 format
+            if t==t1    % getting parameters for saving dataset
+                options = mib_saveHDF5Dlg(handles, handles.preferences.Font);
+                if isempty(options);
+                    if showLocalWaitbar; delete(wb); end;
+                    return;
+                end;
+                
+                if strcmp(options.Format, 'bdv.hdf5')
+                    warndlg('Export of models in using the Big Data Viewer format is not implemented!');
+                    if showLocalWaitbar; delete(wb); end;
+                    return;
+                end
+                    
+                options.filename = fullfile(path, [filename ext]);
+                ImageDescription = handles.Img{handles.Id}.I.img_info('ImageDescription');  % initialize ImageDescription
             end
-            model = reshape(model,[size(model,1) size(model,2) 1 size(model,3)]);
-            [result, savingOptions] = ib_image2tiff(fullfile(path, fnOut), model, savingOptions, ImageDescription);
-            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end; % remove SliceName field when saving series of 2D files
-        elseif FilterIndex == 3     % Amira mesh binary RLE compression
-            bb = handles.Img{handles.Id}.I.getBoundingBox();
-            pixStr = handles.Img{handles.Id}.I.pixSize;
-            pixStr.minx = bb(1);
-            pixStr.miny = bb(3);
-            pixStr.minz = bb(5);
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binaryRLE', pixStr, color_list,modelMaterialNames, 1);
-        elseif FilterIndex == 4     % Amira mesh binary
-            bb = handles.Img{handles.Id}.I.getBoundingBox();
-            pixStr = handles.Img{handles.Id}.I.pixSize;
-            pixStr.minx = bb(1);
-            pixStr.miny = bb(3);
-            pixStr.minz = bb(5);
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'binary', pixStr, color_list,modelMaterialNames, 1);
-        elseif FilterIndex == 5     % Amira mesh ascii
-            bb = handles.Img{handles.Id}.I.getBoundingBox();
-            pixStr = handles.Img{handles.Id}.I.pixSize;
-            pixStr.minx = bb(1);
-            pixStr.miny = bb(3);
-            pixStr.minz = bb(5);
-            bitmap2amiraLabels(fullfile(path, fnOut), model, 'ascii', pixStr, color_list,modelMaterialNames, 1);
+            % permute dataset if needed
+            if strcmp(options.Format, 'bdv.hdf5')
+                % permute image to swap the X and Y dimensions
+                %model = permute(model, [2 1 5 3 4]);
+            else
+                % permute image to add color dimension to position 3
+                model = permute(model, [1 2 4 3]);
+            end
+            
+            if t==t1    % updating parameters for saving dataset
+                options.height = size(model,1);
+                options.width = size(model,2);
+                options.colors = 1;
+                if strcmp(options.Format, 'bdv.hdf5')
+                    %options.depth = size(model,4);
+                else
+                    options.depth = size(model,4);
+                end
+                options.time = handles.Img{handles.Id}.I.time;
+                options.pixSize = handles.Img{handles.Id}.I.pixSize;    % !!! check .units = 'um'
+                options.showWaitbar = ~showLocalWaitbar;        % show or not waitbar in data saving function
+                options.lutColors = handles.Img{handles.Id}.I.modelMaterialColors;    % store LUT colors for materials
+                options.ImageDescription = ImageDescription; 
+                options.DatasetName = filename; 
+                options.overwrite = 1;
+                options.ModelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames; % names for materials
+                % saving xml file if needed
+                if options.xmlCreate
+                    saveXMLheader(options.filename, options);
+                end
+            end
+            options.t = t;
+            switch options.Format
+                case 'bdv.hdf5'
+                    options.pixSize.units = 'µm';
+                    saveBigDataViewerFormat(options.filename, model, options);
+                case 'matlab.hdf5'
+                    options.order = 'yxczt';
+                    image2hdf5(fullfile(path, [filename '.h5']), model, options);
+            end
+            
         elseif FilterIndex == 6     % Contours for IMOD (*.mod)
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                 prompt = {'Take each Nth point in contours ( > 0):','Show detected points in the selection layer [0-no, 1-yes]:'};
@@ -155,6 +221,7 @@ else
                 savingOptions.zScaleFactor = 1;
                 savingOptions.generateSelectionSw = str2double(answer{2});
                 savingOptions.colorList = color_list;
+                savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in exportModelToImodModel
             end
             savingOptions.modelFilename = [path fnOut];
             if savingOptions.generateSelectionSw
@@ -166,10 +233,12 @@ else
         elseif FilterIndex == 7     % Volume for IMOD (*.mrc)
             Options.volumeFilename = fullfile(path, fnOut);
             Options.pixSize = handles.Img{handles.Id}.I.pixSize;
+            savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in exportModelToImodModel
             ib_image2mrc(model, Options);
         elseif FilterIndex == 8     % NRRD for 3D Slicer (*.nrrd)
             bb = handles.Img{handles.Id}.I.getBoundingBox;
             Options.overwrite = 1;
+            Options.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in bitmap2nrrd
             bitmap2nrrd(fullfile(path, fnOut), model, bb, Options);
         elseif FilterIndex == 9     % STL isosurface for Blinder (*.stl)
             bounding_box = handles.Img{handles.Id}.I.getBoundingBox();  % get bounding box
@@ -204,9 +273,21 @@ else
                 fv.vertices = p.Vertices;
                 stlwrite(fullfile(path, fnOut), fv, 'FaceColor', p.FaceColor*255);
             end
-            
+        elseif FilterIndex == 10     % as tif
+            ImageDescription = {handles.Img{handles.Id}.I.img_info('ImageDescription')};
+            resolution(1) = handles.Img{handles.Id}.I.img_info('XResolution');
+            resolution(2) = handles.Img{handles.Id}.I.img_info('YResolution');
+            if exist('savingOptions', 'var') == 0   % define parameters for the first time use
+                savingOptions = struct('Resolution', resolution, 'overwrite', 1, 'Saving3d', NaN, 'cmap', NaN);
+            end
+            savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in ib_image2tiff
+            model = reshape(model,[size(model,1) size(model,2) 1 size(model,3)]);
+            [result, savingOptions] = ib_image2tiff(fullfile(path, fnOut), model, savingOptions, ImageDescription);
+            if isfield(savingOptions, 'SliceName'); savingOptions = rmfield(savingOptions, 'SliceName'); end; % remove SliceName field when saving series of 2D files
         end
+        if showLocalWaitbar;    waitbar(t/dT, wb);    end;
     end
+    if showLocalWaitbar; delete(wb); end;
 end
 disp(['Model: ' fullfile(path, filename) ' has been saved']);
 update_filelist(handles, filename);
@@ -233,6 +314,6 @@ elseif files_no < 100000
 elseif files_no < 1000000
     fn = [name '_' sprintf('%06i',num) ext];
 elseif files_no < 10000000
-    fn = [name '_' sprintf('%07i',num) ext];    
+    fn = [name '_' sprintf('%07i',num) ext];
 end
 end

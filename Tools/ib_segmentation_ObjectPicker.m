@@ -84,27 +84,28 @@ switch get(handles.filterSelectionPopup,'Value')
 
             % get current selection
             currSelection = handles.Img{handles.Id}.I.getData3D('selection', NaN, permuteSwitch, NaN, options);
-            currSelection(handles.Img{handles.Id}.I.maskStat.L(options.y(1):options.y(2), options.x(1):options.x(2),options.z(1):options.z(2))==obj_id) = 1;
+            objSelection = zeros(size(currSelection), 'uint8');
+            objSelection(handles.Img{handles.Id}.I.maskStat.L(options.y(1):options.y(2), options.x(1):options.x(2),options.z(1):options.z(2))==obj_id) = 1;
             
             % limit to the selected material of the model
             if get(handles.segmSelectedOnlyCheck,'Value') && strcmp(type, 'mask')
                 selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
                 datasetImage = handles.Img{handles.Id}.I.getData3D('model', NaN, permuteSwitch, selcontour, options);
-                currSelection(datasetImage~=1) = 0;
+                objSelection(datasetImage~=1) = 0;
             end
             
             % limit selection to the masked area
             if get(handles.maskedAreaCheck, 'value') && handles.Img{handles.Id}.I.maskExist && strcmp(type, 'model')
                 datasetImage = handles.Img{handles.Id}.I.getData3D('mask', NaN, permuteSwitch, NaN, options);
-                currSelection(datasetImage~=1) = 0;
+                objSelection(datasetImage~=1) = 0;
             end
             
             if isempty(modifier)
+                currSelection(objSelection==1) = 1;
                 handles.Img{handles.Id}.I.setData3D('selection', currSelection, NaN, permuteSwitch, NaN, options);
             elseif strcmp(modifier, 'control')  % subtracts selections
-                currSelection2 = handles.Img{handles.Id}.I.getData3D('selection', NaN, permuteSwitch, NaN, options);
-                currSelection2(currSelection==1) = 0;
-                handles.Img{handles.Id}.I.setData3D('selection', currSelection2, NaN, permuteSwitch, NaN, options);
+                currSelection(objSelection==1) = 0;
+                handles.Img{handles.Id}.I.setData3D('selection', currSelection, NaN, permuteSwitch, NaN, options);
             end
             return;
         else

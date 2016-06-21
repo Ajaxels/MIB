@@ -103,6 +103,9 @@ selection = zeros(size(model1), class(model1));   % create new selection layer
 
 if isKey(handles.h.Img{handles.h.Id}.I.img_info, 'SliceName')   % when filenames are present use them
     inputFn = handles.h.Img{handles.h.Id}.I.img_info('SliceName');
+    if numel(inputFn) < size(img,4)
+        inputFn = repmat(inputFn(1),[size(img,4),1]);
+    end
 else
     [~,inputFn, ext] = fileparts(handles.h.Img{handles.h.Id}.I.img_info('Filename'));
     inputFn = [inputFn ext];

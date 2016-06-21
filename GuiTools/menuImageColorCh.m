@@ -11,6 +11,7 @@ function menuImageColorCh(hObject, eventdata, handles, parameter)
 % - 'insert', insert an empty color channel to the specified position
 % - 'copy', copy color channel to a new position
 % - 'invert', invert color channel
+% - 'rotate', rotate color channel
 % - 'swap', swap two color channels
 % - 'delete', delete color channel from the dataset
 
@@ -34,6 +35,9 @@ switch parameter
     case 'invert'
         if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
         handles.Img{handles.Id}.I.invertColorChannel();
+    case 'rotate'
+        if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
+        handles.Img{handles.Id}.I.rotateColorChannel();        
     case 'swap'
         if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
         handles.Img{handles.Id}.I.swapColorChannels();

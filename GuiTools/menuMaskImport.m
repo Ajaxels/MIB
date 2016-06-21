@@ -25,7 +25,7 @@ if strcmp(handles.preferences.disableSelection, 'yes');
     return; 
 end;
 
-answer = mib_inputdlg(NaN, 'Mask variable (1:h,1:w,1:z,1:t)','Import from Matlab','M');
+answer = mib_inputdlg(handles, 'Mask variable (1:h,1:w,1:z,1:t)','Import from Matlab','M');
 if size(answer) == 0; return; end;
 if (~isempty(answer{1}))
     try
@@ -34,9 +34,9 @@ if (~isempty(answer{1}))
         errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message),'Misssing variable!','modal');
         return;
     end
-    if size(mask,1) ~= size(handles.Img{handles.Id}.I.img,1) || size(mask,2) ~= size(handles.Img{handles.Id}.I.img,2)
-        msgbox(sprintf('Mask image and loaded image dimensions mismatch!\nImage (HxW) = %d x %d pixels\nMask (HxW) = %d x %d pixels',...
-            size(handles.Img{handles.Id}.I.img,1),size(handles.Img{handles.Id}.I.img,2),size(mask,1),size(mask,2)),'Error!','error','modal');
+    if size(mask,1) ~= size(handles.Img{handles.Id}.I.img,1) || size(mask,2) ~= size(handles.Img{handles.Id}.I.img,2) || size(mask,3) ~= handles.Img{handles.Id}.I.no_stacks
+        msgbox(sprintf('Mask and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nMask (HxWxZ) = %d x %d x %d pixels',...
+            handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, handles.Img{handles.Id}.I.no_stacks, size(mask,1), size(mask,2), size(mask,3)),'Error!','error','modal');
         return;
     end
     ib_do_backup(handles, 'mask', 1);

@@ -33,10 +33,13 @@ cMax = numel(cMax);
 switch mode
     case 'xy2zx'
         imgOut = zeros([zMax, xMax, cMax, yMax, tMax], class(handles.Img{handles.Id}.I.img)); %#ok<ZEROLIKE>
+        outputDims = [zMax, xMax, cMax, yMax, tMax];
     case 'xy2zy'
         imgOut = zeros([yMax, zMax, cMax, xMax tMax], class(handles.Img{handles.Id}.I.img)); %#ok<ZEROLIKE>
+        outputDims = [yMax, zMax, cMax, xMax tMax];
     case 'zx2zy'
         imgOut = zeros([yMax, xMax, cMax, zMax, tMax], class(handles.Img{handles.Id}.I.img)); %#ok<ZEROLIKE>
+        outputDims = [yMax, xMax, cMax, zMax, tMax];
     case 'z2t'
         handles = convertZ2T(handles);
         log_text = 'Rotate: mode=Z->T';
@@ -50,7 +53,6 @@ switch mode
 end
 wb = waitbar(0,sprintf('Transposing the image\nPlease wait...'),'Name',sprintf('Transpose dataset [%s]', mode),'WindowStyle','modal');
 
-outputDims = size(imgOut);
 % transpose the image layer
 for t=1:tMax
     img = handles.Img{handles.Id}.I.getData3D('image', t, 4, 0, options);   % get z-stack (image)

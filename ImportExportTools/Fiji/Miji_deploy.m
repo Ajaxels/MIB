@@ -3,7 +3,7 @@ function Miji_deploy(open_imagej)
 % is a modified Miji.m function adapted for the deployed version of im_browser. Mainly the javaaddpath is removed
 %
 % @note requires Fiji to be installed (http://fiji.sc/Fiji)
-% @note requires java_path.txt file in the directory of im_browser
+% @note requires mib_java_path.txt file in the directory of im_browser
 %
 % Parameters:
 % open_imagej: a parameter of the original Miji function

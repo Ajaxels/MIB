@@ -13,7 +13,7 @@ function varargout = ib_resampleGui(varargin)
 %
 % Updates
 % 04.02.2016, IB, updated for 4D datasets
-
+% 25.04.2016, IB, added tformarray method
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -157,62 +157,26 @@ wb = waitbar(0,sprintf('Resampling image...\n[%d %d %d %d]->[%d %d %d %d]', hand
 options.blockModeSwitch=0;
 
 imgOut = zeros([newH,newW,handles.color,newZ,maxT], class(handles.h.Img{handles.h.Id}.I.img));   %#ok<ZEROLIKE> % allocate space
+options.height = newH;
+options.width = newW;
+options.depth = newZ;
+options.method = methodImage;
 for t=1:maxT
     img = handles.h.Img{handles.h.Id}.I.getData3D('image', t, 4, NaN, options);
     waitbar(0.05,wb);
     % resample image
     if strcmp(resamplingFunction, 'interpn')
-        if size(img, 3) == 1
-            [xi,yi,zi] = ndgrid(linspace(1, handles.height, newH), linspace(1, handles.width, newW), linspace(1, handles.zstacks, newZ));
-            if strcmp(methodImage,'nearest')
-                imgTemp = interpn(squeeze(img), xi, yi, zi, methodImage);
-            else
-                if isa(img,'uint8')
-                    imgTemp = uint8(interpn(double(squeeze(img)), xi, yi, zi, methodImage));
-                elseif isa(img,'uint16')
-                    imgTemp = uint16(interpn(double(squeeze(img)), xi, yi, zi, methodImage));
-                end
-            end
-            imgOut(:,:,:,:,t) = reshape(imgTemp, [size(imgTemp,1), size(imgTemp,2), 1, size(imgTemp,3), 1]);
-        else
-            [xi,yi,ci,zi] = ndgrid(linspace(1, handles.height, newH), linspace(1, handles.width, newW), 1:size(img,3), linspace(1, handles.zstacks, newZ));
-            if strcmp(methodImage,'nearest')
-                imgOut(:,:,:,:,t) = interpn(img, xi, yi, ci, zi, methodImage);
-            else
-                imgOut(:,:,:,:,t) = uint8(interpn(double(img), xi, yi, ci, zi, methodImage));
-            end
-        end
+        options.showWaitbar = 0;
+        options.algorithm = 'interpn';
+        imgOut(:,:,:,:,t) = mib_resize3d(img(:,:,:,:,t), [], options);
+    elseif strcmp(resamplingFunction, 'imresize')
+        options.showWaitbar = 0;
+        options.algorithm = 'imresize';
+        imgOut(:,:,:,:,t) = mib_resize3d(img(:,:,:,:,t), [], options);
     else
-        if newW ~= handles.width || newH ~= handles.height  % resize xy dimension
-            imgOut2 = zeros(newH, newW, size(img,3), handles.zstacks, class(img)); %#ok<ZEROLIKE>
-            modVal = round(handles.zstacks/10);
-            for zIndex = 1:handles.zstacks
-                imgOut2(:,:,:,zIndex) = imresize(img(:, :, :, zIndex), [newH newW], methodImage);
-                if mod(zIndex, modVal) == 0; waitbar(zIndex/handles.zstacks,wb); end;
-            end
-        end
-        if newZ ~= handles.zstacks
-            if exist('imgOut2','var') == 0
-                imgOut2 = img(:, :, :, :);
-            end;
-            if size(imgOut2, 1)*1.82 < size(imgOut2, 2)
-                modVal = round(newH/10);
-                for hIndex = 1:newH
-                    tempImg = imresize(permute(imgOut2(hIndex, :, :, :), [4 2 3 1]), [newH newZ], methodImage);
-                    imgOut(hIndex,:,:,:,t) = permute(tempImg, [4 2 3 1]);
-                    if mod(hIndex,modVal) == 0; waitbar(hIndex/newH,wb); end;
-                end
-            else
-                modVal = round(newW/10);
-                for wIndex = 1:newW
-                    tempImg = imresize(permute(imgOut2(:, wIndex, :, :), [1 4 3 2]), [newH newZ], methodImage);
-                    imgOut(:,wIndex,:,:,t) = permute(tempImg, [1 4 3 2]);
-                    if mod(wIndex,modVal) == 0; waitbar(wIndex/newW,wb); end;
-                end
-            end
-        else
-            imgOut(:, :, :, :, t) = imgOut2;
-        end
+        options.showWaitbar = 0;
+        options.algorithm = 'tformarray';
+        imgOut(:,:,:,:,t) = mib_resize3d(img(:,:,:,:,t), [], options);
     end
 end
 clear img;
@@ -232,6 +196,8 @@ handles.h.Img{handles.h.Id}.I.img_info('XResolution') = resolution(1);
 handles.h.Img{handles.h.Id}.I.img_info('YResolution') = resolution(2);
 handles.h.Img{handles.h.Id}.I.img_info('ResolutionUnit') = 'Inch';
 
+options.method = modelsMethod;
+
 % resample model and mask
 if handles.h.Img{handles.h.Id}.I.modelExist
     waitbar(0.75,wb,sprintf('Resampling model...\n[%d %d %d %d]->[%d %d %d %d]', handles.height, handles.width, handles.color, handles.zstacks,newH,newW,handles.color,newZ));
@@ -240,49 +206,28 @@ if handles.h.Img{handles.h.Id}.I.modelExist
     matetialsNumber = numel(handles.h.Img{handles.h.Id}.I.modelMaterialNames);
     for t=1:maxT
         if strcmp(resamplingFunction, 'interpn')
-            [xi,yi,zi] = ndgrid(linspace(1, handles.height, newH), linspace(1, handles.width, newW), linspace(1, handles.zstacks, newZ));
             if strcmp(modelsMethod,'nearest')
-                imgOut(:,:,:,t) = interpn(model(:,:,:,t), xi, yi, zi, modelsMethod);
+                options.showWaitbar = 0;
+                options.algorithm = 'interpn';
+                imgOut(:,:,:,t) = mib_resize3d(model(:,:,:,t), [], options);
             else
                 modelTemp = zeros([newH, newW, newZ],'uint8');
                 for materialId = 1:matetialsNumber
                     modelTemp2 = zeros(size(model(:,:,:,t)),'uint8');
                     modelTemp2(model(:,:,:,t) == materialId) = 1;
-                    modelTemp2 = interpn(double(modelTemp2), xi, yi, zi, modelsMethod);
+                    modelTemp2 = mib_resize3d(modelTemp2, [], options);
                     modelTemp(modelTemp2>0.33) = materialId;
                 end
                 imgOut(:,:,:,t) = modelTemp;
             end
+        elseif strcmp(resamplingFunction, 'imresize')
+            options.showWaitbar = 0;
+            options.algorithm = 'imresize';
+            imgOut(:,:,:,t) = mib_resize3d(model(:,:,:,t), [], options);
         else
-            if newW ~= handles.width || newH ~= handles.height  % resize xy dimension
-                imgOut2 = zeros(newH, newW, handles.zstacks, 'uint8');
-                modVal = round(handles.zstacks/10);
-                for zIndex = 1:handles.zstacks
-                    imgOut2(:,:,zIndex) = imresize(model(:, :, zIndex, t), [newH newW], 'method', modelsMethod);
-                    if mod(zIndex,modVal) == 0; waitbar(zIndex/handles.zstacks,wb); end;
-                end
-            end
-            if newZ ~= handles.zstacks
-                if exist('imgOut2','var') == 0
-                    imgOut2 = model(:, :, :, t);
-                end;
-                if size(imgOut2, 1)*1.82 < size(imgOut2, 2)
-                    modVal = round(newH/10);
-                    for hIndex = 1:newH
-                        imgOut(hIndex,:,:,t) = imresize(squeeze(imgOut2(hIndex, :, :)), [newW newZ], modelsMethod);
-                        if mod(hIndex,modVal) == 0; waitbar(hIndex/newH,wb); end;
-                    end
-                else
-                    modVal = round(newW/10);
-                    for wIndex = 1:newW
-                        imgOut(:,wIndex,:,t) = imresize(squeeze(imgOut2(:, wIndex, :)), [newH newZ], modelsMethod);
-                        if mod(wIndex,modVal) == 0; waitbar(wIndex/newW,wb); end;
-                    end
-                end
-            else
-                imgOut(:,:,:,t) = imgOut2;
-            end
-            clear imgOut2;
+            options.showWaitbar = 0;
+            options.algorithm = 'tformarray';
+            imgOut(:,:,:,t) = mib_resize3d(model(:,:,:,t), [], options);
         end
     end
     waitbar(0.95,wb);
@@ -310,6 +255,7 @@ handles.output = handles.h;
 delete(wb)
 toc;
 %profile viewer
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -319,6 +265,7 @@ uiresume(handles.ib_resampleGui);
 end
 
 function editbox_Callback(hObject, eventdata, handles)
+return;
 if get(handles.dimensionsRadio,'Value')
     switch get(hObject,'Tag')
         case 'dimX'
@@ -438,7 +385,8 @@ elseif val == 2     % imresize
     methods = {'nearest','box', 'triangle', 'cubic','lanczos2','lanczos3'};
     methodsModel = {'nearest'};
 else
-    return;
+    methods = {'nearest', 'linear', 'cubic'};
+    methodsModel = {'nearest', 'linear','cubic'};
 end
 if get(handles.imageMethod, 'value') > numel(methods); set(handles.imageMethod, 'value', 1); end;
 if get(handles.modelsMethod, 'value') > numel(methods); set(handles.modelsMethod, 'value', 1); end;

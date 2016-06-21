@@ -29,7 +29,7 @@ if selected < 3
     return;
 end;
 %answer = inputdlg('Please enter overlapping value [0-]:','Remove holes parameters',1,{'1'});
-answer = mib_inputdlg(NaN, 'Please enter overlapping value [0-]:','Remove holes parameters','1');
+answer = mib_inputdlg(handles, 'Please enter overlapping value [0-]:','Remove holes parameters','1');
 if size(answer)==0; return; end;
 ib_do_backup(handles, 'model', 1);
 overlap = str2double(answer{1});

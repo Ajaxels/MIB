@@ -63,7 +63,7 @@ else
     end
 end
 matlabVersion = ver('Matlab');
-matlabVersion = str2double(matlabVersion.Version);
+matlabVersion = str2double(matlabVersion(1).Version);
 
 if strcmp(options.fitType,'Gaussian 3D')       % 3d gaussian filter
     if size(img,4) < 3

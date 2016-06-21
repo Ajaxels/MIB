@@ -26,7 +26,7 @@ function mib_calibrateScaleBar(handles)
 choice = questdlg(sprintf('The following procedure allows to define the pixel size for the dataset using a scale bar displayed on the image.\n\nHow to use:\n1. With the left mouse button mark the end points of the scale bar\n2. Double click on the line to confirm the selection\n3. Enter the length of the scale bar'),'Scale bar info','Continue','Cancel','Cancel');
 if strcmp(choice, 'Cancel'); return; end;
     
-answer = mib_inputdlg(NaN, sprintf('Please enter length of the scale bar, keep the space character between the number and the unit;\nyou can use the following units:\n m, cm, mm, um, nm'),'Scale bar lenght', '2 um');
+answer = mib_inputdlg(handles, sprintf('Please enter length of the scale bar, keep the space character between the number and the unit;\nyou can use the following units:\n m, cm, mm, um, nm'),'Scale bar lenght', '2 um');
 if isempty(answer);  
     handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
     return; 
@@ -34,12 +34,16 @@ end;
 answer = answer{1};
 spaceChar = strfind(answer, ' ');
 
-disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings for selection
-handles.preferences.disableSelection = 'yes'; % disable selection
-guidata(handles.im_browser, handles);
+%disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings for selection
+%handles.preferences.disableSelection = 'yes'; % disable selection
+%guidata(handles.im_browser, handles);
+brushSize = get(handles.segmSpotSizeEdit,'string');
+set(handles.segmSpotSizeEdit,'string', '0');
 
 result = handles.Img{handles.Id}.I.hMeasure.DistanceFun(handles); % use Measure class to draw a line above the scale bar
-handles.preferences.disableSelection = disableSelectionSwitch ;    % restore settings for selection
+%handles.preferences.disableSelection = disableSelectionSwitch ;    % restore settings for selection
+set(handles.segmSpotSizeEdit,'string', brushSize);
+
 if result == 0; 
     handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
     return; 

@@ -26,15 +26,9 @@ catch
     jMenuBar = jFrame.fFigureClient.getMenuBar;
 end
 if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-    else
-        pathName = pwd;
-    end
-    resourcesPath = fullfile(pathName, 'Resources');
+    resourcesPath = fullfile(handles.pathMIB, 'Resources');
 else
-    resourcesPath = fullfile(fileparts(which('im_browser')), 'Resources');
+    resourcesPath = fullfile(handles.pathMIB, 'Resources');
 end
 
 jFileMenu = jMenuBar.getComponent(0);

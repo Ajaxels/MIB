@@ -43,7 +43,7 @@ function ib_omeroLoginDlg_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to ib_omeroLoginDlg (see VARARGIN)
 
 % Choose default command line output for ib_omeroLoginDlg
-handles.output = NaN;
+handles.output = struct();
 handles.password = '';
 
 Font = varargin{1};
@@ -161,7 +161,7 @@ end
 
 % --- Executes on button press in cancelBtn.
 function cancelBtn_Callback(hObject, eventdata, handles)
-handles.output = NaN;
+handles.output = struct();
 guidata(hObject, handles);
 uiresume(handles.ib_omeroLoginDlg);
 end

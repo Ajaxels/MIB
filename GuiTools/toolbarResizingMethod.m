@@ -51,11 +51,7 @@ else
     set(handles.toolbarResizingMethod, 'TooltipString', 'nearest interpolation for the visualization, press for bicubic');
 end
 
-if isdeployed
-    img = load(fullfile(pwd, 'Resources', filename), '-mat');  % load icon
-else
-    img = load(fullfile(fileparts(which('im_browser')), 'Resources', filename), '-mat');  % load icon
-end
+img = load(fullfile(handles.pathMIB, 'Resources', filename), '-mat');  % load icon
 set(handles.toolbarResizingMethod,'CData', img.image);
 if isfield(handles, 'Img')
     handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);     % redraw the image

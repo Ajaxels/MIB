@@ -32,7 +32,44 @@ function handles = plotImage(obj, axes, handles, resize, sImgIn)
 
 rgbOptions.mode = 'shown';
 if nargin < 5   % generate Ishown from the dataset
-    obj.Ishown = getRGBimage(obj, handles, rgbOptions);
+    if strcmp(get(handles.volrenToolbarSwitch, 'state'), 'off')
+        obj.Ishown = getRGBimage(obj, handles, rgbOptions);
+    else
+        imPanPos = get(handles.imageAxes, 'position');
+        options.Mview = obj.volren.viewer_matrix;
+        options.ImageSize = [floor(imPanPos(4)), floor(imPanPos(3))];
+        options.ShearInterp = 'nearest';
+        %options.AlphaTable = [1 0 0 0 1];
+
+        timePoint = handles.Img{handles.Id}.I.slices{5}(1);
+        if obj.volren.showFullRes == 1
+            obj.Ishown =  getRGBvolume(obj.img(:,:,:,:,timePoint), options, handles);
+        else
+            obj.Ishown = getRGBvolume(obj.volren.previewImg, options, handles);
+        end
+                
+        if obj.imh == 0 || ~isempty(get(handles.Img{handles.Id}.I.imh,'UserData'))
+            obj.imh = image(obj.Ishown, 'parent', axes);
+        else
+           set(obj.imh, 'CData',[],'CData', obj.Ishown);
+        end
+        
+        set(handles.imageAxes, 'DataAspectRatioMode',' manual');
+        set(handles.imageAxes, 'PlotBoxAspectRatioMode',' manual');
+        set(handles.imageAxes, 'DataAspectRatio',[1 1 1]);
+        set(handles.imageAxes, 'PlotBoxAspectRatio',[imPanPos(3)/imPanPos(4)  1    1]);
+        
+        set(handles.imageAxes, ...
+            'box'             , 'on', ...
+            'xtick'           , [], ...
+            'ytick'           , [], ...
+            'interruptible'   , 'off', ...
+            'busyaction'      , 'queue', ...
+            'handlevisibility', 'callback');
+        
+        guidata(handles.im_browser, handles);
+        return;
+    end
 else    % use for Ishown the image provided in the sImgIn
     if resize == 1
         rgbOptions.resize = 'no';   % show the provided image in full resolution 
@@ -50,14 +87,16 @@ elseif obj.orientation == 2
     coef_z = obj.pixSize.z/obj.pixSize.y;
 end
 
-if obj.imh == 0
+if obj.imh == 0 || ~isempty(get(handles.Img{handles.Id}.I.imh,'UserData'))
     obj.imh = image(obj.Ishown, 'parent', axes);
+    set(obj.imh, 'UserData', []);
 else
     set(obj.imh,'CData',[],'CData', obj.Ishown);
     % delete measurements & roi
     lineObj = findobj(handles.imageAxes,'tag','measurements','-or','tag','roi');
     if ~isempty(lineObj); delete(lineObj); end;     % keep it within if, because it is faster
 end
+
 handles = ib_updateCursor(handles);
 
 set(obj.imh,'HitTest','off'); % If HitTest is off, clicking this object selects the object below it (which is usually the axes containing it)
@@ -126,7 +165,9 @@ else
     end
     
     % show measurements
-    handles = handles.Img{handles.Id}.I.hMeasure.addMeasurementsToPlot(handles, 'shown');
+    if get(handles.showAnnotationsCheck,'value')==1
+        handles = handles.Img{handles.Id}.I.hMeasure.addMeasurementsToPlot(handles, 'shown');
+    end
 end
 
 guidata(handles.im_browser, handles);

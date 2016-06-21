@@ -120,11 +120,7 @@ pos = get(handles.mib_BoundingBoxDlg, 'position');
 handles.dialogHeight = pos(4);
 
 % add icon
-if isdeployed
-    [IconData, IconCMap] = imread(fullfile(pwd, 'Resources','mib_quest.gif'));
-else
-    [IconData, IconCMap] = imread(fullfile(fileparts(which('im_browser')), 'Resources', 'mib_quest.gif'));
-end
+[IconData, IconCMap] = imread(fullfile(handles.h.pathMIB, 'Resources','mib_quest.gif'));
 Img=image(IconData, 'Parent', handles.axes1);
 IconCMap(IconData(1,1)+1,:) = get(handles.mib_BoundingBoxDlg, 'Color');   % replace background color
 set(handles.mib_BoundingBoxDlg, 'Colormap', IconCMap);

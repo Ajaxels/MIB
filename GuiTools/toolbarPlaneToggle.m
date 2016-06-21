@@ -20,7 +20,30 @@ function toolbarPlaneToggle(hObject, eventdata, handles, moveMouseSw)
 
 if nargin < 4;     moveMouseSw = 0; end;
 
+set(handles.zyPlaneToggle, 'state', 'off');
+set(handles.xyPlaneToggle, 'state', 'off');
+set(handles.zxPlaneToggle, 'state', 'off');
 set(hObject,'State','on');
+
+% when volume rendering is enabled
+if strcmp(get(handles.volrenToolbarSwitch, 'state'), 'on')
+    
+    switch get(hObject,'Tag')
+        case 'xyPlaneToggle'
+              R = [0 0 0];  % 'yx'
+        case 'zxPlaneToggle'
+             R = [90 0 90]; % 'xz'
+        case 'zyPlaneToggle'
+             R = [90 90 0]; % 'yz'
+    end
+    S = [1*handles.Img{handles.Id}.I.magFactor,...
+                   1*handles.Img{handles.Id}.I.magFactor,...
+                   1*handles.Img{handles.Id}.I.pixSize.x/handles.Img{handles.Id}.I.pixSize.z*handles.Img{handles.Id}.I.magFactor];  
+    T = [0 0 0];               
+    handles.Img{handles.Id}.I.volren.viewer_matrix = makeViewMatrix(R, S, T);
+    handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
+    return;
+end
 
 switch get(hObject,'Tag')
     case 'xyPlaneToggle'
@@ -33,6 +56,7 @@ end
 oldMagFactor = handles.Img{handles.Id}.I.magFactor;
 handles = handles.Img{handles.Id}.I.updateAxesLimits(handles, 'resize');
 handles = updateGuiWidgets(handles);
+
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
 
 if moveMouseSw

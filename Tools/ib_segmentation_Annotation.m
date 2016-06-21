@@ -35,7 +35,7 @@ ib_do_backup(handles, 'labels', 0);
 if isempty(modifier) || strcmp(modifier, 'shift')  % add label
     %labelText = inputdlg('Type a new annotation:', 'Add annotation');
     noLabels = handles.Img{handles.Id}.I.hLabels.getLabelsNumber();
-    labelText = mib_inputdlg(NaN,'Type a new annotation:', 'Add annotation', sprintf('Feature %d',noLabels+1));
+    labelText = mib_inputdlg(handles, 'Type a new annotation:', 'Add annotation', sprintf('Feature %d',noLabels+1));
     if isempty(labelText); return; end;
     handles.Img{handles.Id}.I.hLabels.addLabels(labelText, [z, x, y, t]);
     set(handles.showAnnotationsCheck, 'value', 1);

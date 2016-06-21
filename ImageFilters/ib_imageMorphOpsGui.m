@@ -232,11 +232,7 @@ switch operationName
 end
 set(handles.infoText, 'string',infoText);
 % load preview image
-if isdeployed
-    img = imread(fullfile(pwd, 'Resources', [handles.operationName '.jpg']));  
-else
-    img = imread(fullfile(fileparts(which('im_browser')), 'Resources', [handles.operationName '.jpg']));  
-end
+img = imread(fullfile(handles.h.pathMIB, 'Resources', [handles.operationName '.jpg']));  
 image(img, 'parent', handles.previewAxes);
 set(handles.previewAxes, ...
     'box'             , 'off', ...

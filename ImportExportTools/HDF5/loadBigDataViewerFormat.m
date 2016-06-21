@@ -94,7 +94,7 @@ if isempty(img_info)   % when no img_info, populate it from the HDF5 file
         img_info('ReturnedLevel') = options.level;
     else
         prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
-        answer = mib_inputdlg(NaN,prompt,'Select image','1');
+        answer = mib_inputdlg(NaN, prompt, 'Select image', '1');
         if isempty(answer); if options.waitbar==1; delete(wb); end; return; end;
         img_info('ReturnedLevel') = str2double(answer);
         if img_info('ReturnedLevel') < 1 || img_info('ReturnedLevel') > noLevels

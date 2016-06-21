@@ -199,7 +199,7 @@ classdef roiRegion < matlab.mixin.Copyable
             
             prompt = sprintf('There are %d vertices in the line. Please enter a coefficient to decrease it if needed; any in range 1-%d\n\nIf coefficient is 2, the number of vertices will be reduced in 2 times', size(position,1), size(position,1));
             title = 'Convert to polyline';
-            answer = mib_inputdlg(NaN,prompt,title,'10');
+            answer = mib_inputdlg(handles, prompt, title, '10');
             if isempty(answer); return; end;
             
             coef = round(str2double(cell2mat(answer)));
@@ -1014,7 +1014,7 @@ classdef roiRegion < matlab.mixin.Copyable
             set(handles.imageAxes,'NextPlot','replace');
         end
         
-        function mask = returnMask(obj, index, Height, Width, orient)
+        function mask = returnMask(obj, index, Height, Width, orient, blockModeSwitch)
             % function mask = returnMask(obj, index, Height, Width, orient)
             % Return a bitmap mask of the specified ROI
             %
@@ -1026,6 +1026,7 @@ classdef roiRegion < matlab.mixin.Copyable
             % Width: [@em optional] width of the image
             % orient: [@em optional] orientation of the dataset: 1-'xz', 2-'yz', 4-'yz', 0-for all orientations. @b
             % Default, the currently shown orientation.
+            % blockModeSwitch: override the blockModeSwitch
             %
             % Return values:
             % mask: mask image [1:Height, 1:Width]
@@ -1035,7 +1036,8 @@ classdef roiRegion < matlab.mixin.Copyable
             % @code mask = roiRegion.returnMask(new_position, 1); // get mask of ROI number 1 @endcode
             % @code mask =  returnMask(obj, 0); // Call within the class; get combined mask of all shown ROIs @endcode
             
-            if nargin < 5; orient = obj.hImg.orientation; end;
+            if nargin < 6; blockModeSwitch = obj.hImg.blockModeSwitch; end;
+            if nargin < 5 || isnan(orient); orient = obj.hImg.orientation; end;
             if nargin < 3 || isnan(Height);
                 options.orientation = orient;
                 [Height, Width, color, thick] = obj.hImg.getDatasetDimensions('image', NaN, NaN, options);
@@ -1057,7 +1059,7 @@ classdef roiRegion < matlab.mixin.Copyable
             % shift coordinates when the block mode is enabled
             shiftX = 0;
             shiftY = 0;
-            if obj.hImg.blockModeSwitch == 1
+            if blockModeSwitch == 1
                 shiftX = max([0 floor(obj.hImg.axesX(1))]);
                 shiftY = max([0 floor(obj.hImg.axesY(1))]);
             end

@@ -25,7 +25,7 @@ function [block_width, block_height] = generate_grid_block_size(image_width, ima
 block_height = 0;
 if nargin < 3; 
     %answer = inputdlg(sprintf('Enter approximate width of a block:\n(Area width=%d, height=%d)',image_width,image_height),'Block parameters',1,{'30'},'on'); 
-    answer = mib_inputdlg(NaN,sprintf('Enter approximate width of a block:\n(Area width=%d, height=%d)',image_width,image_height),'Block parameters','30'); 
+    answer = mib_inputdlg(NaN, sprintf('Enter approximate width of a block:\n(Area width=%d, height=%d)',image_width,image_height),'Block parameters','30'); 
     if size(answer) == 0; return; end; 
     block_width = str2double(answer{1});
 end

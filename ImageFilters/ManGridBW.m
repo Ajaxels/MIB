@@ -194,7 +194,7 @@ end
 % --- Executes on button press in importGridBtn.
 function importGridBtn_Callback(hObject, eventdata, handles)
 %answer = inputdlg({'Threshold matrix variable:'},'Import from Matlab',1,{'thrMatrix'},'on');
-answer = mib_inputdlg(NaN,'Threshold matrix variable:','Import from Matlab','thrMatrix');
+answer = mib_inputdlg(handles.h, 'Threshold matrix variable:', 'Import from Matlab', 'thrMatrix');
 if size(answer) == 0; return; end;
 try
     handles.thrMatrix = evalin('base',answer{1});
@@ -209,7 +209,7 @@ end
 % --- Executes on button press in exportGrid.
 function exportGrid_Callback(hObject, eventdata, handles)
 %answer = inputdlg({'Variable for the threshold matrix:'},'Input variables for export', 1, {'thrMatrix'},'on');    
-answer = mib_inputdlg(NaN,'Variable for the threshold matrix:','Input variables for export', 'thrMatrix');    
+answer = mib_inputdlg(handles.h, 'Variable for the threshold matrix:', 'Input variables for export', 'thrMatrix');    
 if size(answer) == 0; return; end; 
 handles.thrMatrix = get(handles.thresholdsTable,'Data');
 assignin('base',answer{1},handles.thrMatrix);

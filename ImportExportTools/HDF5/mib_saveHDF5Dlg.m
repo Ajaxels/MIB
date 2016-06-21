@@ -22,7 +22,7 @@ function varargout = mib_saveHDF5Dlg(varargin)
 
 % Edit the above text to modify the response to help mib_saveHDF5Dlg
 
-% Last Modified by GUIDE v2.5 31-Mar-2016 16:00:02
+% Last Modified by GUIDE v2.5 12-Apr-2016 09:51:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -201,5 +201,15 @@ if get(handles.chunkCheckbox, 'value')
     set(handles.chunkEdit, 'enable', 'on');
 else
     set(handles.chunkEdit, 'enable', 'off');
+end
+end
+
+
+
+function deflateEdit_Callback(hObject, eventdata, handles)
+val = str2double(get(handles.deflateEdit, 'string'));
+if val < 0 || val > 9
+    errordlg(sprintf('!!! Error !!!\n\nThe value for compression should be between 0 (no compression) and 9 (maximal)'),'Wrong value');
+    set(handles.deflateEdit, 'string', '6');
 end
 end

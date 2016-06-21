@@ -4,7 +4,7 @@ function varargout = mib_inputdlg(varargin)
 %
 %
 % Parameters:
-% NaN:  just use NaN here
+% handles:  handles structure of im_browser (preferable) or NaN
 % dlgText:  dialog test, a string
 % dlgTitle: dialog title, a string
 % defAnswer:    default answer, a string
@@ -68,6 +68,8 @@ else
 end
 textString = varargin{2};
 
+handles.h = varargin{1};
+
 set(handles.mib_inputdlg,'Name', titleStr);
 set(handles.textString,'String', textString);
 set(handles.textEdit,'String', inputStr);
@@ -110,11 +112,18 @@ pos = get(handles.mib_inputdlg, 'position');
 handles.dialogHeight = pos(4);
 
 % add icon
-if isdeployed
-    [IconData, IconCMap] = imread(fullfile(pwd, 'Resources','mib_quest.gif'));
+if isstruct(handles.h)
+    [IconData, IconCMap] = imread(fullfile(handles.h.pathMIB, 'Resources','mib_quest.gif'));        
 else
-    [IconData, IconCMap] = imread(fullfile(fileparts(which('im_browser')), 'Resources', 'mib_quest.gif'));
+    if isdeployed % Stand-alone mode.
+        [~, result] = system('path');
+        currentDir = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+    else % MATLAB mode.
+        currentDir = fileparts(which('im_browser'));
+    end
+    [IconData, IconCMap] = imread(fullfile(currentDir, 'Resources','mib_quest.gif'));    
 end
+
 Img=image(IconData, 'Parent', handles.axes1);
 IconCMap(IconData(1,1)+1,:) = get(handles.mib_inputdlg, 'Color');   % replace background color
 set(handles.mib_inputdlg, 'Colormap', IconCMap);

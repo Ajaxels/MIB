@@ -21,14 +21,14 @@ function varargout = mib_rechopDatasetGui(varargin)
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
 % Copyright (C) 18.05.2015 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
-% part of Microscopy Image Browser, http:\\mib.helsinki.fi 
+% part of Microscopy Image Browser, http:\\mib.helsinki.fi
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
 % as published by the Free Software Foundation; either version 2
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+%
 
 % Last Modified by GUIDE v2.5 18-May-2015 08:19:48
 
@@ -171,24 +171,41 @@ if imgSw == 0 && modelSw == 0 && maskSw == 0
     return;
 end
 
-str1 = '';
-str2 = '';
+if imgSw == 1 && (modelSw == 1 || maskSw == 1)
+    button = questdlg(sprintf('!!! Attention !!!\n\nPlease select only image files\nDo not select model nor mask files!'),'Attention!', 'Continue','Cancel','Continue');
+    if strcmp(button, 'Cancel'); return; end;
+end
+
 if imgSw == 1;
-    str1 = '*.am;*.nrrd;*.tif'; str2 = 'Images (*.am, *.nrrd, *.tif); ';
+    fileFormats = {'*.am;',  'Amira mesh binary (*.am)'; ...
+        '*.nrrd;',  'NRRD for 3D Slicer (*.nrrd)'; ...
+        '*.tif;',  'TIF format (*.tif)'; ...
+        '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
+        '*.*',  'All Files (*.*)'};
 else
     if maskSw == 1
-        str1 = [str1, ';*.mask']; str2 = [str2, 'Masks (*.mask)'];
+        fileFormats = {'*.mask',  'Masks (*.mask)'; ...
+            '*.*',  'All Files (*.*)'};
     elseif modelSw == 1
-        str1 = [str1, ';*.mat']; str2 = [str2, 'Models (*.mat); '];
+        val = get(handles.modelsFormatPopup, 'value');
+        switch val
+            case 1
+                fileFormats = {'*.mat;',  'Matlab format (*.mat)'};
+            case 2
+                fileFormats = {'*.am;',  'Amira mesh binary (*.am)'};
+            case 3
+                fileFormats = {'*.nrrd;',  'NRRD for 3D Slicer (*.nrrd)'};
+            case 4
+                fileFormats = {'*.tif;',  'TIF format (*.tif)'};
+            case 5
+                fileFormats = {'*.xml',   'Hierarchical Data Format with XML header (*.xml)'};
+        end
     end
 end;
-fileFormats = [cellstr(str1), cellstr(str2)];
-fileFormats(2,:) = [cellstr('*.*'), cellstr('All files (*.*)')];
 
 [FileName, PathName, FilterIndex] = uigetfile(fileFormats,'Select chopped files',handles.outputDir,'MultiSelect','on');
 if isequal(FileName,0);    return;  end;
 set(handles.selectedFilesList, 'string', FileName);
-
 handles.filenames = fullfile(PathName, FileName);
 
 if ischar(handles.filenames)
@@ -199,17 +216,7 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
-    end
-else
-    web(fullfile(fileparts(which('im_browser')),'techdoc','html','ug_gui_menu_file_chop.html'));
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_file_chop.html'), '-helpbrowser');
 end
 
 
@@ -229,6 +236,25 @@ if no_files < 1
     errordlg('Please select the files and try again!','Missing the files');
     return;
 end
+
+% get extension for the models
+%if imgSw==0
+val = get(handles.modelsFormatPopup, 'value');
+switch val
+    case 1
+        modelExt = '.mat';
+    case 2
+        modelExt = '.am';
+    case 3
+        modelExt = '.nrrd';
+    case 4
+        modelExt = '.tif';
+    case 5
+        modelExt = '.xml';
+end
+%else
+%    [~, ~, modelExt] = fileparts(handles.filenames{1});
+%end
 
 %files = struct();   % structure that keeps info about each file in the series
 % .object_type -> 'movie', 'hdf5_image', 'image'
@@ -331,27 +357,27 @@ if get(handles.newRadio, 'Value')   % generate new stack mode
         for fnId=1:no_files
             [path, fn, ext] = fileparts(handles.filenames{fnId});
             if isempty(strfind(fn, 'Labels'))
-                fn = fullfile(path, ['Labels_' fn '.mat']);     % Add Labels_ to the filename and change extension
+                fn = fullfile(path, ['Labels_' fn modelExt]);     % Add Labels_ to the filename and change extension
             else
-                fn = fullfile(path, [fn '.mat']);     % change extension
+                fn = fullfile(path, [fn modelExt]);     % change extension
             end
             
-            if exist(fn, 'file') == 0
-                errordlg(sprintf('!!! Error !!!\n\nThe file for the Model:\n%s\nwas not found!\nPlease check the filenames or unselect the Models checkbox!', fn),'Missing the model files');
-                delete(wb);
-                return;
-            end
-            
-            R = load(fn);
+            % load models
+            R = loadModels(fn, handles);
+            handles.h.Img{handles.h.Id}.I.model_fn = fn;
+            handles.h.Img{handles.h.Id}.I.model_var = 'rechopped';
+
             if numel(R.material_list) > numel(material_list)
                 material_list = R.material_list;
             end
             
-            if fnId == 1
-                color_list = R.color_list;
-                imgDim = size(R.imOut);
-            elseif size(R.color_list,1) > size(color_list,1)
-                color_list = R.color_list;
+            if isfield(R, 'color_list')
+                if fnId == 1
+                    color_list = R.color_list;
+                    imgDim = size(R.imOut);
+                elseif size(R.color_list,1) > size(color_list,1)
+                    color_list = R.color_list;
+                end
             end
             
             yMin = (Yno(fnId)-1)*imgDim(1)+1;
@@ -466,9 +492,9 @@ else                                % fuse to existing
                 return;
             end
             
-           x2 = min([x1+files{fnId}.width-1 handles.h.Img{handles.h.Id}.I.width]);
-           y2 = min([y1+files{fnId}.height-1 handles.h.Img{handles.h.Id}.I.height]);
-           z2 = min([z1+files{fnId}.noLayers-1 handles.h.Img{handles.h.Id}.I.no_stacks]);
+            x2 = min([x1+files{fnId}.width-1 handles.h.Img{handles.h.Id}.I.width]);
+            y2 = min([y1+files{fnId}.height-1 handles.h.Img{handles.h.Id}.I.height]);
+            z2 = min([z1+files{fnId}.noLayers-1 handles.h.Img{handles.h.Id}.I.no_stacks]);
             
             if x2 > handles.h.Img{handles.h.Id}.I.width || y2 > handles.h.Img{handles.h.Id}.I.height || z2 > handles.h.Img{handles.h.Id}.I.no_stacks
                 errordlg(sprintf('!!! Error !!!\nWrong maximal coordinate of the  bounding box!\n\nFilename: %s', handles.filenames{fnId}), 'Wrong bounding box!');
@@ -487,36 +513,30 @@ else                                % fuse to existing
             if modelSw    % fuse into the model
                 [path, fn, ext] = fileparts(handles.filenames{fnId});
                 if isempty(strfind(fn, 'Labels'))
-                    fn = fullfile(path, ['Labels_' fn '.mat']);     % Add Labels_ to the filename and change extension
+                    fn = fullfile(path, ['Labels_' fn modelExt]);     % Add Labels_ to the filename and change extension
                 else
-                    fn = fullfile(path, [fn '.mat']);     % change extension
+                    fn = fullfile(path, [fn modelExt]);     % change extension
                 end
                 
-                if exist(fn, 'file') == 0
-                    errordlg(sprintf('!!! Error !!!\n\nThe file for the Model:\n%s\nwas not found!\nPlease check the filenames or unselect the Models checkbox!', fn),'Missing the model files');
-                    delete(wb);
-                    return;
-                end
-                
-                R = load(fn);
-                Fields = fieldnames(R);
-                for field = 1:numel(Fields)     % find field name for the data
-                    if ~strcmp(Fields{field},'material_list') && ~strcmp(Fields{field},'labelText') && ~strcmp(Fields{field},'labelPosition') && ~strcmp(Fields{field},'color_list') && ~strcmp(Fields{field},'bounding_box')
-                        handles.h.Img{handles.h.Id}.I.model_var = Fields{field};
-                    end
-                end
+                % load models
+                R = loadModels(fn, handles);
                 
                 if numel(R.material_list) > numel(material_list)
                     material_list = R.material_list;
                 end
-                if size(R.color_list,1) > size(color_list,1)
-                    color_list = R.color_list;
+                
+                if isfield(R, 'color_list')
+                    if fnId == 1
+                        color_list = R.color_list;
+                    elseif size(R.color_list,1) > size(color_list,1)
+                        color_list = R.color_list;
+                    end
                 end
                 
                 opt.x = [x1 x2];
                 opt.y = [y1 y2];
                 opt.z = [z1 z2];
-                handles.h.Img{handles.h.Id}.I.setData3D('model', R.(handles.h.Img{handles.h.Id}.I.model_var), NaN, 4, NaN, opt);
+                handles.h.Img{handles.h.Id}.I.setData3D('model', R.imOut, NaN, 4, NaN, opt);
             end
             
             if maskSw    % fuse into the mask
@@ -539,11 +559,18 @@ else                                % fuse to existing
         elseif modelSw == 1     % get only the model, without image
             fn = handles.filenames{fnId};
             
-            R = load(fn);
-            Fields = fieldnames(R);
-            for field = 1:numel(Fields)     % find field name for the data
-                if ~strcmp(Fields{field},'material_list') && ~strcmp(Fields{field},'labelText') && ~strcmp(Fields{field},'labelPosition') && ~strcmp(Fields{field},'color_list') && ~strcmp(Fields{field},'bounding_box')
-                    handles.h.Img{handles.h.Id}.I.model_var = Fields{field};
+            % load models
+            R = loadModels(fn, handles);
+            
+            if numel(R.material_list) > numel(material_list)
+                material_list = R.material_list;
+            end
+            
+            if isfield(R, 'color_list')
+                if fnId == 1
+                    color_list = R.color_list;
+                elseif size(R.color_list,1) > size(color_list,1)
+                    color_list = R.color_list;
                 end
             end
             
@@ -566,9 +593,9 @@ else                                % fuse to existing
                 return;
             end
             
-            x2 = x1+size(R.(handles.h.Img{handles.h.Id}.I.model_var),2)-1;
-            y2 = y1+size(R.(handles.h.Img{handles.h.Id}.I.model_var),1)-1;
-            z2 = z1+size(R.(handles.h.Img{handles.h.Id}.I.model_var),3)-1;
+            x2 = x1+size(R.imOut,2)-1;
+            y2 = y1+size(R.imOut,1)-1;
+            z2 = z1+size(R.imOut,3)-1;
             
             if x2 > handles.h.Img{handles.h.Id}.I.width || y2 > handles.h.Img{handles.h.Id}.I.height || z2 > handles.h.Img{handles.h.Id}.I.no_stacks
                 errordlg(sprintf('!!! Error !!!\nWrong maximal coordinate of the  bounding box!\n\nFilename: %s', handles.filenames{fnId}), 'Wrong bounding box!');
@@ -576,116 +603,12 @@ else                                % fuse to existing
                 return;
             end
             
-            if numel(R.material_list) > numel(material_list)
-                material_list = R.material_list;
-            end
-            if size(R.color_list,1) > size(color_list,1)
-                color_list = R.color_list;
-            end
-            
             opt.x = [x1 x2];
             opt.y = [y1 y2];
             opt.z = [z1 z2];
-            handles.h.Img{handles.h.Id}.I.setData3D('model', R.(handles.h.Img{handles.h.Id}.I.model_var), NaN, 4, NaN, opt);
+            handles.h.Img{handles.h.Id}.I.setData3D('model', R.imOut, NaN, 4, NaN, opt);
         end
-        
-        
-        
-        %if bb_info_exist == 1   % use information from the BoundingBox
-        %             spaces = strfind(curr_text,' ');
-        %             if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
-        %             tab_pos = strfind(curr_text,sprintf('|'));
-        %             pos = min([spaces(7) tab_pos]);
-        %             bb = str2num(curr_text(spaces(1):pos-1)); %#ok<ST2NM>
-        
-        %             if strcmp(sprintf('%.6f',pixSize{fnId}.x), sprintf('%.6f', handles.h.Img{handles.h.Id}.I.pixSize.x)) == 0 || ...
-        %                     strcmp(sprintf('%.6f',pixSize{fnId}.y), sprintf('%.6f', handles.h.Img{handles.h.Id}.I.pixSize.y)) == 0
-        %                 errordlg(sprintf('!!! Error !!!\nPixel sizes mismatch!\n\nFilename: %s', handles.filenames{fnId}), 'Pixel sizes mismatch!');
-        %                 delete(wb);
-        %                 return;
-        %             end
-        
-        %             % find shifts
-        %             currBB = handles.h.Img{handles.h.Id}.I.getBoundingBox();    % get current Bounding Box
-        %             x1 = ceil((bb(1)-currBB(1))/handles.h.Img{handles.h.Id}.I.pixSize.x + 1);
-        %             y1 = ceil((bb(3)-currBB(3))/handles.h.Img{handles.h.Id}.I.pixSize.y + 1);
-        %             z1 = ceil((bb(5)-currBB(5))/handles.h.Img{handles.h.Id}.I.pixSize.z + 1);
-        %
-        %             if x1 < 1 || y1 < 1 || z1 < 1
-        %                 errordlg(sprintf('!!! Error !!!\nWrong minimal coordinate of the bounding box!\n\nFilename: %s', handles.filenames{fnId}), 'Wrong bounding box!');
-        %                 delete(wb);
-        %                 return;
-        %             end
-        %
-        %             x2 = x1+files{fnId}.width-1;
-        %             y2 = y1+files{fnId}.height-1;
-        %             z2 = z1+files{fnId}.noLayers-1;
-        %
-        %             if x2 > handles.h.Img{handles.h.Id}.I.width || y2 > handles.h.Img{handles.h.Id}.I.height || z2 > handles.h.Img{handles.h.Id}.I.no_stacks
-        %                     errordlg(sprintf('!!! Error !!!\nWrong maximal coordinate of the  bounding box!\n\nFilename: %s', handles.filenames{fnId}), 'Wrong bounding box!');
-        %                     delete(wb);
-        %                     return;
-        %             end
-        %             [img, img_info{fnId}] = ib_getImages(files{fnId}, img_info{fnId});
-        %             handles.h.Img{handles.h.Id}.I.img(y1:y2, x1:x2,1:files{fnId}.color, z1:z2) = img;
-        %
-        %             if modelSw    % fuse into the model
-        %                 [path, fn, ext] = fileparts(handles.filenames{fnId});
-        %                 if isempty(strfind(fn, 'Labels'))
-        %                     fn = fullfile(path, ['Labels_' fn '.mat']);     % Add Labels_ to the filename and change extension
-        %                 else
-        %                     fn = fullfile(path, [fn '.mat']);     % change extension
-        %                 end
-        %
-        %                 if exist(fn, 'file') == 0
-        %                     errordlg(sprintf('!!! Error !!!\n\nThe file for the Model:\n%s\nwas not found!\nPlease check the filenames or unselect the Models checkbox!', fn),'Missing the model files');
-        %                     delete(wb);
-        %                     return;
-        %                 end
-        %
-        %                 R = load(fn);
-        %                 Fields = fieldnames(R);
-        %                 for field = 1:numel(Fields)     % find field name for the data
-        %                     if ~strcmp(Fields{field},'material_list') && ~strcmp(Fields{field},'labelText') && ~strcmp(Fields{field},'labelPosition') && ~strcmp(Fields{field},'color_list') && ~strcmp(Fields{field},'bounding_box')
-        %                         handles.h.Img{handles.h.Id}.I.model_var = Fields{field};
-        %                     end
-        %                 end
-        %
-        %                 if numel(R.material_list) > numel(material_list)
-        %                     material_list = R.material_list;
-        %                 end
-        %                 if size(R.color_list,1) > size(color_list,1)
-        %                     color_list = R.color_list;
-        %                 end
-        %
-        %                 opt.x = [x1 x2];
-        %                 opt.y = [y1 y2];
-        %                 opt.z = [z1 z2];
-        %                 handles.h.Img{handles.h.Id}.I.setData3D('model', R.(handles.h.Img{handles.h.Id}.I.model_var), NaN, 4, NaN, opt);
-        %             end
-        %
-        %             if maskSw    % fuse into the mask
-        %                 [path, fn, ext] = fileparts(handles.filenames{fnId});
-        %                 fn = fullfile(path, [fn '.mask']);     % Change extension
-        %
-        %                 if exist(fn, 'file') == 0
-        %                     errordlg(sprintf('!!! Error !!!\n\nThe file for the Mask:\n%s\nwas not found!\nPlease check the filenames or unselect the Masks checkbox!', fn),'Missing the mask files');
-        %                     delete(wb);
-        %                     return;
-        %                 end
-        %
-        %                 R = load(fn, '-mat');
-        %
-        %                 opt.x = [x1 x2];
-        %                 opt.y = [y1 y2];
-        %                 opt.z = [z1 z2];
-        %                 handles.h.Img{handles.h.Id}.I.setData3D('mask', R.imOut, NaN, 4, NaN, opt);
-        %             end
-        %        else
-        %             errordlg('In order to fuse the images the Bounding Box information should be present in the ImageDescription field!','Missing the ImageDescription');
-        %             delete(wb);
-        %             return;
-        %        end
+
         waitbar(fnId/no_files, wb);
     end
     delete(wb);
@@ -707,4 +630,85 @@ handles.h = guidata(handles.h.im_browser);
 
 handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
 mib_rechopDatasetGui_CloseRequestFcn(handles.mib_rechopDatasetGui, eventdata, handles);
+end
+
+
+function R = loadModels(fn, handles)
+R = struct();
+if exist(fn, 'file') == 0
+    errordlg(sprintf('!!! Error !!!\n\nThe file for the Model:\n%s\nwas not found!\nPlease check the filenames or unselect the Models checkbox!', fn),'Missing the model files');
+    delete(wb);
+    return;
+end
+[~, ~, modelExt] = fileparts(fn);
+
+switch modelExt
+    case '.mat'
+        R = load(fn);
+    case '.am'
+        getMetaOpt.waitbar = 0;
+        img_info = getImageMetadata({fn}, getMetaOpt, handles.h);
+        keysList = keys(img_info);
+        for keyId=1:numel(keysList)
+            strfindResult = strfind(keysList{keyId}, 'Materials_');
+            if ~isempty(strfindResult)
+                materialInfo = img_info(keysList{keyId});
+                dummyIndex = strfind(materialInfo, 'Color');
+                materialIndex = str2double(materialInfo(1:dummyIndex-1));
+                materialColor = str2num(materialInfo(dummyIndex+6:end)); %#ok<ST2NM>
+                R.color_list(materialIndex, :) = materialColor(1:3);
+                dummyIndex = strfind(keysList{keyId}, '_');
+                R.material_list{materialIndex, :} = keysList{keyId}(dummyIndex(1)+1:dummyIndex(2)-1);
+            end
+        end
+        R.imOut = amiraLabels2bitmap(fn);
+    case '.nrrd'
+        getMetaOpt.waitbar = 0;
+        img_info = getImageMetadata({fn}, getMetaOpt, handles.h);
+        R.imOut = nrrdLoadWithMetadata(fn);
+        R.imOut =  uint8(permute(R.imOut.data, [2 1 3]));
+    case '.tif'
+        getDataOpt.bioformatsCheck = 0;
+        getDataOpt.progressDlg = 1;
+        [R.imOut, img_info, ~] = ib_loadImages({fn}, getDataOpt, handles.h);
+        R.imOut =  squeeze(R.imOut);
+    case '.xml'
+        getDataOpt.bioformatsCheck = 0;
+        getDataOpt.progressDlg = 0;
+        [R.imOut, img_info] = ib_loadImages({fn}, getDataOpt, handles.h);
+        R.imOut = squeeze(R.imOut);
+        if isKey(img_info, 'material_list')     % add list of material names
+            R.material_list = img_info('material_list');
+        end
+        if isKey(img_info, 'color_list')     % add list of colors for materials
+            R.color_list = img_info('color_list');
+        end
+end
+
+% get bounding box
+if isKey(img_info, 'ImageDescription')
+    curr_text = img_info('ImageDescription');             % get current bounding box x1,y1,z1
+    bb_info_exist = strfind(curr_text,'BoundingBox');
+    if bb_info_exist == 1   % use information from the BoundingBox parameter for pixel sizes if it is exist
+        spaces = strfind(curr_text,' ');
+        if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+        tab_pos = strfind(curr_text,sprintf('|'));
+        pos = min([spaces(7) tab_pos]);
+        R.bounding_box = str2num(curr_text(spaces(1):pos-1)); %#ok<ST2NM>
+    end
+end
+
+% generate material names and colors
+if ~isfield(R, 'material_list')
+    nMaterials = max(R.imOut(:));
+    for matId = 1:nMaterials
+        R.material_list(matId, :) = {num2str(matId)};
+        if matId <= size(handles.h.Img{handles.h.Id}.I.modelMaterialColors,1)
+            R.color_list(matId, :) = handles.h.Img{handles.h.Id}.I.modelMaterialColors(matId,:);
+        else
+            R.color_list(matId, :) = [rand(1) rand(1) rand(1)];
+        end
+    end
+end
+
 end

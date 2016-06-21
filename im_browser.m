@@ -75,7 +75,6 @@ function im_browser_OpeningFcn(hObject, eventdata, handles, varargin)
 % Return values:
 
 % add path to other directories
-
 if ~isdeployed
     func_name='im_browser.m';
     func_dir=which(func_name);
@@ -83,6 +82,7 @@ if ~isdeployed
     addpath(func_dir);
     addpath(fullfile(func_dir, 'Classes'));
     addpath(fullfile(func_dir, 'GuiTools'));
+    addpath(fullfile(func_dir, 'GuiTools', 'volren'));
     addpath(fullfile(func_dir, 'ImageFilters'));
     addpath(fullfile(func_dir, 'ImageFilters', 'Coherence_filter'));
     addpath(fullfile(func_dir, 'ImageFilters', 'Coherence_filter','functions'));
@@ -119,7 +119,7 @@ end
 % get the current version of matlab; keep this variable to be faster and
 % not call ver function
 v = ver('matlab');
-handles.matlabVersion = str2double(v.Version);
+handles.matlabVersion = str2double(v(1).Version);
 if handles.matlabVersion >= 8.4 % R2014b
     set(handles.im_browser,'GraphicsSmoothing','off');  % turn off smoothing and turn opengl renderer
     set(handles.im_browser, 'Renderer','opengl');
@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.10 / 07.04.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.20 / 20.06.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -140,23 +140,33 @@ set(handles.im_browser,'Name',title);
 try
     if isdeployed
         if isunix()
-            [~, user_name] = system('whoami');
-            pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
+            %[~, user_name] = system('whoami');
+            %pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
+            [status, result] = system('path');
+            pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
         else
-            pathName = pwd;
+            %pathName = pwd;
+%             USERPROFILE_PATH = getenv('USERPROFILE');
+%             mibDataPath = fullfile(USERPROFILE_PATH, 'AppData', 'Local', 'Microscopy Image Browser');
+%             if isdir(mibDataPath) == 0
+%                 mkdir(mibDataPath);
+%             end
+            [status, result] = system('path');
+            pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
         end
-        img = imread(fullfile(pathName, 'Resources', 'splash'));  % load splash screen
+        handles.pathMIB = pathName;
+        img = imread(fullfile(handles.pathMIB, 'Resources', 'splash'));  % load splash screen
         
         % get numbers for the brush size change
-        handles.brushSizeNumbers = 1-imread(fullfile(pathName, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
-        handles.dejavufont = 1-imread(fullfile(pathName, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
+        handles.brushSizeNumbers = 1-imread(fullfile(handles.pathMIB, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
+        handles.dejavufont = 1-imread(fullfile(handles.pathMIB, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
     else
-        pathMIB = fileparts(which('im_browser'));
-        img = imread(fullfile(pathMIB, 'Resources', 'splash'));  % load splash screen
+        handles.pathMIB = fileparts(which('im_browser'));
+        img = imread(fullfile(handles.pathMIB, 'Resources', 'splash'));  % load splash screen
         
         % get numbers for the brush size change
-        handles.brushSizeNumbers = 1-imread(fullfile(pathMIB, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
-        handles.dejavufont = 1-imread(fullfile(pathMIB, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
+        handles.brushSizeNumbers = 1-imread(fullfile(handles.pathMIB, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
+        handles.dejavufont = 1-imread(fullfile(handles.pathMIB, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
     end
     %dateTagCrop = dateTag(strfind(dateTag, 'ver.')+5:end);
     %img = rendertext(img, dateTagCrop,[255 255 255], [30, 392],'bnd','right');
@@ -165,9 +175,9 @@ try
     addTextOptions.markerText = 'text';
     img = ib_addText2Img(img, dateTag, [1,425], handles.dejavufont, addTextOptions);
     
-    if handles.matlabVersion >= 8.4 && isdeployed && ~ismac() % R2014b
-        % do not show the splash screen
-    else
+%     if handles.matlabVersion >= 8.4 && isdeployed && ~ismac() % R2014b
+%         % do not show the splash screen
+%     else
         jimg = im2java(img);
         frame = javax.swing.JFrame;
         frame.setUndecorated(true);
@@ -181,7 +191,7 @@ try
         frame.setLocation((screenSize(3)-imgSize(2))/2,...
             (screenSize(4)-imgSize(1))/2);
         frame.show;
-    end
+%    end
 catch err
     sprintf('%s', err.identifier);
 end
@@ -340,6 +350,7 @@ handles.channelMixerTable_cm = uicontextmenu('Parent',handles.im_browser);
 uimenu(handles.channelMixerTable_cm, 'Label', 'Insert empty channel', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'insert'});
 uimenu(handles.channelMixerTable_cm, 'Label', 'Copy channel', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'copy'});
 uimenu(handles.channelMixerTable_cm, 'Label', 'Invert channel', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'invert'});
+uimenu(handles.channelMixerTable_cm, 'Label', 'Rotate channel', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'rotate'});
 uimenu(handles.channelMixerTable_cm, 'Label', 'Swap channels', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'swap'});
 uimenu(handles.channelMixerTable_cm, 'Label', 'Delete channel', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'delete'});
 uimenu(handles.channelMixerTable_cm, 'Label', 'Set LUT color', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'set color'}, 'Separator','on');
@@ -347,7 +358,8 @@ set(handles.channelMixerTable,'uicontextmenu',handles.channelMixerTable_cm);
 
 % adding context menu for Add to list
 handles.modelAdd_cm = uicontextmenu('Parent',handles.im_browser);
-uimenu(handles.modelAdd_cm, 'Label', 'Sync all lists', 'Callback', {@syncModelLists_Callback, 'addto'});
+uimenu(handles.modelAdd_cm, 'Label', 'Get statistics...', 'Callback', {@menuMaskStats_Callback, handles});
+uimenu(handles.modelAdd_cm, 'Label', 'Sync all lists', 'Callback', {@syncModelLists_Callback, 'addto'},'Separator','on');
 set(handles.segmAddList,'uicontextmenu',handles.modelAdd_cm);
 
 % set callback for the mode selection in the Mask Generator panel
@@ -356,15 +368,22 @@ set(handles.maskGenPanelModeRadioPanel,'SelectionChangeFcn',@maskGenPanelModeRad
 set(0,'CurrentFigure',handles.im_browser);
 update_drives(handles,start_path,1);  % get available disk drives
 update_filelist(handles);
-%set(handles.im_browser,'Visible','on');
 
 handles = handles.Img{handles.Id}.I.updateAxesLimits(handles, 'resize');
-handles = handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
 handles = updateGuiWidgets(handles);
+handles = handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
+%guidata(handles.im_browser, handles);
 
 %handles.changelayerSliderListener = addlistener(handles.changelayerSlider,'Value','PostSet', @(s,e) changelayerSlider_Callback(handles.changelayerSlider, [], handles));
-
 set(handles.im_browser,'Visible','on');
+% remove focus from the menu
+uicontrol(handles.updatefilelistBtn);    
+
+if exist('frame','var')     % put again to the top
+    frame.show;
+    frame.toFront();
+end
+pause(0.1);
 
 % add double click callbacks for the sliders of the widgets,
 % see more http://undocumentedmatlab.com/blog/setting-listbox-mouse-actions
@@ -373,15 +392,10 @@ jFilesListbox = jFilesListbox.getVerticalScrollBar;
 jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
 set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.filesListbox, 1});
 
-% Update handles structure
-guidata(handles.im_browser, handles);
-
 if exist('frame','var')     % close splash window
     frame.hide;
     clear frame;
 end
-
-%pos = get(handles.im_browser, 'Position');
 
 % UIWAIT makes im_browser wait for user response (see UIRESUME)
 %uiwait(handles.im_browser);
@@ -497,7 +511,7 @@ end;
 list = cellstr(get(handles.segmList,'String'));
 if isempty(list{1}); list = cell(0); end;    % remove empty entry from the list
 number = numel(list);
-answer = mib_inputdlg(NaN, sprintf('Please add a new name for this material:'),'Rename material', num2str(number+1));
+answer = mib_inputdlg(handles, sprintf('Please add a new name for this material:'),'Rename material', num2str(number+1));
 if ~isempty(answer)
     list(end+1,1) = cellstr(answer(1));
 else
@@ -649,7 +663,7 @@ switch parameter
         maxVal = double(intmax(class(handles.Img{handles.Id}.I.img)));
         defaultAnswer = {num2str(round(sliderStep(1)*maxVal))};
         %answer = inputdlg(prompt,'Set step...',1,defaultAnswer);
-        answer = mib_inputdlg(NaN,prompt,'Set step...',defaultAnswer);
+        answer = mib_inputdlg(handles, prompt, 'Set step...', defaultAnswer);
         if isempty(answer); return; end;
         if str2double(answer{1})/maxVal > 1 || str2double(answer{1}) <= 0
             errordlg(sprintf('The step should be between 1 and %d!', maxVal),'Wrong step!');
@@ -712,7 +726,7 @@ elseif strcmp(get(hObject,'tag'),'bwFilterManGridCheck') && val == 1
 end
 if val == 1
     %answer = inputdlg('Input square grid size, px','Grid settings',1,cellstr(num2str(handles.corrGridrunSize)));
-    answer = mib_inputdlg(NaN,'Input square grid size, px','Grid settings',num2str(handles.corrGridrunSize));
+    answer = mib_inputdlg(handles, 'Input square grid size, px', 'Grid settings', num2str(handles.corrGridrunSize));
     if isempty(answer)
         set(handles.corrGridrunCheck,'Value',0);
         return;
@@ -833,7 +847,7 @@ function corrGridCheck_Callback(~, ~, handles)
 val = get(handles.corrGridCheck,'Value');
 if val == 1
     %answer = inputdlg('Input square grid size, px','Grid settings',1,cellstr(num2str(handles.corrGridrunSize)));
-    answer = mib_inputdlg(NaN,'Input square grid size, px','Grid settings',num2str(handles.corrGridrunSize));
+    answer = mib_inputdlg(handles, 'Input square grid size, px', 'Grid settings', num2str(handles.corrGridrunSize));
     if isempty(answer)
         set(handles.corrGridrunCheck,'Value',0);
         return;
@@ -956,7 +970,7 @@ end
 function adaptiveSmoothCheck_Callback(hObject, eventdata, handles)
 if get(handles.adaptiveSmoothCheck, 'Value')
     %answer = inputdlg('Enter the smoothing factor value, (>2)','Smoothing factor',1,{num2str(handles.adaptiveSmoothingFactor)});
-    answer = mib_inputdlg(NaN,'Enter the smoothing factor value, (>2)','Smoothing factor',num2str(handles.adaptiveSmoothingFactor));
+    answer = mib_inputdlg(handles, 'Enter the smoothing factor value, (>2)', 'Smoothing factor', num2str(handles.adaptiveSmoothingFactor));
     if isempty(answer); return; end;
     handles.adaptiveSmoothingFactor = str2double(answer{1});
     guidata(handles.im_browser, handles);
@@ -1160,8 +1174,12 @@ buttonID = str2double(tag(end));
 handles.Id = buttonID;
 set(hObject, 'value', 1);
 
-handles.Img{handles.Id}.I.imh = 0;
+%handles.Img{handles.Id}.I.imh = 0;
+handles.Img{handles.Id}.I.imh = image(handles.imageAxes, 'CData',[],'UserData', 'new');
 handles.U.clearContents();  % clear undo history
+
+% turn off volume rendering
+set(handles.volrenToolbarSwitch, 'state', 'off');
 
 if ~isempty(fileparts(handles.Img{handles.Id}.I.img_info('Filename')))
     handles.mypath = fileparts(handles.Img{handles.Id}.I.img_info('Filename'));
@@ -1604,7 +1622,7 @@ end
 function menuMaskExport_Callback(~, ~, handles)
 prompt = {'Variable for the mask image:'};
 title = 'Input variables for export';
-answer = mib_inputdlg(NaN,prompt,title,'M');
+answer = mib_inputdlg(handles, prompt, title, 'M');
 if size(answer) == 0; return; end;
 options.blockModeSwitch = 0;
 assignin('base',answer{1},handles.Img{handles.Id}.I.getData4D('mask', 4, NaN, options));
@@ -1633,7 +1651,8 @@ function menuMaskSmooth_Callback(hObject, eventdata, handles, parameter)
 smoothImage_Callback(hObject, eventdata, handles, parameter);
 end
 % ---- Mask statistics --------------------------------------------------------
-function menuMaskStats_Callback(~, ~, handles)
+function menuMaskStats_Callback(hObject, ~, handles)
+handles = guidata(handles.im_browser);
 if handles.Img{handles.Id}.I.orientation ~= 4;
     msgbox('Please rotate the dataset to the XY orientation!','Error!','error','modal');
     return;
@@ -1739,13 +1758,7 @@ end
 % ---- Help  --------------------------------------------------------
 function menuHelpHelp_Callback(hObject, eventdata, handles, page)
 if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, sprintf('techdoc/html/%s.html', page)), '-helpbrowser');
-    else
-        web(fullfile(pwd, sprintf('techdoc/html/%s.html', page)), '-helpbrowser');
-    end
+    web(fullfile(handles.pathMIB, sprintf('techdoc/html/%s.html', page)), '-helpbrowser');
 else
     if handles.matlabVersion < 8
         if strcmp(page, 'im_browser_product_page')
@@ -1754,60 +1767,57 @@ else
             docsearch '"Microscopy Image Browser License"'
         end
     else
-        web(fullfile(fileparts(which('im_browser')),'techdoc','html',[page '.html']));
-%         if strcmp(page, 'im_browser_product_page')
-%             %web('matlab:doc -classic')
-%         elseif strcmp(page, 'im_browser_license')
-%             web(fullfile(fileparts(which('im_browser')),'techdoc','html',[page '.html']));
-%         end
+        web(fullfile(handles.pathMIB,'techdoc','html',[page '.html']));
     end
 end
 end
 % --- Executes on button press in segmPanelHelpBtn.
 function helpBtn_Callback(hObject, eventdata, handles, type)
 if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-    else
-        pathName = pwd;
-    end
-    
     switch type
-        case 'backRem_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser');
-        case 'classref';            web(fullfile(pathName, 'techdoc/ClassReference/index.html'), '-helpbrowser');
-        case 'coherence_filter';            web(fullfile(pathName, 'techdoc/html/ug_panel_filters_coherence.html'), '-helpbrowser');
-        case 'corr_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_corr.html'), '-helpbrowser');
-        case 'dir_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_dir.html'), '-helpbrowser');
-        case 'fiji_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_fiji_connect.html'), '-helpbrowser');
-        case 'imfilt_panel';             web(fullfile(pathName, 'techdoc/html/ug_panel_image_filters.html'), '-helpbrowser');
-        case 'mask_gen';             web(fullfile(pathName, 'techdoc/html/ug_panel_mask_generators.html'), '-helpbrowser');
-        case 'model_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_model.html'), '-helpbrowser');
-        case 'path_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_path.html'), '-helpbrowser');
-        case 'roi_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_roi.html'), '-helpbrowser');
-        case 'segm_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_segm.html'), '-helpbrowser');
-        case 'segmAn_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_segm_analysis.html'), '-helpbrowser');
-        case 'sel_panel';            web(fullfile(pathName, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
-        case 'view_settings_panel';             web(fullfile(pathName, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
+        case 'backRem_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser');
+        case 'classref';            
+            if isdir(fullfile(handles.pathMIB, 'techdoc', 'ClassReference'))
+                web(fullfile(handles.pathMIB, 'techdoc/ClassReference/index.html'), '-helpbrowser');
+            else
+                web('http://mib.helsinki.fi/help/api/index.html', '-helpbrowser');
+            end
+        case 'coherence_filter';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_filters_coherence.html'), '-helpbrowser');
+        case 'corr_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_corr.html'), '-helpbrowser');
+        case 'dir_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_dir.html'), '-helpbrowser');
+        case 'fiji_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_fiji_connect.html'), '-helpbrowser');
+        case 'imfilt_panel';             web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_image_filters.html'), '-helpbrowser');
+        case 'mask_gen';             web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_mask_generators.html'), '-helpbrowser');
+        case 'model_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_model.html'), '-helpbrowser');
+        case 'path_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_path.html'), '-helpbrowser');
+        case 'roi_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_roi.html'), '-helpbrowser');
+        case 'segm_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_segm.html'), '-helpbrowser');
+        case 'segmAn_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_segm_analysis.html'), '-helpbrowser');
+        case 'sel_panel';            web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
+        case 'view_settings_panel';             web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
     end
 else
-    path = fileparts(which('im_browser'));
     switch type
-        case 'backRem_panel';   web(fullfile(path, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser'); %docsearch '"Background Removal Panel"';
-        case 'classref';        web(fullfile(path, 'techdoc/ClassReference/index.html'), '-helpbrowser');
-        case 'coherence_filter';    web(fullfile(path, 'techdoc/html/ug_panel_filters_coherence.html'), '-helpbrowser');
-        case 'corr_panel';      web(fullfile(path, 'techdoc/html/ug_panel_corr.html'), '-helpbrowser');
-        case 'dir_panel';       web(fullfile(path, 'techdoc/html/ug_panel_dir.html'), '-helpbrowser');
-        case 'fiji_panel';       web(fullfile(path, 'techdoc/html/ug_panel_fiji_connect.html'), '-helpbrowser');
-        case 'imfilt_panel';     web(fullfile(path, 'techdoc/html/ug_panel_image_filters.html'), '-helpbrowser');
-        case 'mask_gen';        web(fullfile(path, 'techdoc/html/ug_panel_mask_generators.html'), '-helpbrowser');
-        case 'model_panel';     web(fullfile(path, 'techdoc/html/ug_panel_model.html'), '-helpbrowser');
-        case 'path_panel';      web(fullfile(path, 'techdoc/html/ug_panel_path.html'), '-helpbrowser');
-        case 'roi_panel';       web(fullfile(path, 'techdoc/html/ug_panel_roi.html'), '-helpbrowser');
-        case 'segm_panel';      web(fullfile(path, 'techdoc/html/ug_panel_segm.html'), '-helpbrowser');
-        case 'segmAn_panel';    web(fullfile(path, 'techdoc/html/ug_panel_segm_analysis.html'), '-helpbrowser');
-        case 'sel_panel';       web(fullfile(path, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
-        case 'view_settings_panel';   web(fullfile(path, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
+        case 'backRem_panel';   web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_bg_removal.html'), '-helpbrowser'); %docsearch '"Background Removal Panel"';
+        case 'classref';
+            if isdir(fullfile(handles.pathMIB, 'techdoc', 'ClassReference'))
+                web(fullfile(handles.pathMIB, 'techdoc/ClassReference/index.html'), '-helpbrowser');
+            else
+                web('http://mib.helsinki.fi/help/api/index.html', '-helpbrowser');
+            end
+        case 'coherence_filter';    web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_filters_coherence.html'), '-helpbrowser');
+        case 'corr_panel';      web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_corr.html'), '-helpbrowser');
+        case 'dir_panel';       web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_dir.html'), '-helpbrowser');
+        case 'fiji_panel';       web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_fiji_connect.html'), '-helpbrowser');
+        case 'imfilt_panel';     web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_image_filters.html'), '-helpbrowser');
+        case 'mask_gen';        web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_mask_generators.html'), '-helpbrowser');
+        case 'model_panel';     web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_model.html'), '-helpbrowser');
+        case 'path_panel';      web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_path.html'), '-helpbrowser');
+        case 'roi_panel';       web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_roi.html'), '-helpbrowser');
+        case 'segm_panel';      web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_segm.html'), '-helpbrowser');
+        case 'segmAn_panel';    web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_segm_analysis.html'), '-helpbrowser');
+        case 'sel_panel';       web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_selection.html'), '-helpbrowser');
+        case 'view_settings_panel';   web(fullfile(handles.pathMIB, 'techdoc/html/ug_panel_view_settings.html'), '-helpbrowser');
     end
 end
 end
@@ -2006,4 +2016,3 @@ function devTest_ClickedCallback(hObject, eventdata, handles)
 %     end
 % end
 end
-

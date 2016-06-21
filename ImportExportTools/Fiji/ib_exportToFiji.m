@@ -49,7 +49,7 @@ end
 
 %options.WindowStyle='modal';
 %answer = inputdlg(sprintf('Please name for the dataset:'),'Set name',1,cellstr(fn),options);
-answer = mib_inputdlg(NaN,'Please name for the dataset:','Set name',fn);
+answer = mib_inputdlg(handles,'Please name for the dataset:','Set name',fn);
 if isempty(answer); return; end;
 
 pause(0.1);     % for some strange reason have to put pause here, otherwise everything is freezing...

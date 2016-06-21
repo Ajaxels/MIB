@@ -29,10 +29,12 @@
 % where the chopped datasets should be saved
 % * *Filename template*, defines a template for saving the chopped datasets.
 % During the saving MIB will add "_Znn_Xnn_Ynn" tag to each block, where _nn_ is the index of the block.
-% * *Output format*, the datasets can be saved in Amira Mesh, NRRD, or
-% 3D-TIF formats. The models and masks are stored in Matlab format. When
-% the models are saved a "Labels_" prefix is added to the beginning of the
-% filename.
+% * *Output format for images*, datasets can be saved in Amira Mesh, NRRD, 
+% 3D-TIF formats, or HDF5 with XML header formats. 
+% * *Output format for models*, models can also be stored in several formats: Matlab, AmiraMesh, NRRD, TIF or HDF5. 
+% When the models are saved a "Labels_" prefix is added to the beginning of the filename.
+%
+% The masks saved in the Matlab format with _*.mask_ extension.
 %
 %% Import...
 % The import command restores previously chopped or cropped datasets.
@@ -65,6 +67,12 @@
 % * *Generated filename of the model:* |Labels_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mat|
 % * *Generated filename of the mask:* |Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask|
 % 
+% *Important!* If the |Images| checkbox is selected please select only
+% files with images and do not select models nor mask files. The filenames
+% for models and masks will be automatically generated. However, if models
+% or masks are combined for the opened dataset (_i.e._ the |Images|
+% checkbox is unselected) the actual model or mask filenames have to be
+% selected.
 % 
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 

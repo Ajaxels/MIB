@@ -28,6 +28,8 @@ function handles = ib_flipDataset(handles, mode)
 % 06.02.2016, IB, updated for 4D datasets, added the 'flipT' mode
 
 tic
+if handles.Img{handles.Id}.I.no_stacks == 1; return; end;   % no z-flipping for single image
+
 options.blockModeSwitch = 0;    % overwrite blockmode switch
 wb = waitbar(0,sprintf('Flipping image\nPlease wait...'),'Name','Flip dataset','WindowStyle','modal');
 if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;

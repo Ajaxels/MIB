@@ -74,5 +74,13 @@ obj.img_info('XResolution') = resolution(1);
 obj.img_info('YResolution') = resolution(2);
 obj.img_info('ResolutionUnit') = 'Inch';
 obj.updateBoundingBox();
+
+R = [0 0 0];
+S = [1*obj.magFactor,...
+     1*obj.magFactor,...
+     1*obj.pixSize.x/obj.pixSize.z*obj.magFactor];  
+T = [0 0 0];
+obj.volren.viewer_matrix = makeViewMatrix(R, S, T);
+
 result = 1;
 end

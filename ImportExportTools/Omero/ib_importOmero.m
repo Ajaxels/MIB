@@ -50,7 +50,7 @@ handles.h = varargin{1};    % handles of im_browser
 handles.output = NaN;
 
 result = ib_omeroLoginDlg(handles.h.preferences.Font);
-if ~isstruct(result); 
+if isempty(fieldnames(result)); 
     cancelBtn_Callback(handles.cancelBtn, eventdata, handles);
     return;
 end;
@@ -243,7 +243,7 @@ for k = 0:pixelsList.size()-1,
         
         if strcmp(button,'z-stacks')
             %answer = inputdlg(sprintf('Please enter the T-value (1-%d):', sizeT),'Time value',1,{'1'});
-            answer = mib_inputdlg(NaN, sprintf('Please enter the T-value (1-%d):', sizeT),'Time value','1');
+            answer = mib_inputdlg(handles.h, sprintf('Please enter the T-value (1-%d):', sizeT),'Time value','1');
             if isempty(answer); cancelBtn_Callback(handles.cancelBtn, eventdata, handles); return; end;
             minT = str2double(answer{1})-1;
             maxT = str2double(answer{1})-1;
@@ -253,7 +253,7 @@ for k = 0:pixelsList.size()-1,
         
         if strcmp(button,'t-stacks')
             %answer = inputdlg(sprintf('Please enter the Z-value (1-%d):', sizeZ),'Z-stack value',1,{'1'});
-            answer = mib_inputdlg(NaN,sprintf('Please enter the Z-value (1-%d):', sizeZ),'Z-stack value','1');
+            answer = mib_inputdlg(handles.h, sprintf('Please enter the Z-value (1-%d):', sizeZ),'Z-stack value','1');
             if isempty(answer); cancelBtn_Callback(handles.cancelBtn, eventdata, handles); return; end;
             minZ = str2double(answer{1})-1;
             maxZ = str2double(answer{1})-1;

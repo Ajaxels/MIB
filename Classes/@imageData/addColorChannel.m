@@ -1,11 +1,12 @@
-function handles = addColorChannel(obj, img, handles, channelId)
-% function handles = addColorChannel(obj, img, handles, channelId)
+function handles = addColorChannel(obj, img, handles, channelId, lutColors)
+% function handles = addColorChannel(obj, img, handles, channelId, lutColors)
 % Add a new color channel to the existing dataset
 %
 % Parameters:
 % img: new 2D/3D image stack to add
 % handles: handles structure from im_browser
 % channelId: @b [optional] number (single!) of the channel to add, if NaN a new color channel is created
+% lutColors: @b [optional] a matrix (channelNumber, R G B) for the colors. The colors should be in range between 0 and 1
 %
 % Return values:
 % handles: handles structure from im_browser
@@ -24,8 +25,7 @@ function handles = addColorChannel(obj, img, handles, channelId)
 % Updates:
 % 18.09.2016, changed .slices to cells
 
-                
-
+if nargin < 5; lutColors = NaN; end;
 if nargin < 4; channelId = NaN; end;
 
 if size(obj.img,1) ~= size(img, 1) || size(obj.img,2) ~= size(img, 2) || size(obj.img,4) ~= size(img, 4)
@@ -36,9 +36,11 @@ wb = waitbar(0,'Please wait...','Name','Add color...','WindowStyle','modal');
 zMax = min([size(obj.img,4) size(img,4)]);
 xMax = min([size(obj.img,2) size(img,2)]);
 yMax = min([size(obj.img,1) size(img,1)]);
+
+noExistingColors = size(obj.img,3);
+noExtraColors = size(img,3);
+
 if isnan(channelId)     % add img as a new channel
-    noExistingColors = size(obj.img,3);
-    noExtraColors = size(img,3);
     waitbar(0.1, wb);
     obj.img(1:yMax,1:xMax,noExistingColors+1:noExistingColors+noExtraColors,1:zMax) = img(1:yMax,1:xMax,:,1:zMax);
     waitbar(0.9, wb);
@@ -56,6 +58,15 @@ else
     obj.viewPort.max(channelId) = double(intmax(class(img)));
     obj.viewPort.gamma(channelId) = 1;
 end
+
+if ~isnan(lutColors(1))
+    currLutColors = obj.lutColors;
+    currLutColors = currLutColors(1:noExistingColors, :);
+    currLutColors(noExistingColors+1:noExistingColors+noExtraColors,:) = lutColors(1:noExtraColors,:);
+    obj.img_info('lutColors') = currLutColors;
+    obj.lutColors = currLutColors;
+end
+
 waitbar(1, wb);
 delete(wb);
 end

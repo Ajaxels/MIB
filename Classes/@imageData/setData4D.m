@@ -370,5 +370,7 @@ if strcmp(type,'image') && blockModeSwitchLocal == 0
     obj.current_yxz(2) = min([obj.current_yxz(2) obj.width]);
     obj.current_yxz(3) = min([obj.current_yxz(3) obj.no_stacks]);
 end
+if strcmp(type, 'model'); obj.modelExist = 1; end;
+
 
 result = 1;

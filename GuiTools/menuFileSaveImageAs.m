@@ -129,23 +129,26 @@ for t=t1:t2
                 img = permute(img, [2 1 3 4 5]);
             end
             
-            options.height = size(img,1);
-            options.width = size(img,2);
-            options.colors = size(img,3);
-            options.depth = size(img,4);
-            options.time = handles.Img{handles.Id}.I.time;
-            options.pixSize = handles.Img{handles.Id}.I.pixSize;    % !!! check .units = 'um'
-            options.showWaitbar = ~showLocalWaitbar;        % show or not waitbar in data saving function
-            options.lutColors = handles.Img{handles.Id}.I.lutColors;    % store LUT colors for channels
-            options.ImageDescription = ImageDescription; 
-            options.DatasetName = filename; 
-            options.overwrite = 1;
+            if t==t1    % updating parameters for saving dataset
+                options.height = size(img,1);
+                options.width = size(img,2);
+                options.colors = size(img,3);
+                options.depth = size(img,4);
+                options.time = handles.Img{handles.Id}.I.time;
+                options.pixSize = handles.Img{handles.Id}.I.pixSize;    % !!! check .units = 'um'
+                options.showWaitbar = ~showLocalWaitbar;        % show or not waitbar in data saving function
+                options.lutColors = handles.Img{handles.Id}.I.lutColors;    % store LUT colors for channels
+                options.ImageDescription = ImageDescription; 
+                options.DatasetName = filename; 
+                options.overwrite = 1;
+                options.DatasetType = 'image';
             
-            % saving xml file if needed
-            if t==t1 && options.xmlCreate
-                saveXMLheader(options.filename, options);
+                % saving xml file if needed
+                if options.xmlCreate
+                    saveXMLheader(options.filename, options);
+                end
             end
-            
+                        
             options.t = t;
             switch options.Format
                 case 'bdv.hdf5'
@@ -154,8 +157,6 @@ for t=t1:t2
                 case 'matlab.hdf5'
                     image2hdf5(fullfile(path, [filename '.h5']), img, options);
             end
-            
-            
         case 'Joint Photographic Experts Group (*.jpg)'    % jpg format
             if exist('savingOptions', 'var') == 0   % define parameters for the first time use
                 savingOptions = struct('overwrite', 1,'Comment', handles.Img{handles.Id}.I.img_info('ImageDescription'));

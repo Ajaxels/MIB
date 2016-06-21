@@ -27,7 +27,7 @@ switch parameter
         currentSlice = handles.Img{handles.Id}.I.getCurrentSliceNumber();
         maxSlice = size(handles.Img{handles.Id}.I.img, handles.Img{handles.Id}.I.orientation);
 
-        answer=mib_inputdlg(NaN,sprintf('Please enter slice number(s) to delete (1:%d):',maxSlice),'Enter slice number',num2str(currentSlice));
+        answer=mib_inputdlg(handles, sprintf('Please enter slice number(s) to delete (1:%d):',maxSlice),'Enter slice number',num2str(currentSlice));
         if isempty(answer); return; end;
         orient = handles.Img{handles.Id}.I.orientation;
         result = handles.Img{handles.Id}.I.deleteSlice(str2num(answer{1}), orient); %#ok<ST2NM>
@@ -39,7 +39,7 @@ switch parameter
         maxSlice = handles.Img{handles.Id}.I.time;
         if maxSlice == 1; return; end;
         
-        answer=mib_inputdlg(NaN,sprintf('Please enter frame number(s) to delete (1:%d):',maxSlice),'Enter slice number',num2str(currentSlice));
+        answer=mib_inputdlg(handles, sprintf('Please enter frame number(s) to delete (1:%d):',maxSlice),'Enter slice number',num2str(currentSlice));
         if isempty(answer); return; end;
 
         orient = 5;

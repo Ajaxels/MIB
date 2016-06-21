@@ -427,7 +427,7 @@ switch parameter
     case 'random'   % generate a random color
         handles.preferences.modelMaterialColors(position(1),:) = rand([1,3]);
     case 'swap'     % swap two colors
-        answer = mib_inputdlg(NaN, sprintf('Enter a color number to swap with the selected\nSelected: %d', position(1)),'Swap with','1');
+        answer = mib_inputdlg(mainWindowHandles, sprintf('Enter a color number to swap with the selected\nSelected: %d', position(1)),'Swap with','1');
         if size(answer) == 0; return; end;
         tableContents = get(handles.modelsColorsTable, 'Data');
         newIndex = str2double(answer{1});
@@ -444,7 +444,7 @@ switch parameter
         title = 'Import colormap';
         prompt = sprintf('Input a variable that contains colormap\n\nIt should be a matrix [colorNumber, [R,G,B]]');
         %answer = inputdlg(prompt,title,[1 30],{'colormap'},'on');
-        answer = mib_inputdlg(NaN,prompt,title,'colormap');
+        answer = mib_inputdlg(mainWindowHandles, prompt, title, 'colormap');
         if size(answer) == 0; return; end;
         
         try
@@ -471,7 +471,7 @@ switch parameter
         title = 'Export colormap';
         prompt = sprintf('Input a destination variable for export\n\nA matrix containing the current colormap [colorNumber, [R,G,B]] will be assigned to this variable');
         %answer = inputdlg(prompt,title,[1 30],{'colormap'},'on');
-        answer = mib_inputdlg(NaN,prompt,title,'colormap');
+        answer = mib_inputdlg(mainWindowHandles, prompt, title, 'colormap');
         if size(answer) == 0; return; end;
         assignin('base',answer{1}, handles.preferences.modelMaterialColors);
         disp(['Colormap export: created variable ' answer{1} ' in the Matlab workspace']); 
@@ -638,19 +638,8 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_file_preferences.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_file_preferences.html'), '-helpbrowser');
-    end
-else
-    %web 'techdoc/html/ug_gui_menu_file_preferences.html' -helpbrowser;
-    web(fullfile(fileparts(which('im_browser')),'techdoc','html','ug_gui_menu_file_preferences.html'));
-end
-%docsearch '"Microscopy Image Browser Preferences"';
+mainWindowHandles = guidata(handles.im_browser);
+web(fullfile(mainWindowHandles.pathMIB, 'techdoc/html/ug_gui_menu_file_preferences.html'), '-helpbrowser');
 end
 
 
@@ -856,7 +845,7 @@ switch paletteList{selectedVal}
         set(handles.paletteColorNumberPopup, 'string', num2cell(max([3, materialsNumber]):9)); 
     case {'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot', 'Random Colors'}
         %answer = inputdlg('Enter number of colors','Define number of colors',1, cellstr(num2str(max(materialsNumber, 6))));
-        answer = mib_inputdlg(NaN,'Enter number of colors','Define number of colors', num2str(max(materialsNumber, 6)));
+        answer = mib_inputdlg(mainWindowHandles, 'Enter number of colors', 'Define number of colors', num2str(max(materialsNumber, 6)));
         if isempty(answer); return; end;
         noColors = str2double(answer{1});
         set(handles.paletteColorNumberPopup, 'string', num2cell(noColors)); 

@@ -43,8 +43,7 @@ switch parameter
             end;
         end
         
-        %answer = inputdlg('Enter destination buffer number (from 1 to 8) to duplicate the dataset:','Duplicate',1,{num2str(destinationButton)});
-        answer = mib_inputdlg(NaN,'Enter destination buffer number (from 1 to 8) to duplicate the dataset:','Duplicate',num2str(destinationButton));
+        answer = mib_inputdlg(handles, 'Enter destination buffer number (from 1 to 8) to duplicate the dataset:','Duplicate',num2str(destinationButton));
         if isempty(answer); return; end;
         destinationButton = str2double(answer{1});
         if destinationButton > 8 || destinationButton<1; errordlg('The destination should be a number from 1 to 8!','Wrong destination'); return; end;
@@ -92,41 +91,48 @@ switch parameter
         end
         
         %answer = inputdlg('Enter buffer number (from 1 to 8) to synchronize with:','Synchronize xy',1,{num2str(destinationButton)});
-        answer = mib_inputdlg(NaN,'Enter buffer number (from 1 to 8) to synchronize with:','Synchronize xy',num2str(destinationButton));
+        answer = mib_inputdlg(handles, 'Enter buffer number (from 1 to 8) to synchronize with:','Synchronize xy',num2str(destinationButton));
         if isempty(answer); return; end;
         destinationButton = str2double(answer{1});
         if destinationButton > 8 || destinationButton<1; errordlg('The buffer number should be from 1 to 8!','Wrong buffer'); return; end;
         if handles.Img{buttonID}.I.orientation ~= handles.Img{destinationButton}.I.orientation
             errordlg(sprintf('The datasets should be in the same orientation!\n\nFor example, switch orientation of both datasets to XY (the XY button in the toolbar) and try again'),'Wrong buffer'); return;
         end
-        handles.Img{buttonID}.I.axesX = handles.Img{destinationButton}.I.axesX;
-        handles.Img{buttonID}.I.axesY = handles.Img{destinationButton}.I.axesY;
-        handles.Img{buttonID}.I.magFactor = handles.Img{destinationButton}.I.magFactor;
         
-        if strcmp(parameter, 'sync_xyz') || strcmp(parameter, 'sync_xyzt')   % sync in z, t as well
-            destZ = handles.Img{destinationButton}.I.slices{handles.Img{destinationButton}.I.orientation}(1);
-            if destZ > size(handles.Img{buttonID}.I.img, handles.Img{buttonID}.I.orientation)
-                warndlg(sprintf('The second dataset has the Z value higher than the Z-dimension of the first dataset!\n\nThe synchronization was done in the XY mode.'),'Dimensions mismatch!');
-                handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
-                return;
-            end
-            if handles.Img{buttonID}.I.no_stacks > 1
-                set(handles.changelayerEdit, 'String', destZ);
-                changelayerEdit_Callback(0, eventdata, handles);
-            end
-            if strcmp(parameter, 'sync_xyzt') && handles.Img{buttonID}.I.time > 1
-                destT = handles.Img{destinationButton}.I.slices{5}(1);
-                if destT > handles.Img{buttonID}.I.time
-                    warndlg(sprintf('The second dataset has the T value higher than the T-dimension of the first dataset!\n\nThe synchronization was done in the XYZ mode.'),'Dimensions mismatch!');
+        if strcmp(get(handles.volrenToolbarSwitch, 'state'), 'off')
+            
+            handles.Img{buttonID}.I.axesX = handles.Img{destinationButton}.I.axesX;
+            handles.Img{buttonID}.I.axesY = handles.Img{destinationButton}.I.axesY;
+            handles.Img{buttonID}.I.magFactor = handles.Img{destinationButton}.I.magFactor;
+            
+            if strcmp(parameter, 'sync_xyz') || strcmp(parameter, 'sync_xyzt')   % sync in z, t as well
+                destZ = handles.Img{destinationButton}.I.slices{handles.Img{destinationButton}.I.orientation}(1);
+                if destZ > size(handles.Img{buttonID}.I.img, handles.Img{buttonID}.I.orientation)
+                    warndlg(sprintf('The second dataset has the Z value higher than the Z-dimension of the first dataset!\n\nThe synchronization was done in the XY mode.'),'Dimensions mismatch!');
                     handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
                     return;
                 end
-                set(handles.changeTimeEdit, 'String', destT);
-                changeTimeEdit_Callback(0, eventdata, handles);
+                if handles.Img{buttonID}.I.no_stacks > 1
+                    set(handles.changelayerEdit, 'String', destZ);
+                    changelayerEdit_Callback(0, eventdata, handles);
+                end
+                if strcmp(parameter, 'sync_xyzt') && handles.Img{buttonID}.I.time > 1
+                    destT = handles.Img{destinationButton}.I.slices{5}(1);
+                    if destT > handles.Img{buttonID}.I.time
+                        warndlg(sprintf('The second dataset has the T value higher than the T-dimension of the first dataset!\n\nThe synchronization was done in the XYZ mode.'),'Dimensions mismatch!');
+                        handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
+                        return;
+                    end
+                    set(handles.changeTimeEdit, 'String', destT);
+                    changeTimeEdit_Callback(0, eventdata, handles);
+                end
             end
+        else
+             handles.Img{buttonID}.I.volren.viewer_matrix = handles.Img{destinationButton}.I.volren.viewer_matrix;
         end
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
     case 'clear'    % clear dataset
+        
         if handles.preferences.uint8
             handles.Img{buttonID}.I = imageData(handles, 'uint8');    % create instanse for keeping images;
         else
@@ -145,7 +151,7 @@ switch parameter
         if buttonID == handles.Id   % delete the currently shown dataset
             handles.U.clearContents();  % clear undo history
             updateGuiWidgets(handles);
-            handles = guidata(handles.im_browser);
+            %handles = guidata(handles.im_browser);
             handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
         else
             guidata(handles.im_browser, handles);   % store handles
@@ -176,7 +182,7 @@ switch parameter
         set(handles.bufferToggle1, 'value', 1);
         handles.U.clearContents();  % clear undo history
         handles = updateGuiWidgets(handles);
-        handles = guidata(handles.im_browser);
+        %handles = guidata(handles.im_browser);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
 end
 end

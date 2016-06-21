@@ -22,7 +22,7 @@ function clearContents(obj, img)
 % 18.09.2016, changed .slices() to .slices{:}; .slicesColor->.slices{3}
 
 obj.model_fn = '';    % filename for an model image
-obj.model_var = 'Amira_SemImage_cell_labels_pure_mat'; % variable name in the model mat-file
+obj.model_var = 'im_browser_model'; % variable name in the model mat-file
 obj.modelMaterialNames = {};
 obj.maskStat = struct();    %%% TO DO
 obj.maskImgFilename = NaN;
@@ -56,7 +56,10 @@ obj.width = size(obj.img,2);
 obj.height = size(obj.img,1);
 obj.colors = size(obj.img,3);
 obj.time = size(obj.img, 5);
-obj.imh = 0;    % handle for image object
+
+%obj.imh = image('CData',[],'UserData', 'new', 'visible','off');
+obj.imh = matlab.graphics.primitive.Image('CData',[],'UserData', 'new');
+
 obj.pixSize.x = 0.087;
 obj.pixSize.y = 0.087;
 obj.pixSize.z = 0.087;
@@ -75,11 +78,21 @@ obj.slices{2} = [1, size(obj.img,2)];   % width [min, max]
 obj.slices{3} = 1:size(obj.img,3);      % list of shown color channels [1, 2, 3, 4...]
 obj.slices{4} = [1, 1];                 % z-values, [min, max]
 obj.slices{5} = [1, 1];                 % time points, [min, max]
-obj.axesX = [NaN NaN];
-obj.axesY = [NaN NaN];
+obj.axesX = [1 size(obj.img,1)];
+obj.axesY = [1 size(obj.img,2)];
 obj.magFactor = 1;
 obj.blockModeSwitch = 0;
 obj.storedSelection = NaN;
+
+obj.volren.viewer_matrix = [];
+obj.volren.previewImg = [];
+obj.volren.showFullRes = 1;
+R = [0 0 0];
+S = [1*obj.magFactor,...
+     1*obj.magFactor,...
+     1*obj.pixSize.x/obj.pixSize.z*obj.magFactor];  
+T = [0 0 0];
+obj.volren.viewer_matrix = makeViewMatrix(R, S, T);
 
 keySet = {'ColorType', 'ImageDescription','Height','Width','Stacks','Time','XResolution','YResolution','ResolutionUnit','Filename'};
 valueSet = {'grayscale', sprintf('|'),obj.height,obj.width,obj.no_stacks,obj.time,1,1,'Inch','none.tif'};

@@ -4,7 +4,7 @@ function result  = saveXMLheader(filename, options)
 %
 % Parameters:
 % filename: name of the file: myfile.xml
-% options: a structure with optional parameters
+% options: a structure with parameters
 % .Format - a string, template for storing data "bdv.hdf5", 'ilastik.hdf5', 'matlab.hdf5'
 % .height - height of the dataset
 % .width - width of the dataset
@@ -12,9 +12,11 @@ function result  = saveXMLheader(filename, options)
 % .depth - number of z-stacks of the dataset
 % .time - number of time points
 % .pixSize - a structure with pixel size of the dataset (.x .y .z .units)
-% .lutColor - [@em optional], a matrix with definition of color channels [1:colorChannel, R G B], (0-1)
+% .lutColor - [@em optional], a matrix with definition of color channels
+% [1:colorChannel, R G B], (0-1); or colors for materials of the model
 % .ImageDescription - [@em optional], a string with description of the dataset
 % .DatasetName - [@em optional], name of the dataset in the H5 file (not used with Big Data Viewer)
+% .ModelMaterialNames [@em optional], a cell array with names of materials
 %
 % Return values:
 % result: @b 0 - fail, @b 1 - success
@@ -81,6 +83,13 @@ s.SpimData.SequenceDescription.ImageLoader.Datasetname.Text= options.DatasetName
 % add extra field with image description
 if isfield(options, 'ImageDescription')
     s.SpimData.SequenceDescription.ViewSetups.ImageDescription.Text = options.ImageDescription;
+end
+% generate list of materials and their colors
+if isfield(options, 'ModelMaterialNames')
+    for matId = 1:numel(options.ModelMaterialNames)
+        s.SpimData.SequenceDescription.ViewSetups.Materials.(sprintf('Material%03i',matId)).Name.Text = options.ModelMaterialNames{matId};
+        s.SpimData.SequenceDescription.ViewSetups.Materials.(sprintf('Material%03i',matId)).Color.Text = num2str(options.lutColors(matId,:));
+    end
 end
 
 s.SpimData.SequenceDescription.ViewSetups.Attributes.AttributesText.name = 'channel';

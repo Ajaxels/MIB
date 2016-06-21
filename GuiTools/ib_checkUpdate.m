@@ -69,9 +69,9 @@ handles.h = varargin{1};
 
 % add icon
 if isdeployed
-    [IconData, IconCMap] = imread(fullfile(pwd, 'Resources','mib_update_wide.gif'));
+    [IconData, IconCMap] = imread(fullfile(handles.h.pathMIB, 'Resources','mib_update_wide.gif'));
 else
-    [IconData, IconCMap] = imread(fullfile(fileparts(which('im_browser')), 'Resources', 'mib_update_wide.gif'));
+    [IconData, IconCMap] = imread(fullfile(handles.h.pathMIB, 'Resources', 'mib_update_wide.gif'));
 end
 Img=image(IconData, 'Parent', handles.axes1);
 IconCMap(IconData(1,1)+1,:) = get(handles.ib_checkUpdate, 'Color');   % replace background color
@@ -122,6 +122,7 @@ set(hObject, 'Position', FigPos);
 set(hObject, 'Units', OldUnits);
 
 if isdeployed
+    set(handles.updaterBtn, 'String', 'Download');
     if ismac()
         link = 'http://mib.helsinki.fi/web-update/im_browser_current_version_deployed_mac.txt';
         set(handles.updaterBtn, 'enable','off');
@@ -228,17 +229,23 @@ if ~isdeployed
     updateMIB(0, handles.updateMode);     % start update gui
     handles.output = 1;
 else
-    % updating the updater
-    destinationDir = pwd;
-    wb = waitbar(0,sprintf('Updating the updater!\nDestination: %s\n\nPlease wait...', destinationDir), 'Name', 'Updating updateMIB.exe');
-    try
-        unzip('http://mib.helsinki.fi/web-update/updateMIB_distrib.zip',destinationDir);
-    catch
-        err
+%     % % an old code without installator    
+%     % updating the updater
+%     destinationDir = handles.h.pathMIB;
+%     wb = waitbar(0,sprintf('Updating the updater!\nDestination: %s\n\nPlease wait...', destinationDir), 'Name', 'Updating updateMIB.exe');
+%     try
+%         unzip('http://mib.helsinki.fi/web-update/updateMIB_distrib.zip', destinationDir);
+%     catch
+%         err
+%     end
+%     waitbar(1, wb);
+%     delete(wb);
+%     msgbox(sprintf('To finish the update please close the Microscopy Image Browser and start updateMIB.exe!'),'Update status','help');
+    if ismac()
+        0;
+    elseif ispc()
+        web('http://mib.helsinki.fi/web-update/MIB_distrib.exe', '-browser');
     end
-    waitbar(1, wb);
-    delete(wb);
-    msgbox(sprintf('To finish the update please close the Microscopy Image Browser and start updateMIB.exe!'),'Update status','help');
 end
 % Update handles structure
 guidata(hObject, handles);

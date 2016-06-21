@@ -62,7 +62,7 @@ delete(wb);
 [vSizeX, vSizeY, vSizeZ, vSizeC, vSizeT] = handles.connImaris.getSizes();
 if vSizeZ > 1 && vSizeT > 1
     %answer = inputdlg(sprintf('!!! Warning !!!\n\nMIB can''t open 5D datasets!\nPlease enter a time point to open (starting from 0)'), 'Time point', 1, cellstr('0'));
-    answer = mib_inputdlg(NaN,sprintf('!!! Warning !!!\nA 5D dataset is opened in Imaris!\nPlease enter a time point to open (starting from 1) or type 0 to obtain the 5D dataset completely'), 'Time point', '1');
+    answer = mib_inputdlg(handles, sprintf('!!! Warning !!!\nA 5D dataset is opened in Imaris!\nPlease enter a time point to open (starting from 1) or type 0 to obtain the 5D dataset completely'), 'Time point', '1');
     if isempty(answer);         return;    end;
     timePoint = str2double(answer{1});    % frame number to open for 5D datasets
 end

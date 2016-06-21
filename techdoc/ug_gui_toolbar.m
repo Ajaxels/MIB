@@ -149,6 +149,14 @@
 %
 % Turns ON/OFF visualization of ROIs
 %
+%% Volume Rendering
+% 
+% <<images/toolbar_volren.jpg>>
+%
+% Render the dataset using the shear-warp transform. Applicable to fairly
+% small datasets. The electron microscopy datasets should be inverted for
+% proper visualization.
+%
 %% Turn on parallel processing
 %%
 % 

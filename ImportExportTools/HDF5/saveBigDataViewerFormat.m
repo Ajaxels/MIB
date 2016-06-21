@@ -141,31 +141,12 @@ for timeId = 1:size(I, 5)
             % % --------- resize dataset
             if newW ~= width || newH ~= height || newZ ~= depth  
                 if options.showWaitbar;    waitbar(0.2, wb); end;
-                imgOut = zeros([newH,newW,newZ], class(I));   %#ok<ZEROLIKE> % allocate space
-                
-                if newW ~= width || newH ~= height  % resize xy dimension
-                    imgOut2 = zeros(newH, newW, depth, class(I)); %#ok<ZEROLIKE>
-                    for zIndex = 1:depth
-                        imgOut2(:,:,zIndex) = imresize(squeeze(I(:, :, colId, zIndex, timeId)), [newH newW], options.ResamplingMethod);
-                    end
-                end
-                if newZ ~= depth % resize z dimension
-                    if options.showWaitbar;    waitbar(0.4, wb); end;
-                    if exist('imgOut2','var') == 0; imgOut2 = squeeze(I(:, :, colId, :, timeId));  end;
-                    if size(imgOut2, 1)*1.82 < size(imgOut2, 2)
-                        for hIndex = 1:newH
-                            tempImg = imresize(permute(imgOut2(hIndex, :, :), [3 2 1]), [newH newZ], options.ResamplingMethod);
-                            imgOut(hIndex,:,:) = permute(tempImg, [3 2 1]);
-                        end
-                    else
-                        for wIndex = 1:newW
-                            tempImg = imresize(permute(imgOut2(:, wIndex, :), [1 3 2]), [newH newZ], options.ResamplingMethod);
-                            imgOut(:,wIndex,:) = permute(tempImg, [1 3 2]);
-                        end
-                    end
-                else
-                    imgOut = imgOut2;
-                end
+                resizeOpt.height = newH;
+                resizeOpt.width = newW;
+                resizeOpt.depth = newZ;
+                resizeOpt.method = options.ResamplingMethod;
+                resizeOpt.algorithm = 'imresize';
+                imgOut = squeeze(mib_resize3d(I(:, :, colId, :, timeId), [], resizeOpt));
             else
                 imgOut = squeeze(I(:,:,colId,:,timeId));
             end

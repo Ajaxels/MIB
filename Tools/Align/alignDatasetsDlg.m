@@ -97,7 +97,6 @@ set(handles.existingPixText,'String',str2);
 set(handles.pathEdit, 'String', pathstr);
 set(handles.saveShiftsXYpath, 'String', fullfile(pathstr, [name '_align.coefXY']));
 set(handles.loadShiftsXYpath, 'String', fullfile(pathstr, [name '_align.coefXY']));
-%handles.pathstr = pwd;
 
 centerX = floor(width/2);
 centerY = floor(height/2);

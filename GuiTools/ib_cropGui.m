@@ -158,8 +158,8 @@ guidata(hObject, handles);
 uiresume(handles.ib_cropGui);
 end
 
-% --- Executes on button press in continueBtn.
-function continueBtn_Callback(hObject, eventdata, handles)
+% --- Executes on button press in cropBtn.
+function cropBtn_Callback(hObject, eventdata, handles)
 if get(handles.interactiveRadio, 'value')    % interactive
     set(handles.ib_cropGui,'visible','off');
     set(handles.h.im_browser, 'windowbuttondownfcn', '');
@@ -174,7 +174,7 @@ if get(handles.interactiveRadio, 'value')    % interactive
     handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
     choice2 = questdlg('Do you want to crop the image to selected area?','Crop options','Yes','Cancel','Cancel');
     if strcmp(choice2,'Cancel');
-        handles.h.Img{handles.h.Id}.I.clearSelection();
+        handles.h.Img{handles.h.Id}.I.clearSelection(NaN, NaN, handles.h.Img{handles.h.Id}.I.getCurrentSliceNumber());
         handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
         set(handles.ib_cropGui,'visible','on');
         return;
@@ -190,7 +190,7 @@ if get(handles.interactiveRadio, 'value')    % interactive
     elseif handles.h.Img{handles.h.Id}.I.orientation == 2 % yz plane
         crop_factor = [1 round(STATS.BoundingBox(2)) size(handles.h.Img{handles.h.Id}.I.img,2) round(STATS.BoundingBox(4)) round(STATS.BoundingBox(1)) round(STATS.BoundingBox(3))]; % x1, y1, dx, dy, z1, dz
     end
-elseif numel(handles.roiPos) == 1
+elseif ~isnan(handles.roiPos{1})
     x1 = handles.roiPos{1}(1);
     x2 = handles.roiPos{1}(2);
     y1 = handles.roiPos{1}(3);
@@ -202,19 +202,67 @@ else
     msgbox('Oops, not implemented yet!','Multiple ROI crop','warn');
     return;
 end
-crop_factor = [crop_factor handles.roiPos{1}(7) handles.roiPos{1}(8)-handles.roiPos{1}(7)+1];
-handles.h.Img{handles.h.Id}.I.hROI.crop(crop_factor);
-handles.h.Img{handles.h.Id}.I.hLabels.crop(crop_factor);
 
-handles.h.Img{handles.h.Id}.I.cropDataset(crop_factor);
-if str2double(get(handles.h.changelayerEdit,'String')) > size(handles.h.Img{handles.h.Id}.I.img,handles.h.Img{handles.h.Id}.I.orientation)
-    handles.h.Img{handles.h.Id}.I.slices{handles.h.Img{handles.h.Id}.I.orientation} = [size(handles.h.Img{handles.h.Id}.I.img, handles.h.Img{handles.h.Id}.I.orientation) size(handles.h.Img{handles.h.Id}.I.img, handles.h.Img{handles.h.Id}.I.orientation)];
+if strcmp(get(hObject, 'tag'), 'croptoBtn')
+    bufferId = 8;
+    for i=1:8
+        if ismac()
+            eval(sprintf('bgColor = get(handles.h.bufferToggle%d,''ForegroundColor'');', i));     % make green
+        else
+            eval(sprintf('bgColor = get(handles.h.bufferToggle%d,''BackgroundColor'');', i));     % make green
+        end
+        if bgColor(2) ~= 1;
+            bufferId = i;
+            break;
+        end;
+    end
+    
+    answer = mib_inputdlg(handles.h, 'Enter destination buffer number (from 1 to 8) to duplicate the dataset:','Duplicate',num2str(bufferId));
+    if isempty(answer); return; end;
+    bufferId = str2double(answer{1});
+    
+    % copy dataset to the destination buffer
+    handles.h.Img{bufferId}.I  = copy(handles.h.Img{handles.h.Id}.I);
+    handles.h.Img{bufferId}.I.img_info  = containers.Map(keys(handles.h.Img{handles.h.Id}.I.img_info), values(handles.h.Img{handles.h.Id}.I.img_info));  % make a copy of img_info containers.Map
+    handles.h.Img{bufferId}.I.hROI  = copy(handles.h.Img{bufferId}.I.hROI);
+    handles.h.Img{bufferId}.I.hROI.hImg = handles.h.Img{bufferId}.I;  % need to copy a handle of imageData class to a copy of the roiRegion class
+    handles.h.Img{bufferId}.I.hLabels  = copy(handles.h.Img{bufferId}.I.hLabels);
+    handles.h.Img{bufferId}.I.hMeasure  = copy(handles.h.Img{bufferId}.I.hMeasure);
+else
+    bufferId = handles.h.Id;
 end
-log_text = ['ImCrop: [x1 y1 dx dy z1 dz t1 dt]: [' num2str(crop_factor) ']'];
-handles.h.Img{handles.h.Id}.I.updateImgInfo(log_text);
-handles.h = handles.h.Img{handles.h.Id}.I.updateAxesLimits(handles.h, 'resize');
-handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 1);
 
+crop_factor = [crop_factor handles.roiPos{1}(7) handles.roiPos{1}(8)-handles.roiPos{1}(7)+1];
+handles.h.Img{bufferId}.I.hROI.crop(crop_factor);
+handles.h.Img{bufferId}.I.hLabels.crop(crop_factor);
+
+handles.h.Img{bufferId}.I.cropDataset(crop_factor);
+if str2double(get(handles.h.changelayerEdit,'String')) > size(handles.h.Img{bufferId}.I.img,handles.h.Img{bufferId}.I.orientation)
+    handles.h.Img{bufferId}.I.slices{handles.h.Img{bufferId}.I.orientation} = [size(handles.h.Img{bufferId}.I.img, handles.h.Img{bufferId}.I.orientation) size(handles.h.Img{bufferId}.I.img, handles.h.Img{bufferId}.I.orientation)];
+end
+
+% clear selected rectangle when using the interactive mode
+if get(handles.interactiveRadio, 'value')    
+    handles.h.Img{bufferId}.I.clearSelection(NaN, NaN, handles.h.Img{bufferId}.I.getCurrentSliceNumber());
+end
+
+log_text = ['ImCrop: [x1 y1 dx dy z1 dz t1 dt]: [' num2str(crop_factor) ']'];
+handles.h.Img{bufferId}.I.updateImgInfo(log_text);
+handles.h = handles.h.Img{bufferId}.I.updateAxesLimits(handles.h, 'resize');
+
+if strcmp(get(hObject, 'tag'), 'croptoBtn')
+    if ismac()
+        eval(sprintf('set(handles.h.bufferToggle%d,''ForegroundColor'',[ 0    1    0]);', bufferId));
+    else
+        eval(sprintf('set(handles.h.bufferToggle%d,''BackgroundColor'',[ 0    1    0]);', bufferId));
+    end
+    eval(sprintf('set(handles.h.bufferToggle%d,''TooltipString'', handles.h.Img{%d}.I.img_info(''Filename''));',bufferId, bufferId));     % make a tooltip as filename
+    handles.h = updateGuiWidgets(handles.h);
+    % clear selection
+    handles.h.Img{handles.h.Id}.I.clearSelection(NaN, NaN, handles.h.Img{handles.h.Id}.I.getCurrentSliceNumber());
+end
+
+handles.h.Img{bufferId}.I.plotImage(handles.h.imageAxes, handles.h, 1);
 handles.output = handles.h;
 
 %profile viewer 

@@ -14,9 +14,7 @@ function varargout = ib_datasetInfoGui(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
-
-
+% 22.04.2016, IB, updated to use uiTree class instead of a table
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -47,18 +45,8 @@ function ib_datasetInfoGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to ib_datasetInfoGui (see VARARGIN)
 
 repositionSwitch = 1; % reposition the figure, when creating a new figure
-
-if numel(varargin) > 1  % for the update of the window from updateGuiWidgets function
+if numel(varargin) > 1  % for the update of the window from updateGuiWidgets function, not used any more
     handles = guidata(varargin{2});
-    
-    % Sync tables
-    % Note: the following also works with Matlab listboxes and editboxes
-    jScrollPane = findjobj(handles.fileinfoTable);
-    jViewport = jScrollPane.getViewport;
-    originalPos = jViewport.getViewPosition;  % java.awt.Point[x=150,y=54]
-    % jViewport.setViewPosition(originalPos);          jScrollPane.repaint
-    % jViewport.setViewPosition(java.awt.Point(0,0));  jScrollPane.repaint  % move to top-left position
-    
     repositionSwitch = 0; % keep the current coordinates when the figure already exist
     handles = rmfield(handles, 'hMain');
 end
@@ -67,14 +55,30 @@ end
 handles.output = hObject;
 set(hObject,'Name','Dataset parameters');
 handles.hMain = varargin{1};
-refreshBtn_Callback(handles.refreshBtn, eventdata, handles);    % fill the table
 
-% adding a popup menu to the table
-handles.table_cm = uicontextmenu('Parent',handles.ib_datasetInfoGui);
-uimenu(handles.table_cm, 'Label', 'Modify', 'Callback', {@popupCallback, 'modify'});
-uimenu(handles.table_cm, 'Label', 'Insert a new', 'Callback', {@popupCallback, 'insert'});
-uimenu(handles.table_cm, 'Label', 'Delete', 'Separator','on','Callback', {@popupCallback, 'delete'});
-set(handles.fileinfoTable,'uicontextmenu',handles.table_cm);
+if repositionSwitch == 1
+    % setup uiTree
+    % based on description by Yair Altman:
+    % http://undocumentedmatlab.com/blog/customizing-uitree
+    warning('off','MATLAB:uitreenode:DeprecatedFunction');
+    warning('off','MATLAB:uitree:DeprecatedFunction');
+    
+    import javax.swing.*
+    import javax.swing.tree.*;
+    handles.rootNode = uitreenode('v0','root', 'img_info', [], false);  % initialize the root node
+    handles.treeModel = DefaultTreeModel(handles.rootNode);     % set the tree Model
+    [handles.uiTree, handles.uiTreeContainer] = uitree('v0');   % create the uiTree
+    handles.uiTree.setModel(handles.treeModel);
+    
+    set(handles.uiTreeContainer, 'parent', handles.uiTreePanel);    % assign to the parent panel
+    set(handles.uiTreeContainer, 'units', 'points');
+    uiTreePanelPos = get(handles.uiTreePanel,'Position');
+    set(handles.uiTreeContainer,'Position', [5, 5, uiTreePanelPos(3)-8, uiTreePanelPos(4)-8]); % resize uiTree
+    handles.uiTree.setSelectedNode(handles.rootNode);   % make root the initially selected node
+    
+    handles.uiTree.setMultipleSelectionEnabled(1);  % enable multiple selections
+end
+refreshBtn_Callback(handles.refreshBtn, eventdata, handles);    % fill the Tree
 
 % update font and size
 if get(handles.uipanel1, 'fontsize') ~= handles.hMain.preferences.Font.FontSize ...
@@ -123,16 +127,12 @@ if repositionSwitch
     FigPos(3:4)=[FigWidth FigHeight];
     set(hObject, 'Position', FigPos);
     set(hObject, 'Units', OldUnits);
-else
-    % sync tables
-    drawnow;
-    jViewport.setViewPosition(originalPos);
-    jScrollPane.repaint;
 end
 ib_datasetInfoGui_ResizeFcn(hObject, eventdata, handles);
 % UIWAIT makes ib_datasetInfoGui wait for user response (see UIRESUME)
 % uiwait(handles.ib_datasetInfoGui);
 end
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = ib_datasetInfoGui_OutputFcn(hObject, eventdata, handles)
@@ -150,71 +150,161 @@ end
 
 % --- Executes on button press in refreshBtn.
 function refreshBtn_Callback(hObject, eventdata, handles)
-handles.hMain = guidata(handles.hMain.im_browser);
+handles.hMain = guidata(handles.hMain.im_browser);  % update handles of MIB
+% % populate uiTree
+import javax.swing.*
+import javax.swing.tree.*;
+warning('off','MATLAB:uitreenode:DeprecatedFunction');
+warning('off','MATLAB:uitree:DeprecatedFunction');
 
-jScrollPane = findjobj(handles.fileinfoTable);  % sync views
-if ~isempty(jScrollPane)
-    jViewport = jScrollPane.getViewport;
-    originalPos = jViewport.getViewPosition;  % java.awt.Point[x=150,y=54]
-end
+keySet = keys(handles.hMain.Img{handles.hMain.Id}.I.img_info);
 
-tableUnits = get(handles.fileinfoTable, 'Units');
-set(handles.fileinfoTable, 'Units', 'Pixels');
-fields = keys(handles.hMain.Img{handles.hMain.Id}.I.img_info);
-dat = cell(numel(fields),2);
-for index = 1:numel(fields)
-    if strcmp(fields(index),'UnknownTags') % unknown parameters, skip
-        continue;
+handles.rootNode = uitreenode('v0','root', 'img_info', [], false);  % initialize the root node
+handles.treeModel = DefaultTreeModel(handles.rootNode);     % set the tree Model
+handles.uiTree.setModel(handles.treeModel);     
+
+set(handles.uiTreeContainer, 'parent', handles.uiTreePanel);
+set(handles.uiTreeContainer, 'units', 'points');
+uiTreePanelPos = get(handles.uiTreePanel,'Position');
+set(handles.uiTreeContainer,'Position', [5, 5, uiTreePanelPos(3)-8, uiTreePanelPos(4)-8]);
+
+%handles.uiTree.setSelectedNode(handles.rootNode); % select the node
+
+% add main key
+mainKeys = {'Filename', 'Height','Width', 'Stacks', 'Time', 'ImageDescription', 'ColorType', 'ResolutionUnit', ...
+    'XResolution','YResolution','SliceName','SeriesNumber','lutColors'};
+mainKeysPos = ismember(keySet, mainKeys);
+mainKeys = keySet(mainKeysPos);
+syncNode = [];  % id of a node for uiTree sync
+
+for keyId = 1:numel(mainKeys)
+    if isnumeric(handles.hMain.Img{handles.hMain.Id}.I.img_info(mainKeys{keyId}))
+        val = handles.hMain.Img{handles.hMain.Id}.I.img_info(mainKeys{keyId});
+        if size(val,1) == 1
+            strVal = sprintf('%s: %s', mainKeys{keyId}, num2str(val));
+            childNode = uitreenode('v0',1, strVal, [], true);
+            handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+        else
+            childNode = uitreenode('v0','dummy', mainKeys{keyId}, [], false);
+            handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+            for chId = 1:size(val,1)
+                subChildNode = uitreenode('v0', num2str(chId), sprintf('%s', num2str(val(chId,:))), [], true);
+                handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());    
+            end
+        end
+    elseif iscell(handles.hMain.Img{handles.hMain.Id}.I.img_info(mainKeys{keyId}))
+        elementList = handles.hMain.Img{handles.hMain.Id}.I.img_info(mainKeys{keyId});
+        if numel(elementList) == 1
+            strVal = sprintf('%s: %s',mainKeys{keyId}, elementList{1});
+            childNode = uitreenode('v0', '1', strVal, [], true);
+            handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+        else
+            childNode = uitreenode('v0','dummy', mainKeys{keyId}, [], false);
+            handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+            
+            for elelentId = 1:numel(elementList)
+                subChildNode = uitreenode('v0', num2str(elelentId), elementList{elelentId}, [], true);
+                handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+            end
+        end
     else
-        dat(index,1) = fields(index);
-        switch class(handles.hMain.Img{handles.hMain.Id}.I.img_info(fields{index}))
-            case 'char'
-                dat{index,2} = sprintf('%s',handles.hMain.Img{handles.hMain.Id}.I.img_info(fields{index}));
-            case 'double'
-                dat(index,2) = {num2str(handles.hMain.Img{handles.hMain.Id}.I.img_info(fields{index}))};
+        strVal = sprintf('%s: %s',mainKeys{keyId}, handles.hMain.Img{handles.hMain.Id}.I.img_info(mainKeys{keyId}));
+        childNode = uitreenode('v0','dummy', strVal, [], true);
+        handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+    end
+    % sync selected nodes
+    if isfield(handles,'selectedNodeName')
+        if strcmp(mainKeys{keyId}, handles.selectedNodeName)
+            syncNode = childNode;
         end
     end
 end
-set(handles.fileinfoTable, 'Data', dat);
-set(handles.fileinfoTable, 'Units',tableUnits);
-if ~isempty(jScrollPane)    % sync views
+
+if isKey(handles.hMain.Img{handles.hMain.Id}.I.img_info,'meta')
+    handles.uiTreeRoot = parseStructToTree(handles.hMain.Img{handles.hMain.Id}.I.img_info('meta'), handles.treeModel, handles.rootNode);
+    keySet(ismember(keySet, 'meta')) = [];
+end
+keySet(mainKeysPos) = [];
+
+childNode = uitreenode('v0','Extras', 'Extras', [], false);
+handles.treeModel.insertNodeInto(childNode, handles.rootNode, handles.rootNode.getChildCount());
+
+for keyId = 1:numel(keySet)
+    if isnumeric(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}))
+        strVal = sprintf('%s: %f',keySet{keyId}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}));
+        subChildNode = uitreenode('v0','Extras', strVal, [], true);
+        handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+    elseif iscell(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}))
+        elementList = handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId});
+        if numel(elementList) == 1
+            strVal = sprintf('%s: %s',keySet{keyId}, elementList{1});
+            subChildNode = uitreenode('v0','1', strVal, [], true);
+            handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+        else
+            subChildNode = uitreenode('v0','Extras', keySet{keyId}, [], false);
+            handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+            
+            for elelentId = 1:numel(elementList)
+                subChildNode2 = uitreenode('v0', num2str(elelentId), elementList{elelentId}, [], true);
+                handles.treeModel.insertNodeInto(subChildNode2, subChildNode, subChildNode.getChildCount());
+            end
+        end
+    else
+        strVal = sprintf('%s: %s',keySet{keyId}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}));
+        subChildNode = uitreenode('v0','Extras', strVal, [], true);
+        handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+    end
+    % sync selected nodes
+    if isfield(handles,'selectedNodeName')
+        if strcmp(keySet{keyId}, handles.selectedNodeName)
+            syncNode = subChildNode;
+        end
+    end
+end
+handles.uiTree.expand(handles.rootNode);  % expand uiTree
+if ~isempty(syncNode)
+    handles.uiTree.setSelectedNode(syncNode);
+    handles.uiTree.expand(syncNode);
+    scrollPane = handles.uiTree.ScrollPane;
+    scrollPaneViewport = scrollPane.getViewport;
     drawnow;
-    jViewport.setViewPosition(originalPos);
-    jScrollPane.repaint;
-end
-guidata(handles.ib_datasetInfoGui, handles)
+    scrollPaneViewport.setViewPosition(handles.selectedNodePos);
+    scrollPane.repaint;
 end
 
-function popupCallback(hObject, ~, parameter)
-% popup menu callback
-handles = guidata(hObject);
-switch parameter
-    case 'modify'
-        modifyBtn_Callback(hObject, NaN, handles);
-    case 'insert'
-        insertBtn_Callback(hObject, NaN, handles);
-    case 'delete'
-        deleteBtn_Callback(hObject, NaN, handles);
-end
+set(handles.uiTree, 'NodeSelectedCallback', {@uiTreeNodeSelectedCallback, handles});    % set the node selection callback
+guidata(handles.ib_datasetInfoGui, handles);
 end
 
+function uiTreeNodeSelectedCallback(tree, event, handles)
+nodes = tree.getSelectedNodes;
+if isempty(nodes); return; end;
+% store name of the selected field for syncronization
+handles.selectedNodeName = char(nodes(1).getName);
+colonChar = strfind(handles.selectedNodeName, ':');
+if ~isempty(colonChar)
+    handles.selectedNodeName = handles.selectedNodeName(1:colonChar-1);     
+end
+scrollPane = handles.uiTree.ScrollPane;
+scrollPaneViewport = scrollPane.getViewport;
+handles.selectedNodePos = scrollPaneViewport.getViewPosition;
+
+nodeName = char(nodes(1).getName);
+set(handles.selectedText, 'String', nodeName);
+
+guidata(handles.ib_datasetInfoGui, handles);
+end
 
 % --- Executes when ib_datasetInfoGui is resized.
 function ib_datasetInfoGui_ResizeFcn(hObject, eventdata, handles)
 if isstruct(handles) == 0; return; end;
-tableUnits = get(handles.fileinfoTable, 'Units');
-set(handles.fileinfoTable, 'Units', 'Characters');
-size_char = get(handles.fileinfoTable, 'Position');
-set(handles.fileinfoTable, 'Units', 'Pixels');
-size_pix = get(handles.fileinfoTable, 'Position');
-ratio = size_pix(3)/size_char(3);
+guiPos = get(handles.ib_datasetInfoGui, 'position');
+set(handles.uipanel1, 'Position', [2, 65, guiPos(3)-5, guiPos(4)-70]);
+selTextPos = get(handles.selectedText, 'Position');
+set(handles.selectedText, 'Position', [selTextPos(1), guiPos(4)-120, guiPos(3)-25 selTextPos(4)]);
+set(handles.uiTreePanel, 'Position', [selTextPos(1), 10, guiPos(3)-25 guiPos(4)-135]);
 
-dat = get(handles.fileinfoTable, 'data');
-counts = max(cellfun(@(x) numel(x), dat(:,1)));     % get the longest field
-firstColumnWidth = ratio*counts;
-firstColumnWidth = min([size_pix(3)/3*2 firstColumnWidth]);     % fix for situation when the parameter value is too long
-set(handles.fileinfoTable, 'ColumnWidth', {firstColumnWidth size_pix(3)-firstColumnWidth-19});
-set(handles.fileinfoTable, 'Units',tableUnits);
+set(handles.uiTreeContainer,'Position', [5, 5, guiPos(3)-25-8, guiPos(4)-135-8]);
 end
 
 
@@ -232,65 +322,92 @@ prompt = {'New parameter name:','New parameter value:'};
 answer = inputdlg(prompt,'Insert an entry',[1; 5],{'',''},options);
 if isempty(answer); return; end;
 handles.hMain.Img{handles.hMain.Id}.I.img_info(answer{1}) = answer{2};
-set(handles.fileinfoTable,'userdata','');
 refreshBtn_Callback(hObject, eventdata, handles);
 end
 
 % --- Executes on button press in modifyBtn.
 function modifyBtn_Callback(hObject, eventdata, handles)
-selection = get(handles.fileinfoTable,'userdata');
-if size(selection,1) ~= 1 || isempty(selection)
-    errordlg(sprintf('Please select a single cell and try again!'),'Error');
-    return;
-end
-dat = get(handles.fileinfoTable, 'data');
-
 options.Resize = 'on';
-answer = inputdlg('Please modify the entry:','Modify the entry',5,dat(selection(1),selection(2)),options);
-if isempty(answer); return; end;
-if selection(1,2) == 2  % modify the value
-    handles.hMain.Img{handles.hMain.Id}.I.img_info(dat{selection(1,1),1}) = answer{1}; 
-else                    % modify the parameter name
-    handles.hMain.Img{handles.hMain.Id}.I.img_info(answer{1}) = dat{selection(1,1),2};  % add new key
-    remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, dat{selection(1,1),1});      % remove the old key
+nodes = handles.uiTree.getSelectedNodes;
+nodeName = char(nodes(1).getName);
+colonChar = strfind(nodeName, ':');
+if ~isempty(colonChar)
+    nodeName = nodeName(1:colonChar-1);     
 end
-set(handles.fileinfoTable,'userdata','');
+
+subIndex = [];  % subindex of entries
+if ~isKey(handles.hMain.Img{handles.hMain.Id}.I.img_info, nodeName) && nodes(1).isLeaf
+    parent = nodes(1).getParent;
+    nodeName = char(parent(1).getName);
+    colonChar = strfind(nodeName, ':');
+    if ~isempty(colonChar)
+        nodeName = nodeName(1:colonChar-1);     
+    end
+    subIndex = str2double(nodes(1).getValue);
+end
+
+if isKey(handles.hMain.Img{handles.hMain.Id}.I.img_info, nodeName)
+    if isnumeric(handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName))
+        strVal{1} = nodeName;
+        value = handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName);
+        if ~isempty(subIndex)
+            value = value(subIndex, :);
+        end
+        strVal{2} = num2str(value);
+        answer = inputdlg({'New field name:','New value'}, 'Modify the entry',size(strVal{2},1), strVal, options);
+        if isempty(answer); return; end;
+        if ~isempty(subIndex)
+            value = handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName);
+            value(subIndex, :) = str2num(answer{2});
+            handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName) = value;
+        else
+            remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, nodeName);      % remove the old key
+            handles.hMain.Img{handles.hMain.Id}.I.img_info(answer{1}) = str2num(answer{2});
+        end
+    elseif iscell(handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName))
+        if isempty(subIndex)
+            answer = inputdlg('New field name:', 'Modify the entry',1, {nodeName}, options);
+            if isempty(answer); return; end;
+            value = handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName);
+            remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, nodeName);      % remove the old key
+            handles.hMain.Img{handles.hMain.Id}.I.img_info(answer{1}) = value;
+        else
+            strVal{1} = nodeName;
+            value = handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName);
+            strVal{2} = value{subIndex};
+            answer = inputdlg({'New field name:','New value'}, 'Modify the entry',size(strVal{2},1), strVal, options);
+            if isempty(answer); return; end;
+            value(subIndex) = answer(2);
+            handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName) = value;
+        end
+    else
+        strVal{1} = nodeName;
+        strVal{2} = handles.hMain.Img{handles.hMain.Id}.I.img_info(nodeName);
+        answer = inputdlg({'New field name:','New value'}, 'Modify the entry',5, strVal, options);
+        if isempty(answer); return; end;
+        remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, nodeName);      % remove the old key
+        handles.hMain.Img{handles.hMain.Id}.I.img_info(answer{1}) = answer{2};
+    end
+end
 refreshBtn_Callback(hObject, eventdata, handles);
 end
 
 % --- Executes on button press in deleteBtn.
 function deleteBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to deleteBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-selection = get(handles.fileinfoTable,'userdata');
-if isempty(selection)
-    errordlg(sprintf('Please select a cells and try again!'),'Error');
-    return;
-end
-selection = unique(selection(:,1));
 button = questdlg(sprintf('Warning!!!\n\nYou are going to delete the highlighted parameters!\nAre you sure?'),'Delete entries','Delete','Cancel','Cancel');
 if strcmp(button, 'Cancel'); return; end;
 
-dat = get(handles.fileinfoTable, 'data');
-keySet = dat(selection,1);
-remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, keySet);
-set(handles.fileinfoTable,'userdata','');
-refreshBtn_Callback(hObject, eventdata, handles);
+nodes = handles.uiTree.getSelectedNodes;
+keySet = cell([numel(nodes), 1]);
+for i=1:numel(nodes)
+    nodeName = char(nodes(i).getName);
+    colonChar = strfind(nodeName, ':');
+    if ~isempty(colonChar)
+        nodeName = nodeName(1:colonChar-1);     
+    end
+    keySet{i} = nodeName;
 end
+remove(handles.hMain.Img{handles.hMain.Id}.I.img_info, keySet);
 
-
-% --- Executes when selected cell(s) is changed in fileinfoTable.
-function fileinfoTable_CellSelectionCallback(hObject, eventdata, handles)
-% hObject    handle to fileinfoTable (see GCBO)
-% eventdata  structure with the following fields (see UITABLE)
-%	Indices: row and column indices of the cell(s) currently selecteds
-% handles    structure with handles and user data (see GUIDATA)
-if isempty(eventdata.Indices); return; end;
-set(handles.fileinfoTable,'userdata', eventdata.Indices);   % store selected position
-data = get(handles.fileinfoTable, 'data');
-set(handles.selectedText, 'String',data{eventdata.Indices(1,1), eventdata.Indices(1,2)});
-    
-% Update handles structure
-guidata(handles.ib_datasetInfoGui, handles);
+refreshBtn_Callback(hObject, eventdata, handles);
 end

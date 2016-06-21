@@ -64,6 +64,19 @@ if isfield(metaStr.(datasetName).SequenceDescription.ImageLoader, 'Datasetname')
     img_info('Datasetname') = metaStr.(datasetName).SequenceDescription.ImageLoader.Datasetname.Text;
 end
 
+% get Materials of the model
+if isfield(metaStr.(datasetName).SequenceDescription.ViewSetups, 'Materials')
+    materialFieldNames = fieldnames(metaStr.(datasetName).SequenceDescription.ViewSetups.Materials);
+    material_list = cell([numel(materialFieldNames), 1]);
+    color_list = zeros(numel(materialFieldNames), 3);
+    for matId = 1:numel(materialFieldNames)
+        material_list{matId} = metaStr.(datasetName).SequenceDescription.ViewSetups.Materials.(materialFieldNames{matId}).Name.Text;
+        color_list(matId,:) = str2num(metaStr.(datasetName).SequenceDescription.ViewSetups.Materials.(materialFieldNames{matId}).Color.Text); %#ok<ST2NM>
+    end
+    img_info('material_list') = material_list;
+    img_info('color_list') = color_list;
+end
+
 % convert ViewSetup to cell when there is only 1 entry
 if ~iscell(metaStr.(datasetName).SequenceDescription.ViewSetups.ViewSetup)
     ViewSetup{1} = metaStr.(datasetName).SequenceDescription.ViewSetups.ViewSetup;

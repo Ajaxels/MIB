@@ -27,7 +27,7 @@ end;
 prompt = sprintf('Enter the name of the model variable.\nIt may be a matrix (1:height,1:width,1:z,1:t)\nor a structure with "model" and "materials" fields');
 title = 'Import from Matlab';
 %answer = inputdlg(prompt,title,1,{'O'},'on');
-answer = mib_inputdlg(NaN,prompt,title,'O');
+answer = mib_inputdlg(handles, prompt,title,'O');
 if size(answer) == 0; return; end;
 
 if (~isempty(answer{1}))

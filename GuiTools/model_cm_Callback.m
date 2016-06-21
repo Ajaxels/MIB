@@ -39,7 +39,7 @@ switch type
         segmList = handles.Img{handles.Id}.I.modelMaterialNames;
         segmListValue = get(handles.segmList,'Value');
         %answer = inputdlg(sprintf('Please add a new name for this material:'),'Rename material',1,segmList(segmListValue));
-        answer = mib_inputdlg(NaN, sprintf('Please add a new name for this material:'),'Rename material',segmList{segmListValue});
+        answer = mib_inputdlg(handles, sprintf('Please add a new name for this material:'),'Rename material',segmList{segmListValue});
         if ~isempty(answer)
             segmList(segmListValue) = answer(1);
             %set(handles.segmList,'String', segmList);
@@ -97,8 +97,21 @@ switch type
         
         getRGBOptions.mode = 'full';
         getRGBOptions.resize = 'no';
-        getRGBOptions.sliceNo = max([Options.slice handles.Img{handles.Id}.I.no_stacks]);
-        image = handles.Img{handles.Id}.I.getRGBimage(handles, getRGBOptions);
+        
+        getRGBOptions.sliceNo = Options.slice; 
+        if ~isnan(Options.slice)
+            if Options.slice > handles.Img{handles.Id}.I.no_stacks
+                getRGBOptions.sliceNo = handles.Img{handles.Id}.I.no_stacks;
+                Options.slice = handles.Img{handles.Id}.I.no_stacks;
+            else
+                getRGBOptions.sliceNo = max([1 Options.slice]);   
+                Options.slice = max([1 Options.slice]);
+            end
+            image = handles.Img{handles.Id}.I.getRGBimage(handles, getRGBOptions);
+        else
+            image = NaN;
+        end
+        
         bb = handles.Img{handles.Id}.I.getBoundingBox();  % get bounding box
         ib_renderModel(model{1}, contIndex, handles.Img{handles.Id}.I.pixSize, bb, handles.Img{handles.Id}.I.modelMaterialColors, image, Options);
     case 'volumeFiji'

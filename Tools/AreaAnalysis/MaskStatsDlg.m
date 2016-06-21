@@ -709,13 +709,13 @@ switch parameter
     case 'hist'
         val = data(handles.indices(:,1),2);
         %nbins = inputdlg(sprintf('Enter number of bins for sorting\n(there are %d entries selected):', numel(val)),'Historgam',1,cellstr('10'));
-        nbins = mib_inputdlg(NaN,sprintf('Enter number of bins for sorting\n(there are %d entries selected):', numel(val)),'Historgam','10');
+        nbins = mib_inputdlg(handles.h, sprintf('Enter number of bins for sorting\n(there are %d entries selected):', numel(val)),'Historgam','10');
         if isempty(nbins); return; end;
         nbins = str2double(nbins{1});
         if isnan(nbins); errordlg(sprintf('Please enter a number to define number of bins to sort the data!'), 'Error', 'modal'); return; end;
         parList = get(handles.propertyCombo, 'string');
         parList = parList{get(handles.propertyCombo, 'value')};
-        figure(123)
+        hf = figure(randi(1000));
         hist(val,nbins);
         hHist = findobj(gca,'Type','patch');
         set(hHist,'FaceColor',[0 1 0],'EdgeColor','k');
@@ -723,6 +723,8 @@ switch parameter
         lab(2) = ylabel('Frequency');
         set(lab, 'fontsize', 12);
         set(lab, 'fontweight', 'bold');
+        [~, figName] = fileparts(handles.h.Img{handles.h.Id}.I.img_info('Filename'));
+        set(hf, 'Name', figName);
         grid;
     case {'newLabel', 'addLabel', 'removeLabel'}
         if strcmp(parameter, 'newLabel')    % clear existing annotations
@@ -1116,21 +1118,7 @@ end
 
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
-%docsearch '"Statistics for Mask or Model objects"';
-%web 'techdoc/html/ug_gui_menu_mask_statistics.html' -helpbrowser; %docsearch '"Segmentation panel"';
-path = fileparts(which('im_browser'));
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbrowser');
-    end
-else
-    web(fullfile(path, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbrowser');
-end
-
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_mask_statistics.html'), '-helpbrowser');
 end
 
 

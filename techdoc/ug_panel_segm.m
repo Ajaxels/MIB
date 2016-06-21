@@ -31,8 +31,8 @@ Model
 % using the <ug_gui_menu_file_preferences.html Menu->File->Preferences dialig>
 % * *Smooth...*, smoothes the selected material of the model with the Gaussian 2D or 3D
 % filter
-% * *Get statistics...*, calculates statistics for objects in the selected
-% material of the model. The objects may further be selected from the Statistics dialog. 
+% * *Get statistics...*, - starts the Statistics dialog to calculate quantification of objects in the selected
+% material of the model
 % Please refer to the <ug_gui_menu_mask_statistics.html Menu->Models->Model statistics...> section for details 
 % * *Show isosurface (Matlab)...*, visualize the highlighted material, as an isosurface. This functionality is powered by 
 % Matlab and <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function written by  Torsten Vogel. Use the '*r*' shortcut to rotate and '*z*'
@@ -97,6 +97,7 @@ Model
 % <<images\07_panel_segm_addto.jpg>>
 %
 %
+% * *Mask statistics* - starts the Statistics dialog to calculate quantification of objects in the Mask layer
 % * *Sync all lists* - sets selection in the |Material|, |Select from| and
 % |Add to| lists to the same entry
 %

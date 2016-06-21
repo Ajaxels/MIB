@@ -14,6 +14,7 @@ function varargout = ib_snapshotGui(varargin)
 % Updates
 % 19.01.2016 fix of the scale bar during resizing of images
 % 19.01.2016 use of rounded values in the scale bar
+% 19.04.2016 added split color channels mode
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -48,10 +49,16 @@ handles.h = varargin{1};    % handles of im_browser
 handles.fn_out = varargin{2};     % filename of the output file
 
 % set Size of the window
-set(handles.ib_snapshotGui, 'Position', [390 348 365 264]);
+winPos = get(handles.ib_snapshotGui, 'Position');
+set(handles.ib_snapshotGui, 'Position', [winPos(1) winPos(1) 335 winPos(4)]);
 
 set(handles.jpgPanel,'parent', get(handles.tifPanel, 'parent'));
 set(handles.bmpPanel,'parent', get(handles.tifPanel, 'parent'));
+
+% set callback for the target radio panel
+set(handles.targetRadioPanel,'SelectionChangeFcn',@radioBtns_Callback);
+% set callback for the crop radio panel
+set(handles.cropPanel,'SelectionChangeFcn',@crop_Callback);
 
 [~, ~, ext] = fileparts(handles.fn_out);
 if strcmp(ext(2:end), 'jpg')
@@ -116,8 +123,8 @@ set(tempList,'BackgroundColor',[.831 .816 .784]);
 tempList = findall(handles.ib_snapshotGui,'Type','uibuttongroup');    % set color to uibuttongroup
 set(tempList,'BackgroundColor',[.831 .816 .784]);
 
-% Determine the position of the dialog - centered on the callback figure
-% if available, else, centered on the screen
+% Determine the position of the dialog - on a side of the main figure
+% if available, else, centered on the main figure
 FigPos=get(0,'DefaultFigurePosition');
 OldUnits = get(hObject, 'Units');
 set(hObject, 'Units', 'pixels');
@@ -129,7 +136,7 @@ if isempty(gcbf)
     set(0,'Units','pixels');
     ScreenSize=get(0,'ScreenSize');
     set(0,'Units',ScreenUnits);
-
+    
     FigPos(1)=1/2*(ScreenSize(3)-FigWidth);
     FigPos(2)=2/3*(ScreenSize(4)-FigHeight);
 else
@@ -137,8 +144,15 @@ else
     set(gcbf,'Units','pixels');
     GCBFPos = get(gcbf,'Position');
     set(gcbf,'Units',GCBFOldUnits);
-    FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
-                   (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
+    screenSize = get(0,'ScreenSize');
+    if GCBFPos(1)-FigWidth > 0 % put figure on the left side of the main figure
+        FigPos(1:2) = [GCBFPos(1)-FigWidth-10 GCBFPos(2)+GCBFPos(4)-FigHeight+59];
+    elseif GCBFPos(1) + GCBFPos(3) + FigWidth < screenSize(3) % put figure on the right side of the main figure
+        FigPos(1:2) = [GCBFPos(1)+GCBFPos(3)+10 GCBFPos(2)+GCBFPos(4)-FigHeight+59];
+    else
+        FigPos(1:2) = [(GCBFPos(1) + GCBFPos(3) / 2) - FigWidth / 2, ...
+            (GCBFPos(2) + GCBFPos(4) / 2) - FigHeight / 2];
+    end
 end
 FigPos(3:4)=[FigWidth FigHeight];
 set(hObject, 'Position', FigPos);
@@ -183,7 +197,9 @@ end
 
 end
 
-function crop_Callback(hObject, eventdata, handles)
+function crop_Callback(hObject, eventdata)
+handles = guidata(hObject);
+handles.h = guidata(handles.h.im_browser);
 if get(handles.fullImageRadio,'Value') == 1
     options.blockModeSwitch = 0; % full image 
 elseif get(handles.shownAreaRadio,'Value') == 1
@@ -398,11 +414,8 @@ newWidth = round(newHeight/ratio);
 set(handles.widthEdit, 'String',num2str(newWidth));
 end
 
-function radioBtns_Callback(hObject, eventdata, handles)
-if get(hObject, 'value') == 0
-    set(hObject, 'value', 1);
-    return;
-end;
+function radioBtns_Callback(hObject, eventdata)
+handles = guidata(hObject);
 if get(handles.toFileRadio,'Value')
     set(handles.filePanel,'Visible', 'on');
 elseif get(handles.clipboardRadio,'Value')
@@ -413,17 +426,7 @@ end
 
 % --- Executes on button press in helpButton.
 function helpButton_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_file_makesnapshot.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_file_makesnapshot.html'), '-helpbrowser');
-    end
-else
-    web(fullfile(fileparts(which('im_browser')),'techdoc','html','ug_gui_menu_file_makesnapshot.html'));
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_file_makesnapshot.html'), '-helpbrowser');
 end
 
 
@@ -461,52 +464,131 @@ options.markerType = 'both';
 if get(handles.shownAreaRadio,'Value')   % saving only the shown area
     options.mode = 'shown';
 end
-img = handles.h.Img{handles.h.Id}.I.getRGBimage(handles.h, options);
 
-if get(handles.measurementsCheck,'value')==1
-    hFig = figure(153);
-    set(hFig, 'Renderer', 'zbuffer');
-    clf;
-    warning('off','images:initSize:adjustingMag');
-    warning('off','MATLAB:print:DeprecateZbuffer');
-    
-    imshow(img);
-    hold on;
-    handles.h = handles.h.Img{handles.h.Id}.I.hMeasure.addMeasurementsToPlot(handles.h, options.mode, gca);
-    set(gca, 'xtick', []);
-    set(gca, 'ytick', []);
-    % export to img
-    img2 = export_fig('-native','-zbuffer','-a1');
-    
-    delete(153);
-    warning('on','images:initSize:adjustingMag');
-    warning('on','MATLAB:print:DeprecateZbuffer');
-    % crop the frame
-    if handles.h.matlabVersion < 8.4
-        img2 = img2(2:end-1, 2:end-1, :);
+if get(handles.splitChannelsCheck, 'value')
+    rowNo = str2double(get(handles.rowNoEdit, 'string'));
+    colNo = str2double(get(handles.colsNoEdit, 'string'));
+    if numel(handles.h.Img{handles.h.Id}.I.slices{3})+1 > rowNo*colNo
+        warndlg(sprintf('!!! Warning !!!\n\nNumber of selected color channels is larger than the number of panels in the resulting image!\nIncrease number of columns or rows and try again'),'Too many color channels');
+        return;
     end
-    % the resulting image is few pixels larger than the original one
-    img = imresize(img2, [size(img,1) size(img,2)],'nearest');
+    maxImageIndex = min([numel(handles.h.Img{handles.h.Id}.I.slices{3})+1 rowNo*colNo]);
+    imageShift = str2double(get(handles.marginEdit, 'string'));    % shift between panels
+else
+    rowNo = 1;
+    colNo = 1;
+    maxImageIndex = 1;
 end
 
-if get(handles.roiRadio, 'value')
-    roiList = get(handles.h.roiList, 'string');
-    roiImg = handles.h.Img{handles.h.Id}.I.hROI.returnMask(roiList{get(handles.h.roiList, 'value')});
-    STATS = regionprops(roiImg, 'BoundingBox');
-    img = imcrop(img, STATS.BoundingBox);
-end
 newWidth = str2double(get(handles.widthEdit, 'String'));
 newHeight = str2double(get(handles.heightEdit, 'String'));
-
-scale = newWidth/size(img, 2);
-if newWidth ~= handles.origWidth || newHeight ~= handles.origHeight   % resize the image
-    methodVal = get(handles.resizeMethodPopup, 'Value');
-    methodList = get(handles.resizeMethodPopup, 'String');
-    img = imresize(img, [newHeight newWidth], methodList{methodVal});
-end
-
-if get(handles.scalebarCheck, 'Value')  % add scale bar
-    img = addScaleBar(img, handles.h.Img{handles.h.Id}.I.pixSize, scale, handles.h.Img{handles.h.Id}.I.orientation);
+colorChannels = handles.h.Img{handles.h.Id}.I.slices{3};    % store selected color channels
+lutCheckBox = get(handles.h.lutCheckbox, 'value');          % store lut check box status
+wb = waitbar(0, sprintf('Generating images\nPlease wait...'),'Name', 'Making snapshot');
+for imageId = 1:maxImageIndex
+    if imageId == maxImageIndex
+        set(handles.h.lutCheckbox, 'value', lutCheckBox);
+        handles.h.Img{handles.h.Id}.I.slices{3} = colorChannels;
+        if strcmp(get(handles.h.volrenToolbarSwitch, 'state'), 'off')
+            img = handles.h.Img{handles.h.Id}.I.getRGBimage(handles.h, options);
+        else
+            volrenOpt.ImageSize = [newHeight, newWidth];
+            scaleRatio = 1/handles.h.Img{handles.h.Id}.I.magFactor;
+            S = makehgtform('scale', 1/scaleRatio);
+            volrenOpt.Mview = S * handles.h.Img{handles.h.Id}.I.volren.viewer_matrix;
+            
+%             target=bsxfun(@plus,volrenOpt.Mview(1:3,1:3), volrenOpt.Mview(1:3,end));
+%             source=eye(3);
+%             E=absor(source, target, 'doScale', 0);
+%             R = E.R;
+%             x = radtodeg(atan2(R(3,2), R(3,3)));
+%             y = radtodeg(atan2(-R(3,1), sqrt(R(3,2)*R(3,2) + R(3,3)*R(3,3))));
+%             z = radtodeg(atan2(R(2,1), R(1,1)));
+%             z = mod(z, 90);
+%             shiftX1 = newWidth*cosd(z);
+%             shiftX2 = newHeight*sind(z);
+%             shiftY1 = newHeight*sind(z);
+%             shiftY2 = newWidth*cosd(z);
+%             volrenOpt.ImageSize = [round(shiftY1+shiftY2)*1.2, round(shiftX1+shiftX2)*1.2];
+%            
+            timePoint = handles.h.Img{handles.h.Id}.I.slices{5}(1);
+            img = getRGBvolume(handles.h.Img{handles.h.Id}.I.getData3D('image', timePoint, 4, 0), volrenOpt, handles.h);
+        end
+    else
+        if get(handles.grayscaleCheck, 'value') == 1
+            set(handles.h.lutCheckbox, 'value', 0);
+        end
+        handles.h.Img{handles.h.Id}.I.slices{3} = colorChannels(imageId);
+        img = handles.h.Img{handles.h.Id}.I.getRGBimage(handles.h, options);
+    end
+    
+    if get(handles.measurementsCheck,'value')==1
+        hFig = figure(153);
+        set(hFig, 'Renderer', 'zbuffer');
+        clf;
+        warning('off','images:initSize:adjustingMag');
+        warning('off','MATLAB:print:DeprecateZbuffer');
+        
+        imshow(img);
+        hold on;
+        handles.h = handles.h.Img{handles.h.Id}.I.hMeasure.addMeasurementsToPlot(handles.h, options.mode, gca);
+        set(gca, 'xtick', []);
+        set(gca, 'ytick', []);
+        % export to img
+        img2 = export_fig('-native','-zbuffer','-a1');
+        
+        delete(153);
+        warning('on','images:initSize:adjustingMag');
+        warning('on','MATLAB:print:DeprecateZbuffer');
+        % crop the frame
+        if handles.h.matlabVersion < 8.4
+            img2 = img2(2:end-1, 2:end-1, :);
+        end
+        % the resulting image is few pixels larger than the original one
+        img = imresize(img2, [size(img,1) size(img,2)],'nearest');
+    end
+    
+    if get(handles.roiRadio, 'value')
+        roiList = get(handles.h.roiList, 'string');
+        roiImg = handles.h.Img{handles.h.Id}.I.hROI.returnMask(roiList{get(handles.h.roiList, 'value')});
+        STATS = regionprops(roiImg, 'BoundingBox');
+        img = imcrop(img, STATS.BoundingBox);
+    end
+    
+    scale = newWidth/size(img, 2);
+    if newWidth ~= handles.origWidth || newHeight ~= handles.origHeight   % resize the image
+        methodVal = get(handles.resizeMethodPopup, 'Value');
+        methodList = get(handles.resizeMethodPopup, 'String');
+        img = imresize(img, [newHeight newWidth], methodList{methodVal});
+    end
+    
+    if get(handles.scalebarCheck, 'Value')  % add scale bar
+        img = addScaleBar(img, handles.h.Img{handles.h.Id}.I.pixSize, scale, handles.h.Img{handles.h.Id}.I.orientation);
+    end
+    
+    if maxImageIndex == 1
+        imgOut = img;
+    else
+        if imageId == 1
+            outH = size(img, 1);
+            outW = size(img, 2);
+            colId = 1;
+            rowId = 1;
+            imgOut = zeros([outH*rowNo + (rowNo-1)*imageShift, outW*colNo + (colNo-1)*imageShift, size(img, 3)], class(img)); %#ok<ZEROLIKE>
+        end
+        
+        y1 = (rowId-1)*outH+1 + imageShift*(rowId-1);
+        y2 = y1 + outH - 1;
+        x1 = (colId-1)*outW+1 + imageShift*(colId-1);
+        x2 = x1 + outW - 1;
+        imgOut(y1:y2,x1:x2,:) = img;
+        colId = colId + 1;
+        if colId > colNo
+            colId = 1;
+            rowId = rowId + 1;
+        end
+    end
+    waitbar(imageId/maxImageIndex, wb);
 end
 
 if get(handles.toFileRadio,'Value')     % saving to a file
@@ -518,12 +600,12 @@ if get(handles.toFileRadio,'Value')     % saving to a file
     formatId = get(handles.fileFormatPopup, 'Value');
     if formatId == 1 % bmp
         parameters = struct();
-        if isa(img,'uint8') == 0    % convert to 8bit
-            img = im2uint8(img);
+        if isa(imgOut,'uint8') == 0    % convert to 8bit
+            imgOut = im2uint8(imgOut);
         end
     elseif formatId == 2 % jpg
-        if isa(img,'uint8') == 0    % convert to 8bit
-            img = im2uint8(img);
+        if isa(imgOut,'uint8') == 0    % convert to 8bit
+            imgOut = im2uint8(imgOut);
         end
         parameters.Quality = str2double(get(handles.jpgQuality, 'String'));
         parameters.Bitdepth = str2double(get(handles.jpgBitdepth, 'String'));
@@ -544,12 +626,15 @@ if get(handles.toFileRadio,'Value')     % saving to a file
         parameters.WriteMode = 'overwrite';
     end
     
-    ib_imwrite(img, handles.output, parameters);
+    ib_imwrite(imgOut, handles.output, parameters);
     handles.h.snapshot_fn = handles.output;
     guidata(handles.h.im_browser, handles.h);
 elseif get(handles.clipboardRadio,'Value')  % copy to Clipboard
-    imclipboard('copy', img);
+    waitbar(imageId/maxImageIndex, wb, sprintf('Exporting to clipboard\nPlease wait...'));
+    imclipboard('copy', imgOut);
 end
+
+delete(wb);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -612,4 +697,20 @@ width = ceil(width/xFactor);
 height = ceil(height/xFactor);
 set(handles.widthEdit, 'string', num2str(width));
 set(handles.heightEdit, 'string', num2str(height));
+end
+
+
+% --- Executes on button press in splitChannelsCheck.
+function splitChannelsCheck_Callback(hObject, eventdata, handles)
+if get(handles.splitChannelsCheck, 'value') == 1
+    set(handles.grayscaleCheck, 'enable', 'on');
+    set(handles.colsNoEdit, 'enable', 'on');
+    set(handles.rowNoEdit, 'enable', 'on');
+    set(handles.marginEdit, 'enable', 'on');
+else
+    set(handles.grayscaleCheck, 'enable', 'off');
+    set(handles.colsNoEdit, 'enable', 'off');
+    set(handles.rowNoEdit, 'enable', 'off');  
+    set(handles.marginEdit, 'enable', 'off');
+end
 end

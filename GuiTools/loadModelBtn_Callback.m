@@ -31,8 +31,10 @@ if nargin < 4   % model and options are not provided
     [filename, path] = uigetfile(...
         {'*.mat;',  'Matlab format (*.mat)'; ...
         '*.am;',  'Amira mesh format (*.am)'; ...
+        '*.h5',   'Hierarchical Data Format (*.h5)'; ...
         '*.nrrd;',  'NRRD format (*.nrrd)'; ...
         '*.tif;',  'TIF format (*.tif)'; ...
+        '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
         '*.*',  'All Files (*.*)'}, ...
         'Open model data...',handles.mypath,'MultiSelect','on');
     if isequal(filename, 0); return; end; % check for cancel
@@ -83,6 +85,20 @@ if nargin < 4   % model and options are not provided
             model = amiraLabels2bitmap(fullfile([path filename{fnId}]));
             options.model_fn = fullfile([path filename{1}(1:end-2) 'mat']);
             options.model_var = 'amira_mesh';
+        elseif strcmp(filename{fnId}(end-1:end),'h5') || strcmp(filename{fnId}(end-2:end),'xml')  % loading model in hdf5 format
+            options.bioformatsCheck = 0;
+            options.progressDlg = 0;
+            [model, img_info, ~] = ib_loadImages({fullfile(path, filename{fnId})}, options, handles);
+            model = squeeze(model);
+            options.model_fn = fullfile([path filename{1}(1:end-2) 'mat']);
+            options.model_var = 'hdf5';
+            if isKey(img_info, 'material_list')     % add list of material names
+                options.material_list = img_info('material_list');
+            end
+            if isKey(img_info, 'color_list')     % add list of colors for materials
+                options.color_list = img_info('color_list');
+            end
+            delete(img_info);
         elseif strcmp(filename{fnId}(end-3:end),'nrrd') % loading model in tif format
             model = nrrdLoadWithMetadata(fullfile([path filename{fnId}]));
             model =  uint8(permute(model.data, [2 1 3]));
@@ -97,12 +113,12 @@ if nargin < 4   % model and options are not provided
             options.model_var = 'tif_model';
         end
         
-        % check H/W dimensions
-        if size(model,1) ~= handles.Img{handles.Id}.I.height || size(model,2) ~= handles.Img{handles.Id}.I.width
+        % check H/W/Z dimensions
+        if size(model,1) ~= handles.Img{handles.Id}.I.height || size(model,2) ~= handles.Img{handles.Id}.I.width || size(model,3) ~= handles.Img{handles.Id}.I.no_stacks
             if exist('wb','var'); delete(wb); end;
-            msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxW) = %d x %d pixels\nModel (HxW) = %d x %d pixels',...
-                handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, size(model,1), size(model,2)),'Error!','error','modal');
-            error('loadModelBtn_Callback: wrong dimensions!');
+            msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, handles.Img{handles.Id}.I.no_stacks, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
+            return;
         end
         
         if size(model, 4) > 1 && size(model, 4) == handles.Img{handles.Id}.I.time   % update complete 4D dataset
@@ -135,11 +151,11 @@ else
         options.model_var = ['Labels_' fnTemplate];
     end
     
-    % check H/W dimensions
-    if size(model,1) ~= handles.Img{handles.Id}.I.height || size(model,2) ~= handles.Img{handles.Id}.I.width
+    % check H/W/Z dimensions
+    if size(model,1) ~= handles.Img{handles.Id}.I.height || size(model,2) ~= handles.Img{handles.Id}.I.width || size(model,3) ~= handles.Img{handles.Id}.I.no_stacks
         if exist('wb','var'); delete(wb); end;
-        msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxW) = %d x %d pixels\nModel (HxW) = %d x %d pixels',...
-            handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, size(model,1), size(model,2)),'Error!','error','modal');
+        msgbox(sprintf('Model and image dimensions mismatch!\nImage (HxWxZ) = %d x %d x %d pixels\nModel (HxWxZ) = %d x %d x %d pixels',...
+                handles.Img{handles.Id}.I.height, handles.Img{handles.Id}.I.width, handles.Img{handles.Id}.I.no_stacks, size(model,1), size(model,2), size(model,3)),'Error!','error','modal');
         return;
     end
     

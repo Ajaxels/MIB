@@ -39,7 +39,9 @@ handles.U.clearContents();  % clear Undo class
 obj.hROI.clearData();   % remove all ROIs
 
 % clear some class parameters
-obj.imh = 0;   % handle for image object
+%obj.imh = image(handles.imageAxes, 'CData',[], 'UserData', 'new');  % handle for image object
+obj.imh = matlab.graphics.primitive.Image('CData',[],'UserData', 'new');
+
 obj.orientation = 4;
 obj.current_yxz = [1 1 1];
 obj.brush_prev_xy = NaN;    % coordinates of the previous pixel for brush
@@ -181,6 +183,7 @@ end
 
 if isa(img_info,'containers.Map')
     if isKey(img_info, 'lutColors')
+        if ischar(img_info('lutColors')); img_info('lutColors') = str2num(img_info('lutColors')); end;
         obj.lutColors(1:size(img_info('lutColors'),1), :) = img_info('lutColors');
     end
 end
@@ -188,6 +191,14 @@ end
 [obj.img_info, obj.pixSize] = ib_updatePixSizeAndResolution(obj.img_info, obj.pixSize);
 handles = updateAxesLimits(obj, handles, 'resize');
 handles.Img{handles.Id}.I.updateDisplayParameters();
+
+R = [0 0 0];
+S = [1*obj.magFactor,...
+     1*obj.magFactor,...
+     1*obj.pixSize.x/obj.pixSize.z*obj.magFactor];  
+T = [0 0 0];
+obj.volren.viewer_matrix = makeViewMatrix(R, S, T);
+
 handles = updateGuiWidgets(handles);
 handles = guidata(handles.im_browser);
 

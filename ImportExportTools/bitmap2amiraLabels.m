@@ -1,5 +1,5 @@
-function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite)
-% function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite)
+function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar)
+% function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list, modelMaterialNames, overwrite, showWaitbar)
 % Convert matrix [1:height, 1:width, 1:no_stacks] to Amira Mesh Labels
 %
 % Parameters:
@@ -16,6 +16,7 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % color_list: [@em optional], a matrix with colors for the materials as [materialId][Red, Green, Blue] from 0-1
 % modelMaterialNames: [@em optional], cell array with names of the materials
 % overwrite: [@em optional], if @b 1 do not check whether file with provided filename already exists
+% showWaitbar: [@em optional], if @b 1 - show the wait bar, if @b 0 - do not show
 %
 % Return values:
 % result: result of the function run, @b 1 - success, @b 0 - fail
@@ -39,6 +40,9 @@ set(0, 'DefaulttextInterpreter', 'none');
 minValRLE = 1;  % minimal value for using RLE compression
 if nargin < 2
     error('Please provide filename, and bitmap matrix!');
+end
+if nargin < 8   % add waitbar switch
+    showWaitbar = 1;
 end
 if nargin < 7   % generate color_list
     overwrite = 0;
@@ -80,9 +84,11 @@ if overwrite == 0
         if strcmp(button, 'Cancel'); return; end;
     end;
 end
-wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name',sprintf('Saving Amira Mesh [%s]...', format));
-set(findall(wb,'type','text'),'Interpreter','none');
-waitbar(0, wb);
+if showWaitbar
+    wb = waitbar(0,sprintf('%s\nPlease wait...',filename),'Name',sprintf('Saving Amira Mesh [%s]...', format));
+    set(findall(wb,'type','text'),'Interpreter','none');
+    waitbar(0, wb);
+end
 
 fid = fopen(filename, 'w');
 
@@ -122,7 +128,7 @@ fprintf(fid,'    CoordType "uniform"\n');
 fprintf(fid,'}\n\n');
 % reshape the matrix into a vector
 bitmap = reshape(permute(bitmap,[2 1 3]),1,[])';
-waitbar(.1, wb);
+if showWaitbar; waitbar(.1, wb); end;
 % saving the data
 if strcmp(format,'binary')
     fprintf(fid,'Lattice { byte Labels } @1\n\n');
@@ -137,7 +143,7 @@ elseif strcmp(format,'ascii')
     maxVal = numel(bitmap);
     waitbarScale = round(maxVal/10);
     for ind = 1:maxVal
-        if mod(ind, waitbarScale)==1; waitbar(ind/maxVal, wb); end;
+        if showWaitbar && mod(ind, waitbarScale)==1; waitbar(ind/maxVal, wb); end;
         fprintf(fid,'%d \n',bitmap(ind));
     end
 elseif strcmp(format,'binaryRLE')
@@ -145,7 +151,8 @@ elseif strcmp(format,'binaryRLE')
     indexBlockStart = 1;
     lastCharacter = NaN;    % take care of the last character in the sequence
     bytesCounter = 0;
-    waitbar(.2, wb);
+    if showWaitbar;         waitbar(.2, wb); end;
+        
     while indexBlockStart < maxVal
         blockOut = zeros([127 1])*NaN;   % block of data to save at once
         commulativeIndex = 0;                       % number of similar values in a row
@@ -215,12 +222,12 @@ elseif strcmp(format,'binaryRLE')
     fprintf(fid,'Lattice { byte Labels } @1(HxByteRLE,%d)\n\n', bytesCounter);
     fprintf(fid,'# Data section follows\n');
     fprintf(fid,'@1\n');
-    waitbar(.8, wb);
+    if showWaitbar; waitbar(.8, wb); end;
     fwrite(fid, bitmap(1:bytesCounter), '*uint8', 0, 'ieee-le');
 end
 fprintf(fid,'\n');
 fclose(fid);
-delete(wb);
+if showWaitbar; delete(wb); end;
 set(0, 'DefaulttextInterpreter', curInt); 
 disp(['bitmap2amiraLabels: ' filename ' was created!']);
 result = 1;

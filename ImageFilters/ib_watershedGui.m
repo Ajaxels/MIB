@@ -17,7 +17,7 @@ function varargout = ib_watershedGui(varargin)
 
 % Edit the above text to modify the response to help ib_watershedGui
 
-% Last Modified by GUIDE v2.5 21-Oct-2015 18:04:36
+% Last Modified by GUIDE v2.5 11-May-2016 12:58:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -48,7 +48,7 @@ function ib_watershedGui_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to ib_watershedGui (see VARARGIN)
 
 handles.h = varargin{1};    % handles of im_browser
-set(handles.ib_watershedGui,'position',[389.25 594.0 256 423]);
+set(handles.ib_watershedGui,'position',[389.25 594.0 256 450.75]);
 
 % update font and size
 if get(handles.text1, 'fontsize') ~= handles.h.preferences.Font.FontSize ...
@@ -308,18 +308,7 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_tools_watershed.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_tools_watershed.html'), '-helpbrowser');
-    end
-else
-    path = fileparts(which('im_browser'));
-    web(fullfile(path, 'techdoc/html/ug_gui_menu_tools_watershed.html'), '-helpbrowser');
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_tools_watershed.html'), '-helpbrowser');
 end
 
 
@@ -779,6 +768,7 @@ function watershedBtn_Callback(hObject, eventdata, handles)
 % do backup
 tic
 % define type of the objects to backup
+handles.h = guidata(handles.h.im_browser);
 if get(handles.imageSegmentationToggle, 'value') || get(handles.graphCutToggle, 'value')
     type = 'mask';
 else
@@ -871,7 +861,7 @@ if get(handles.mode2dCurrentRadio, 'value')
     
     % generate data term
     waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
-    T = ones([graphcut.noPix(sliceNo), 2])*.5;
+    T = zeros([graphcut.noPix(sliceNo), 2])+0.5;
     % remove from labelBg those that are also found in labelObj
     labelBg(ismember(labelBg, labelObj)) = [];
     
@@ -946,7 +936,7 @@ elseif get(handles.mode2dRadio, 'value')
         labelBg(ismember(labelBg, labelObj)) = [];
         
         % generate data term
-        T = ones([graphcut.noPix(index), 2])*0.5;
+        T = zeros([graphcut.noPix(index), 2])+0.5;
         T(labelObj, 1) = 0;
         T(labelObj, 2) = 99999;
         T(labelBg, 1) = 99999;
@@ -1032,7 +1022,7 @@ else        % do it for 3D
     
     % generate data term
     waitbar(.45, wb, sprintf('Generating data term\nPlease wait...'));
-    T = ones([graphcut.noPix, 2])*0.5;
+    T = zeros([graphcut.noPix, 2])+0.5;
     T(labelObj, 1) = 0;
     T(labelObj, 2) = 999999;
     T(labelBg, 1) = 999999;
@@ -1543,7 +1533,7 @@ end
 function importBtn_Callback(hObject, eventdata, handles)
 %options.Resize='on';
 %answer = inputdlg({'Enter variable containing preprocessed image (h:w:color:index):'},'Import image',1,{'I'},options);
-answer = mib_inputdlg(NaN,'Enter variable containing preprocessed image (h:w:color:index):','Import image','I');
+answer = mib_inputdlg(handles.h, 'Enter variable containing preprocessed image (h:w:color:index):', 'Import image', 'I');
 if size(answer) == 0; return; end;
 
 try
@@ -1713,25 +1703,21 @@ switch handles.mode
             %STATS = regionprops(graphcut.slic, img, 'MeanIntensity','PixelIdxList');
             STATS = regionprops(graphcut.slic, img, 'MeanIntensity');
             gap = 0;    % regions are connected, no gap in between
-            Edges = imRAG(graphcut.slic, gap);
-            Edges = double(Edges);
+            graphcut.Edges{1} = imRAG(graphcut.slic, gap);
+            graphcut.Edges{1} = double(graphcut.Edges{1});
             
-            EdgesValues = zeros([size(Edges,1), 1]);
+            graphcut.EdgesValues{1} = zeros([size(graphcut.Edges{1},1), 1]);
             meanVals = [STATS.MeanIntensity];
             
-            for i=1:size(Edges,1)
+            for i=1:size(graphcut.Edges{1},1)
                 %EdgesValues(i) = 255/(abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)))+.00001);     % should be low (--> 0) at the edges of objects
-                EdgesValues(i) = abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)));     % should be low (--> 0) at the edges of objects
+                graphcut.EdgesValues{1}(i) = abs(meanVals(graphcut.Edges{1}(i,1))-meanVals(graphcut.Edges{1}(i,2)));     % should be low (--> 0) at the edges of objects
             end
-            edgeMax = max(EdgesValues);
-            edgeMin = min(EdgesValues);
-            edgeVar = edgeMax-edgeMin;
-            normE = (edgeMax-EdgesValues)/edgeVar;
-            EdgesValues = exp(normE*10);  % should be low (--> 0) at the edges of objects
             
-            Edges2 = fliplr(Edges);    % complement for both ways
-            Edges = [Edges; Edges2];
-            graphcut.Graph{1} = sparse(Edges(:,1),Edges(:,2),[EdgesValues EdgesValues]);
+            waitbar(.9, wb, sprintf('Calculating weights for boundaries...\nPlease wait...'));
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
         else    % generate WATERSHED superpixels
             if blackOnWhite == 1
                 img = imcomplement(img);    % convert image that the ridges are white
@@ -1741,31 +1727,14 @@ switch handles.mode
             mask = imimposemin(img, mask);
 
             graphcut.slic = watershed(mask);       % generate superpixels
-            [Edges, edgeIndsList] = imRichRAG(graphcut.slic);
+            [graphcut.Edges{1}, edgeIndsList] = imRichRAG(graphcut.slic);
             % calculate mean of intensities at the borders between each superpixel
-            EdgesValues = cell2mat(cellfun(@(idx) mean(img(idx)), edgeIndsList, 'UniformOutput', 0)); 
-            
-%           % to be tested in future            
-%           STATS = regionprops(graphcut.slic, img, 'PixelIdxList','MeanIntensity');
-%           meanVals = [STATS.MeanIntensity];   % get mean intensity
-%           for i=1:size(Edges,1)
-%                 Edges(i,3) = Edges(i,3)+abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)));
-%           end
-            
-            edgeMax = max(EdgesValues);
-            edgeMin = min(EdgesValues);
-            edgeVar = edgeMax-edgeMin;
-            
-            normE = (edgeMax-EdgesValues)/edgeVar;
-            E = exp(normE*10);  % should be low (--> 0) at the edges of objects
-            %E = normE;         % alternative
-            Edges = double(Edges);
-            Edges(:,3) = E;          
-            
-            Edges2 = [fliplr(Edges(:,1:2)) Edges(:,3)]; % complement for both ways
-            Edges = [Edges; Edges2];
+            graphcut.EdgesValues{1} = cell2mat(cellfun(@(idx) mean(img(idx)), edgeIndsList, 'UniformOutput', 0)); 
+           
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
 
-            graphcut.Graph{1} = sparse(Edges(:,1), Edges(:,2), Edges(:,3));
             graphcut.noPix = max(graphcut.slic(:));
             % two modes for dilation: 'pre' and 'post'
             % in 'pre' the superpixels are dilated before the graphcut
@@ -1809,6 +1778,7 @@ switch handles.mode
         
         % calculate number of superpixels
         dims = size(img);
+        if numel(dims) == 2; dims(3) = 1; end;
         graphcut.slic = zeros(size(img));
         graphcut.noPix = zeros([size(img,3), 1]);
         if superPixType == 1     % generate SLIC superpixels
@@ -1834,18 +1804,16 @@ switch handles.mode
                     %EdgesValues(i) = 255/(abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)))+.00001);     % should be low (--> 0) at the edges of objects
                     EdgesValues(j) = abs(meanVals(Edges(j,1))-meanVals(Edges(j,2)));     % should be low (--> 0) at the edges of objects
                 end
-                edgeMax = max(EdgesValues);
-                edgeMin = min(EdgesValues);
-                edgeVar = edgeMax-edgeMin;
-                normE = (edgeMax-EdgesValues)/edgeVar;
-                EdgesValues = exp(normE*10);  % should be low (--> 0) at the edges of objects
-            
-                Edges2 = fliplr(Edges);    % complement for both ways
-                Edges = [Edges; Edges2];
-                graphcut.Graph{i} = sparse(Edges(:,1), Edges(:,2), [EdgesValues; EdgesValues]);
-                %graphcut.PixelIdxList{i} = {STATS.PixelIdxList};
+                
+                graphcut.Edges{i} = Edges;
+                graphcut.EdgesValues{i} = EdgesValues;
                 waitbar(i/dims(3), wb, sprintf('Calculating...\nPlease wait...'));
             end
+            
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
+            
         else % generate WATERSHED superpixels
             if blackOnWhite == 1
                 img = imcomplement(img);    % convert image that the ridges are white
@@ -1858,27 +1826,11 @@ switch handles.mode
                 
                 % this call seems to be faster for 2D than using 
                 % [Edges, EdgesValues] = imRichRAG(graphcut.slic(:,:,i), 1, currImg);
-                [Edges, edgeIndsList] = imRichRAG(graphcut.slic(:,:,i));
+                [graphcut.Edges{i}, edgeIndsList] = imRichRAG(graphcut.slic(:,:,i));
                 % calculate mean of intensities at the borders between each superpixel
-                EdgesValues = cell2mat(cellfun(@(idx) mean(currImg(idx)), edgeIndsList, 'UniformOutput', 0)); 
-                
-                edgeMax = max(EdgesValues);
-                edgeMin = min(EdgesValues);
-                edgeVar = edgeMax-edgeMin;
-            
-                normE = (edgeMax-EdgesValues)/edgeVar;
-                E = exp(normE*10);  % should be low (--> 0) at the edges of objects
-                %E = normE;         % alternative
-                Edges = double(Edges);
-                Edges(:,3) = E;          
-            
-                Edges2 = [fliplr(Edges(:,1:2)) Edges(:,3)]; % complement for both ways
-                Edges = [Edges; Edges2];
-
-                graphcut.Graph{i} = sparse(Edges(:,1), Edges(:,2), Edges(:,3));
-                %graphcut.noPix(i) = double(max(graphcut.slic(:)));
+                graphcut.EdgesValues{i} = cell2mat(cellfun(@(idx) mean(currImg(idx)), edgeIndsList, 'UniformOutput', 0)); 
+                graphcut.Edges{i} = double(graphcut.Edges{i});
                 graphcut.noPix(i) = double(max(max(graphcut.slic(:,:,i))));
-                %graphcut.noPix(i) = max(Edges(:));
                 
                 % two modes for dilation: 'pre' and 'post'
                 % in 'pre' the superpixels are dilated before the graphcut
@@ -1889,10 +1841,11 @@ switch handles.mode
                 if strcmp(graphcut.dilateMode, 'pre')
                     graphcut.slic = imdilate(graphcut.slic(:,:,i), ones(3));
                 end
-                %STATS = regionprops(graphcut.slic(:,:,i), 'PixelIdxList');
-                %graphcut.PixelIdxList{i} = {STATS.PixelIdxList};
                 waitbar(i/dims(3), wb, sprintf('Calculating...\nPlease wait...'));
             end
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
         end
     case 'mode3dRadio'
         img = squeeze(handles.h.Img{handles.h.Id}.I.getData3D('image', NaN, 4, col_channel, getDataOptions));   % get dataset
@@ -1952,7 +1905,6 @@ switch handles.mode
                 graphcut.slic = graphcut.slic + 1;
             end
         
-        
             % calculate adjacent matrix for labels
             waitbar(.25, wb, sprintf('Calculating MeanIntensity for labels\nPlease wait...'));
             %STATS = regionprops(graphcut.slic, img, 'MeanIntensity','BoundingBox','PixelIdxList');
@@ -1962,13 +1914,13 @@ switch handles.mode
 
             % a new procedure imRAG that is up to 10 times faster
             gap = 0;    % regions are connected, no gap in between
-            Edges = imRAG(graphcut.slic, gap);
-            Edges = double(Edges);
+            graphcut.Edges{1} = imRAG(graphcut.slic, gap);
+            graphcut.Edges{1} = double(graphcut.Edges{1});
             
-            EdgesValues = zeros([size(Edges,1), 1]);
+            graphcut.EdgesValues{1} = zeros([size(graphcut.Edges{1},1), 1]);
             meanVals = [STATS.MeanIntensity];
             
-            for i=1:size(Edges,1)
+            for i=1:size(graphcut.Edges{1},1)
 %                 knownId = 2088;
 %                 if i==knownId
 %                     0;
@@ -1977,31 +1929,11 @@ switch handles.mode
 %                     vInd = sort([vInd; vInd2]);
 %                     [vInd, Edges(vInd,1), Edges(vInd,2)];  % connected superpixels
 %                 end
-                
-                %EdgesValues(i) = 255/(abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)))+.00001);     % should be low (--> 0) at the edges of objects
-                EdgesValues(i) = abs(meanVals(Edges(i,1))-meanVals(Edges(i,2)));     % should be low (--> 0) at the edges of objects
+                graphcut.EdgesValues{1}(i) = abs(meanVals(graphcut.Edges{1}(i,1))-meanVals(graphcut.Edges{1}(i,2)));     % should be low (--> 0) at the edges of objects
             end
-            
-%             %edgeMax = 200;
-%             %EdgesValues(EdgesValues>edgeMax) = edgeMax;
-%             %edgeMin = 0;
-
-%             % scaling option 1
-%             edgeMax = max(EdgesValues);
-%             edgeMin = min(EdgesValues);
-%             edgeVar = edgeMax-edgeMin;
-%             normE = (edgeMax-EdgesValues)/edgeVar;
-%             E = exp(normE*10)-1;  % should be low (--> 0) at the edges of objects
-            
-            % scaling option 2
-            % check HDFviewer 2.9
-            E = exp(-EdgesValues/25);  % should be low (--> 0) at the edges of objects
-            %a = [vInd, Edges(vInd,1), Edges(vInd,2), EdgesValues(vInd) E(vInd)];
-            
-            Edges(:,3) = E;          
-            Edges2 = [Edges(:,2), Edges(:,1), Edges(:,3)];  % complement for both ways
-            Edges = [Edges; Edges2];                        % combine both ways
-            graphcut.Graph{1} = sparse(Edges(:,1), Edges(:,2), Edges(:,3), graphcut.noPix, graphcut.noPix);
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
         else    % generate WATERSHED supervoxels
             if blackOnWhite == 1
                 waitbar(.05, wb, sprintf('Complementing the image\nPlease wait...'));
@@ -2020,35 +1952,12 @@ switch handles.mode
             end
             waitbar(.7, wb, sprintf('Calculating adjacency graph\nPlease wait...'));
             
-            % % old call ~30% slower
-            %[Edges, edgeIndsList] = imRichRAG(graphcut.slic);
-            %EdgesValues = cell2mat(cellfun(@(idx) mean(img(idx)), edgeIndsList, 'UniformOutput', 0)); 
-            
             % calculate adjacency matrix and mean intensity between each
             % two adjacent supervoxels
-            [Edges, EdgesValues] = imRichRAG(graphcut.slic, 1, img);   
+            [graphcut.Edges{1}, graphcut.EdgesValues{1}] = imRichRAG(graphcut.slic, 1, img);   
+            graphcut.noPix = double(max(max(max(graphcut.slic))));
             
             waitbar(.9, wb, sprintf('Generating the final graph\nPlease wait...'));
-            % normalize intensities
-            edgeMax = max(EdgesValues);
-            edgeMin = min(EdgesValues);
-            edgeVar = edgeMax-edgeMin;
-            
-            normE = (edgeMax-EdgesValues)/edgeVar;
-            %E = exp(normE*10)-1;  % should be low (--> 0) at the edges of objects
-            
-            E = 10^8*exp(-EdgesValues/10);  % should be low (--> 0) at the edges of objects
-            
-            Edges = double(Edges);
-            Edges(:,3) = E;          
-
-            Edges2 = [Edges(:,2) Edges(:,1) Edges(:,3)];  % complement for both ways
-            Edges = [Edges; Edges2];
-
-            graphcut.noPix = double(max(max(max(graphcut.slic)))); 
-            graphcut.Graph{1} = sparse(Edges(:,1), Edges(:,2), Edges(:,3), graphcut.noPix, graphcut.noPix);
-            
-            
             % two modes for dilation: 'pre' and 'post'
             % in 'pre' the superpixels are dilated before the graphcut
             % segmentation, i.e. in this function
@@ -2059,8 +1968,10 @@ switch handles.mode
                 graphcut.slic = imdilate(graphcut.slic, ones([3 3 3]));
             end
             %STATS = regionprops(graphcut.slic, 'PixelIdxList');
+            setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+            recalcGraph_Callback(hObject, eventdata, handles);
+            graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
         end
-        %graphcut.PixelIdxList{1} = {STATS.PixelIdxList};
 end
 
 % convert to a proper class, to uint8 if below 255
@@ -2086,7 +1997,11 @@ if exist('fn_out', 'var')
     % autosaving results
     waitbar(.98, wb, sprintf('Saving Graphcut to a file\nPlease wait...'),'Name','Saving to a file');
     %Graphcut = rmfield(graphcut, 'PixelIdxList');   %#ok<NASGU> % remove the PixelIdxList to make save fast
-    Graphcut = graphcut; %#ok<NASGU>
+    %Graphcut = graphcut; %#ok<NASGU>
+    
+    % remove of the Graph field for 2542540 supervoxels
+    % makes saving faster by 5% and files smaller by 20%
+    Graphcut = rmfield(graphcut, 'Graph');   %#ok<NASGU> % remove the PixelIdxList to make save fast
     save(fn_out, 'Graphcut', '-mat', '-v7.3');
     fprintf('MIB: saving graphcut structure to %s -> done!\n', fn_out);
 end
@@ -2111,7 +2026,7 @@ if strcmp(button, 'Export to Matlab')
     title = 'Input variable to export';
     def = 'Graphcut';
     prompt = {'A variable for the measurements structure:'};
-    answer = mib_inputdlg(NaN, prompt,title,def);
+    answer = mib_inputdlg(handles.h, prompt,title,def);
     if size(answer) == 0; return; end;
     assignin('base', answer{1}, Graphcut);
     fprintf('MIB: export superpixel data ("%s") to Matlab -> done!\n', answer{1});
@@ -2137,6 +2052,7 @@ wb = waitbar(0, sprintf('Saving Graphcut to a file\nPlease wait...'),'Name','Sav
 tic
 
 %Graphcut = rmfield(graphcut, 'PixelIdxList');   %#ok<NASGU> % remove the PixelIdxList to make save fast
+Graphcut = rmfield(Graphcut, 'Graph');   %#ok<NASGU> % remove the PixelIdxList to make save fast
 save(fn_out, 'Graphcut', '-mat', '-v7.3');
 
 fprintf('MIB: saving graphcut structure to %s -> done!\n', fn_out);
@@ -2154,7 +2070,7 @@ switch button
         title = 'Input variables for import';
         prompt = 'A variable that contains compatible structure:';
         def = 'Graphcut';
-        answer = mib_inputdlg(NaN, prompt,title,def);
+        answer = mib_inputdlg(handles.h, prompt,title,def);
         if size(answer) == 0; return; end;
         tic;
         clearPreprocessBtn_Callback(handles.clearPreprocessBtn, 0, handles);
@@ -2165,7 +2081,6 @@ switch button
             errordlg(sprintf('The variable was not found in the Matlab base workspace:\n\n%s', exception.message),'Missing variable!','modal');
             return;
         end
-        
     case 'Load from a file'
         [filename, path] = uigetfile(...
             {'*.graph;',  'Matlab format (*.graph)'}, ...
@@ -2212,6 +2127,8 @@ else
     set(handles.mode2dCurrentRadio, 'value', 1);
     handles.mode = 'mode2dCurrentRadio';
 end
+if isfield(graphcut, 'scaleFactor'); set(handles.edgeFactorEdit, 'string', num2str(graphcut.scaleFactor)); end;
+
 set(handles.superpixelEdit, 'string', num2str(graphcut.spSize));
 set(handles.superpixelsCompactEdit, 'string', num2str(graphcut.spCompact));
 if ~isfield(graphcut, 'superPixType'); graphcut.superPixType=1; end;
@@ -2222,6 +2139,11 @@ if ~isfield(graphcut, 'watershedReduce'); graphcut.watershedReduce=15; end;
 set(handles.superpixelsReduceEdit,'string', num2str(graphcut.watershedReduce));  
 
 setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+
+% recalculate the Graph
+if ~isfield(graphcut, 'Graph')
+    recalcGraph_Callback(hObject, eventdata, handles, 1);
+end
 
 set(handles.superpixelsBtn, 'backgroundcolor', 'g');
 set(handles.superpixelsCountText, 'string', sprintf('Superpixels count: %d', max(graphcut.noPix)));
@@ -2330,4 +2252,45 @@ end
 if ~strcmp(parameter, 'keep')
     clearPreprocessBtn_Callback(handles.clearPreprocessBtn, 0, handles);    % clear preprocessed data
 end
+end
+
+
+% --- Executes on button press in recalcGraph.
+function recalcGraph_Callback(hObject, eventdata, handles, showWaitbar)
+% hObject    handle to recalcGraph (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if nargin < 4;    showWaitbar = 0; end;
+graphcut = getappdata(handles.ib_watershedGui, 'graphcut');
+
+if ~isfield(graphcut, 'EdgesValues')
+    errordlg(sprintf('!!! Error !!!\n\nThe edges are missing!\nPlease press the Superpixels/Graph button to calculate them'));
+    return;
+end
+
+if showWaitbar; wb = waitbar(0, sprintf('Calculating weights for boundaries...\nPlease wait...')); end;
+
+graphcut.scaleFactor = str2double(get(handles.edgeFactorEdit, 'string'));
+if showWaitbar; waitbar(.1, wb); end;
+
+for i=1:numel(graphcut.EdgesValues)
+    edgeMax = max(graphcut.EdgesValues{i});
+    edgeMin = min(graphcut.EdgesValues{i});
+    edgeVar = edgeMax-edgeMin;
+    normE = graphcut.EdgesValues{i}/edgeVar;   % scale to 0-1 range
+    EdgesValues = exp(-normE*graphcut.scaleFactor);  % should be low (--> 0) at the edges of objects
+
+    if showWaitbar; waitbar(.5, wb); end;
+
+    Edges2 = fliplr(graphcut.Edges{i});    % complement for both ways
+    Edges = double([graphcut.Edges{i}; Edges2]);
+    graphcut.Graph{i} = sparse(Edges(:,1), Edges(:,2), [EdgesValues EdgesValues]);
+    if showWaitbar; waitbar(i/numel(graphcut.EdgesValues), wb); end;
+end
+
+if showWaitbar; waitbar(.9, wb); end;
+
+setappdata(handles.ib_watershedGui, 'graphcut', graphcut);
+if showWaitbar;     waitbar(1, wb);     delete(wb);  end;
 end

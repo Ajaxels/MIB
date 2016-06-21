@@ -39,39 +39,49 @@ if isempty(get(handles.channelMixerTable, 'userdata'))
     return;
 end
 rawId = get(handles.channelMixerTable, 'userdata');
-if size(rawId,1) > 1
+if size(rawId,1) > 1 && ~strcmp(type, 'delete')
     errordlg(sprintf('Multiple color channels are selected!\n\nPlease select only one channel in the View Settings->Colors table with the left mouse button and try again.'),'Wrong selection');
     return;
 end
 
 ib_do_backup(handles, 'image', 1);
 
-rawId = rawId(1,1);
+rawId_first = rawId(1,1);
 switch type
     case 'insert'
-        handles.Img{handles.Id}.I.insertEmptyColorChannel(rawId+1);
+        handles.Img{handles.Id}.I.insertEmptyColorChannel(rawId_first+1);
         handles = updateGuiWidgets(handles);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
     case 'copy'
-        handles.Img{handles.Id}.I.copyColorChannel(rawId);
+        handles.Img{handles.Id}.I.copyColorChannel(rawId_first);
         handles = updateGuiWidgets(handles);
+        handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
+    case 'rotate'
+        % rotate specified color channel
+        if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
+        handles.Img{handles.Id}.I.rotateColorChannel(rawId_first);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
     case 'invert'
         % invert specified color channel
         if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
-        handles.Img{handles.Id}.I.invertColorChannel(rawId);
+        handles.Img{handles.Id}.I.invertColorChannel(rawId_first);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
     case 'swap'
         if handles.Img{handles.Id}.I.time < 2; ib_do_backup(handles, 'image', 1); end;
-        handles.Img{handles.Id}.I.swapColorChannels(rawId);
+        handles.Img{handles.Id}.I.swapColorChannels(rawId_first);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
     case 'delete'
         % Delete color channel from the Image layer
+%         if size(rawId,1) > 1
+%             button = questdlg(sprintf('!!! Warning !!!\n\nYou are going to delete channels: %s\nAre you sure?', mat2str(rawId)),'Delete color channels','Delete','Cancel','Cancel');
+%             if strcmp(button, 'Cancel'); return; end;
+%         end
+        rawId = rawId(:,1);
         handles.Img{handles.Id}.I.deleteColorChannel(rawId);
         handles = updateGuiWidgets(handles);
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
     case 'set color'
-        eventdata.Indices = [rawId, 3];
+        eventdata.Indices = [rawId_first, 3];
         channelMixerTable_CellSelectionCallback(handles.channelMixerTable, eventdata, handles);
 end
 

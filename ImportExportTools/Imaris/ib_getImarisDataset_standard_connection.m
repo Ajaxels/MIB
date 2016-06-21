@@ -58,7 +58,7 @@ vSizeC = vImage.GetSizeC;   % get in pixels
 vSizeT = vImage.GetSizeT;   % get in pixels
 if vSizeZ > 1 && vSizeT > 1
     %answer = inputdlg(sprintf('!!! Warning !!!\n\nMIB can''t open 5D datasets!\nPlease enter a time point to open'), 'Time point', 1, cellstr('1'));
-    answer = mib_inputdlg(NaN,sprintf('!!! Warning !!!\n\nMIB can''t open 5D datasets!\nPlease enter a time point to open'), 'Time point', '1');
+    answer = mib_inputdlg(handles, sprintf('!!! Warning !!!\n\nMIB can''t open 5D datasets!\nPlease enter a time point to open'), 'Time point', '1');
     if isempty(answer)
         return;
     end

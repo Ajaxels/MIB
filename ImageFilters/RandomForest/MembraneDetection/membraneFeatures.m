@@ -67,7 +67,7 @@ fm(:,:,end+1) = fm(:,:,7) - fm(:,:,6);
 % disp('for loop');
 
 %used to be 20
-for i=1:1:10
+for i=1:2:4
     ims = imsmooth(double(im),i);
     fm(:,:,end+1) = ims;
     fm(:,:,end+1) = imsmooth(eig1./eig2,i);

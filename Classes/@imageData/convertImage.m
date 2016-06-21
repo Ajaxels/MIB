@@ -199,7 +199,7 @@ elseif strcmp(format,'indexed')   % ->indexed
             return;
     end
     %answer = inputdlg(sprintf('Please enter number of graylevels\n [1-65535]'),'Convert to indexed image',1,{'255'});
-    answer = mib_inputdlg(NaN, sprintf('Please enter number of graylevels\n [1-65535]'),'Convert to indexed image','255');
+    answer = mib_inputdlg(handles, sprintf('Please enter number of graylevels\n [1-65535]'),'Convert to indexed image','255');
     if isempty(answer);  delete(wb); return; end;
     levels = round(str2double(cell2mat(answer)));
     if levels >= 1 && levels <=255

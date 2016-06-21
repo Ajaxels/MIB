@@ -137,7 +137,13 @@
 %   <li><b>Size of superpixels</b>, (<em>only for the SLIC superpixels</em>) defines the desired number of pixels that are clustered into a superpixel</li>
 %   <li><b>Compactness</b>, (<em>only for the SLIC superpixels</em>), a number from 0 (line) to 100 (rectangle) that defines the resulting shape of superpixels</li>
 %   <li><b>Reduce number of superpixels</b>, (<em>only for the Watershed superpixels</em>), a number that defines a factor that reduces number of superpixels. The larger number in this field results in the larger superpixels</li>
+%   <li><b>Chop</b>, (<em>only for the SLIC superpixels</em>), calculation
+%   of SLIC superpixels requires large amounts of memory. If memory is
+%   insufficient for the calculation the dataset can be chopped and the
+%   superpixels calculated for each of the chopped parts individually
+%   <li><b>Autosave</b>, autosave results after calculation of superpixels is finished
 %   <li><b>Superpixels/Graph</b> press of this button initiate generation of superpixels and their final organization into a graph</li>
+%   <li><b>Recalculate Graph</b> allows to recalculate the graph using a new coefficient (|Coef|). In general, the laeger coefficients give stronger growth from the seeds</li>
 %   <li><b>Preview superpixels</b> the generated superpixels may be previewed by pressing this button</li>
 %   <li><b>Export</b> press to export superpixels and the generated graph to a disk or Matlab</li>
 %   <li><b>Import</b> press to import superpixels and the generated graph from a disk or Matlab</li>

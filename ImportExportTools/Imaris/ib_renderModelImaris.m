@@ -36,7 +36,7 @@ function handles = ib_renderModelImaris(handles)
 
 answer = inputdlg(sprintf('!!! ATTENTION !!!\n\nA volume that is currently open in Imaris will be removed!\nYou can preserve it by importing it into MIB and exporting it back to Imaris after the surface is generated.\n\nTo proceed further please define a smoothing factor,\na number, 0 or higher (IN IMAGE UNITS);\ncurrent voxel size: %.4f x %.4f x %.4f:', ...
     handles.Img{handles.Id}.I.pixSize.x, handles.Img{handles.Id}.I.pixSize.y, handles.Img{handles.Id}.I.pixSize.z),'Smoothing factor',1,{'0'});
-%answer = mib_inputdlg(NaN,sprintf('!!! ATTENTION !!!A volume that is currently open in Imaris will be removed!\nYou can preserve it by importing it into MIB and exporting it back to Imaris after the surface is generated.\n\nTo proceed further please define a smoothing factor,\na number, 0 or higher (IN IMAGE UNITS):'),'Smoothing factor','0');
+%answer = mib_inputdlg(handles, sprintf('!!! ATTENTION !!!A volume that is currently open in Imaris will be removed!\nYou can preserve it by importing it into MIB and exporting it back to Imaris after the surface is generated.\n\nTo proceed further please define a smoothing factor,\na number, 0 or higher (IN IMAGE UNITS):'),'Smoothing factor','0');
 if isempty(answer); return; end;
 vSmoothing = str2double(answer{1});
 
@@ -82,7 +82,7 @@ end
 if ~isempty(handles.connImaris.mImarisApplication.GetDataSet) && strcmp(mode, '3D')
     [vSizeX, vSizeY, vSizeZ, vSizeC, vSizeT] = handles.connImaris.getSizes();
     if vSizeZ > 1 && vSizeT > 1 && strcmp(mode, '3D')
-        insertInto = mib_inputdlg(NaN,sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), 'Time point', handles.Img{handles.Id}.I.slices{5}(1));
+        insertInto = mib_inputdlg(handles, sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), 'Time point', handles.Img{handles.Id}.I.slices{5}(1));
         if isempty(insertInto); return; end;
         imarisOptions.insertInto = insertInto;
     end

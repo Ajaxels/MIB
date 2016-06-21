@@ -26,9 +26,13 @@ width = str2double(get(handles.roiWidthEdit,'String'));
 height = str2double(get(handles.roiHeightEdit,'String'));
 selected_pos = get(handles.roiList,'Value');
 set(handles.roiShowCheck, 'value',1);
-disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
-handles.preferences.disableSelection = 'yes'; % disable selection
-guidata(handles.im_browser, handles);   % store handles
+%disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
+%handles.preferences.disableSelection = 'yes'; % disable selection
+%guidata(handles.im_browser, handles);   % store handles
+
+% disable the brush tool
+brushSize = get(handles.segmSpotSizeEdit,'string');
+set(handles.segmSpotSizeEdit,'string', '0');
 switch type
     case 1  % rectangle
         if get(handles.roiManualCheck, 'value')     % use entered values
@@ -49,7 +53,10 @@ switch type
         handles.Img{handles.Id}.I.hROI.addROI(handles, 'imfreehand');
 end
 % restore selected state for the selection
-handles.preferences.disableSelection = disableSelectionSwitch;
+%handles.preferences.disableSelection = disableSelectionSwitch;
+
+% re-enable the brush tool
+set(handles.segmSpotSizeEdit,'string', brushSize);
 set(handles.roiShowCheck,'Value',1);
 
 % get number of ROIs

@@ -23,5 +23,12 @@ output = mib_BoundingBoxDlg(NaN,handles);
 if ~isstruct(output); return; end;
 handles = output;
 handles = handles.Img{handles.Id}.I.updateAxesLimits(handles, 'resize');
+R = [0 0 0];
+S = [1*handles.Img{handles.Id}.I.magFactor,...
+     1*handles.Img{handles.Id}.I.magFactor,...
+     1*handles.Img{handles.Id}.I.pixSize.x/handles.Img{handles.Id}.I.pixSize.z*handles.Img{handles.Id}.I.magFactor];  
+T = [0 0 0];
+handles.Img{handles.Id}.I.volren.viewer_matrix = makeViewMatrix(R, S, T);
+
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
 end

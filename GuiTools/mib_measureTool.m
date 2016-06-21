@@ -200,10 +200,13 @@ end
 
 function updateWidgets(handles)
 handles.h = guidata(handles.h.im_browser);  % update handles
+
 % updating color channels
 colList = get(handles.h.ColChannelCombo, 'string');
-set(handles.imageColChPopup, 'string', colList(2:end));
-set(handles.imageColChPopup, 'value', max([get(handles.h.ColChannelCombo,'value')-1, 1]));
+%set(handles.imageColChPopup, 'string', colList(2:end));
+%set(handles.imageColChPopup, 'value', max([get(handles.h.ColChannelCombo,'value')-1, 1]));
+set(handles.imageColChPopup, 'string', colList);
+set(handles.imageColChPopup, 'value', 1);
 if strcmp(handles.h.Img{handles.h.Id}.I.hMeasure.Options.splinemethod, 'spline')
     set(handles.modePopup, 'value', 1);
 else
@@ -213,25 +216,23 @@ end
 pixSize = handles.h.Img{handles.h.Id}.I.pixSize;
 pixString = sprintf('%f / %f / %f', pixSize.x, pixSize.y, pixSize.z);
 set(handles.voxelSizeTxt, 'string', pixString);
+
+guidata(handles.mib_measureTool, handles);  % update local handles
+
 updateTable(handles);
 end
 
 
 % --- Executes on button press in addBtn.
 function addBtn_Callback(hObject, eventdata, handles)
-
 % update handles
 handles.h = guidata(handles.h.im_browser);
-% temporary switch off selection
-disableSelectionSwitch = handles.h.preferences.disableSelection;    % get current settings
-handles.h.preferences.disableSelection = 'yes'; % disable selection
-guidata(handles.h.im_browser, handles.h);   % store handles
+ib_do_backup(handles.h, 'measurements', 0);
 
-colCh = get(handles.imageColChPopup, 'value');
+colCh = get(handles.imageColChPopup, 'value')-1;
 typeString = get(handles.measureTypePopup, 'string');
 finetuneCheck = get(handles.finetuneCheck, 'value');
 set(handles.addBtn, 'backgroundcolor','r');
-ib_do_backup(handles.h, 'measurements', 0);
 switch typeString{get(handles.measureTypePopup, 'value')}
     case 'Angle'
         handles.h.Img{handles.h.Id}.I.hMeasure.AngleFun(handles.h, [], colCh, finetuneCheck);
@@ -250,17 +251,17 @@ switch typeString{get(handles.measureTypePopup, 'value')}
         handles.h.Img{handles.h.Id}.I.hMeasure.PointFun(handles.h, [], colCh, finetuneCheck);
 end
 handles.h = guidata(handles.h.im_browser);
+
 set(handles.addBtn, 'backgroundcolor','g');
-updateTable(handles);
-
-% restore selected state for the selection
-handles.h.preferences.disableSelection = disableSelectionSwitch;
-
 set(handles.h.showAnnotationsCheck,'value',1);
+updateTable(handles);
+handles.h = guidata(handles.h.im_browser);
 handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
 end
 
 function updateTable(handles)
+handles.h = guidata(handles.h.im_browser);  % update handles
+
 numberOfLabels = handles.h.Img{handles.h.Id}.I.hMeasure.getNumberOfMeasurements();
 filterString = get(handles.filterPopup, 'string');
 filterText = filterString{get(handles.filterPopup, 'value')};
@@ -283,12 +284,14 @@ else
     data = cell([3,1]);
     set(handles.measureTable, 'data', data);
 end
-handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
-guidata(handles.mib_measureTool, handles);  % store handles, otherswise problems when switching dataset-buffers
+
+%handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
+%guidata(handles.mib_measureTool, handles);  % store handles, otherswise problems when switching dataset-buffers
 end
 
 function measureTable_cm(hObject, eventdata, parameter)
 handles = guidata(hObject);
+handles.h = guidata(handles.h.im_browser);
 
 data = get(handles.measureTable,'Data');
 if isempty(data{1,1}); return; end;
@@ -351,10 +354,10 @@ switch parameter
         end
         
         % update measurement
-        colCh = get(handles.imageColChPopup, 'value');
+        colCh = get(handles.imageColChPopup, 'value')-1;
         handles.h.Img{handles.h.Id}.I.hMeasure.editMeasurements(handles.h, n, colCh);
+        handles.h = guidata(handles.h.im_browser);
         updateTable(handles);
-        handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
     case 'Duplicate'
         ib_do_backup(handles.h, 'measurements', 0);
         newData = handles.h.Img{handles.h.Id}.I.hMeasure.Data(n);
@@ -370,8 +373,8 @@ switch parameter
         set(ax,'NextPlot','add');
         colorOrder = get(ax, 'colororder');
         for i=n
-            h(i) = plot(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(1,:), handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(2,:));
-            set(h(i), 'color', colorOrder(mod(i, size(colorOrder,1))+1,:));
+            h{i} = plot(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(1,:), handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(2:end,:));
+            set(h{i}, 'color', colorOrder(mod(i, size(colorOrder,1))+1,:));
         end
         legend(num2str(n'));
         grid;
@@ -413,9 +416,24 @@ ids = [data{ids,1}];
 cla(handles.profileAxes);
 set(handles.profileAxes,'NextPlot','add');
 colorOrder = get(handles.profileAxes, 'colororder');
+
+lutColors = handles.h.Img{handles.h.Id}.I.lutColors;
+colCh = get(handles.imageColChPopup,'value')-1;
+
 for i=1:numel(ids)
-    h(i) = plot(handles.profileAxes, handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(1,:), handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(2,:));
-    set(h(i), 'color', colorOrder(mod(i, size(colorOrder,1))+1,:));
+    if colCh==0
+        noColorChannels = size(handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile,1)-1;
+        h{i} = plot(handles.profileAxes, handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(1,:), handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(2:end,:));
+        %set(h{i}, 'color', colorOrder(mod(i, size(colorOrder,1))+1,:));
+        for colId=1:noColorChannels
+            set(h{i}(colId), 'color', lutColors(colId,:));
+        end
+    else
+        colId = min([colCh+1, size(handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile,1)]);
+        h{i} = plot(handles.profileAxes, handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(1,:), handles.h.Img{handles.h.Id}.I.hMeasure.Data(ids(i)).profile(colId,:));
+        %set(h{i}, 'color', colorOrder(mod(i, size(colorOrder,1))+1,:));
+        set(h{i}, 'color', lutColors(colCh,:));
+    end
 end
 grid on;
 set(handles.profileAxes,'NextPlot','replace');
@@ -425,6 +443,7 @@ guidata(handles.mib_measureTool, handles);
 if get(handles.autoJumpCheck,'value')
     measureTable_cm(handles.measureTable, eventdata, 'Jump');
 end
+figure(handles.mib_measureTool);
 end
 
 function updatePlotSettings(hObject, eventdata, handles)
@@ -439,6 +458,7 @@ end
 % --- Executes on button press in optionsBtn.
 function optionsBtn_Callback(hObject, eventdata, handles)
 handles.h.Img{handles.h.Id}.I.hMeasure.setOptions();
+handles.h = guidata(handles.h.im_browser);
 handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h, 0);
 end
 
@@ -489,7 +509,7 @@ switch button
         title = 'Input variables for import';
         prompt = 'A variable that contains compatible structure:';
         def = 'MIB_measurements';
-        answer = mib_inputdlg(NaN, prompt,title,def); 
+        answer = mib_inputdlg(handles.h, prompt,title,def); 
         if size(answer) == 0; return; end;
         ib_do_backup(handles.h, 'measurements', 0);
         handles.h.Img{handles.h.Id}.I.hMeasure.Data = evalin('base',answer{1});
@@ -524,7 +544,7 @@ if strcmp(button, 'Export to Matlab')
     title = 'Input variable to export';
     def = 'MIB_measurements';
     prompt = {'A variable for the measurements structure:'};
-    answer = mib_inputdlg(NaN, prompt,title,def); 
+    answer = mib_inputdlg(handles.h, prompt,title,def); 
     if size(answer) == 0; return; end;
     assignin('base', answer{1}, handles.h.Img{handles.h.Id}.I.hMeasure.Data);    
     fprintf('MIB: export measurements ("%s") to Matlab -> done!\n', answer{1});
@@ -537,10 +557,10 @@ if ~isempty(dotIndex)
     fn_out = fn_out(1:dotIndex-1);
 end
 if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
-    fn_out = fullfile(handles.mypath, fn_out);
+    fn_out = fullfile(handles.h.mypath, fn_out);
 end
 if isempty(fn_out)
-    fn_out = handles.mypath;
+    fn_out = handles.h.mypath;
 end
 
 Filters = {'*.measure;',  'Matlab format (*.measure)';...
@@ -563,6 +583,7 @@ elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
     s(3,1:8) = {'n','type','value','intensity','[tcoords]','[zcoords]','[xcoords]','[ycoords]'};
     roiId = 4;
     
+    shift = 1;
     for i=1:numel(handles.h.Img{handles.h.Id}.I.hMeasure.Data)
         % get the coordinates
         if strcmp(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).type,'Circle (R)')
@@ -590,14 +611,18 @@ elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
         xstr = [ xstr ']' ];
         ystr = [ ystr ']' ];
         
-        s{roiId+i, 1} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).n;
-        s{roiId+i, 2} = cell2mat(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).type);
-        s{roiId+i, 3} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).value;
-        s{roiId+i, 4} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).intensity;
-        s{roiId+i, 5} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).T;
-        s{roiId+i, 6} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).Z;
-        s{roiId+i, 7} = xstr;
-        s{roiId+i, 8} = ystr;
+        s{roiId+shift, 1} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).n;
+        s{roiId+shift, 2} = cell2mat(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).type);
+        s{roiId+shift, 3} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).value;
+        for j=1:numel(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).intensity)
+            s{roiId+shift+j-1, 4} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).intensity(j);
+        end
+        s{roiId+shift, 5} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).T;
+        s{roiId+shift, 6} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).Z;
+        s{roiId+shift, 7} = xstr;
+        s{roiId+shift, 8} = ystr;
+        
+        shift = shift + numel(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).intensity);
     end
     xlswrite2(fn_out, s, 'Sheet1', 'A1');
     
@@ -608,10 +633,15 @@ elseif strcmp('Excel format (*.xls)', Filters{FilterIndex,2})    % excel format
     s{2,1} = 'Intensity profiles';
     
     rowId = 5;
+    shift = 1;
     for i=1:numel(handles.h.Img{handles.h.Id}.I.hMeasure.Data)
-        s{4,i+1} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).n;
-        noElements = numel(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(2,:));
-        s(rowId:rowId+noElements-1, i+1) = num2cell(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(2,:)');
+        s{4,shift+1} = handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).n;
+        noColChannels = size(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile, 1)-1;
+        noElements = size(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile, 2);
+        
+        s(rowId:rowId+noElements-1, shift+1:shift+noColChannels) = num2cell(handles.h.Img{handles.h.Id}.I.hMeasure.Data(i).profile(2:end,:)');
+        
+        shift = shift + noColChannels;
     end
     xlswrite2(fn_out, s, 'Sheet2', 'A1');
     
@@ -629,19 +659,7 @@ end
 
 % --- Executes on button press in helpBtn.
 function helpBtn_Callback(hObject, eventdata, handles)
-if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-helpbrowser');
-    end
-    
-else
-    path = fileparts(which('im_browser'));
-    web(fullfile(path, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-helpbrowser');
-end
+web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_tools_measure.html'), '-helpbrowser');
 end
 
 

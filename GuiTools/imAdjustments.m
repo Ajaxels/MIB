@@ -209,6 +209,8 @@ img = handles.h.Img{handles.h.Id}.I.getSliceToShow('image', NaN, NaN, channel);
 [counts,x] = imhist(img);
 %bar(handles.imHist,x,counts);
 area(handles.imHist,x(counts>0),counts(counts>0),'linestyle','none');
+%stem(handles.imHist,x(counts>0),counts(counts>0), 'Marker', 'none');
+
 set(handles.imHist,'XLim',[min([handles.h.Img{handles.h.Id}.I.viewPort.min(channel)+1 intmax(class(handles.h.Img{handles.h.Id}.I.img))-3]) ...
     max([handles.h.Img{handles.h.Id}.I.viewPort.max(channel)-1 2]) ]);
 if logscale
@@ -255,6 +257,7 @@ end
 set(handles.maxSlider,'Min',current_value);
 
 handles = updateSettings(handles);
+handles.h = guidata(handles.h.im_browser);
 handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h,0);
 set(handles.minEdit,'String',num2str(handles.h.Img{handles.h.Id}.I.viewPort.min(channel)));
 updateHist(handles);
@@ -295,8 +298,8 @@ if current_value <= min_val
     current_value = min_val+3;
 end
 set(handles.minSlider,'Max',current_value);
-
 handles = updateSettings(handles);
+handles.h = guidata(handles.h.im_browser);
 handles.h.Img{handles.h.Id}.I.plotImage(handles.h.imageAxes, handles.h,0);
 set(handles.maxEdit,'String',num2str(handles.h.Img{handles.h.Id}.I.viewPort.max(channel)));
 updateHist(handles);
@@ -401,16 +404,9 @@ end
 % --- Executes on button press in adjHelpBtn.
 function adjHelpBtn_Callback(hObject, eventdata, handles)
 if isdeployed
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        web(fullfile(pathName, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
-    else
-        web(fullfile(pwd, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
-    end
+    web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
 else
-    path = fileparts(which('im_browser'));
-    web(fullfile(path, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
+    web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_panel_adjustments.html'), '-helpbrowser');
 end
 end
 

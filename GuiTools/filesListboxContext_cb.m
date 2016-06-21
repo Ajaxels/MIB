@@ -57,8 +57,7 @@ if index<=1;
     return; 
 end    % no files were selected
 if strcmp(parameter, 'nth') || strcmp(parameter, 'addchannel_nth')
-    %answer = inputdlg(sprintf('Please enter the step:\n\nFor example when step is 2 \nim_browser loads each second dataset'),'Enter the step',1,{'2'});
-    answer = mib_inputdlg(NaN, sprintf('Please enter the step:\n\nFor example when step is 2 \nim_browser loads each second dataset'),'Enter the step','2');
+    answer = mib_inputdlg(handles, sprintf('Please enter the step:\n\nFor example when step is 2 \nim_browser loads each second dataset'),'Enter the step','2');
     if isempty(answer); return; end;
     step = str2double(cell2mat(answer));
     idx = 1;
@@ -89,8 +88,22 @@ switch parameter
             
         end;
         if strcmp(parameter, 'combinecolors') 
-            img = squeeze(img);
+            %img = squeeze(img);
+            img = reshape(img, [size(img,1), size(img,2), size(img,3)*size(img,4)]);
             img_info('ColorType') = 'truecolor';
+            if isKey(img_info, 'lutColors')
+                currColors = img_info('lutColors');
+                lutColors = currColors;
+                index1 = size(lutColors,1);
+                index2 = 1;
+                while size(lutColors,1) < size(img,3)
+                    lutColors(index1+1, :) = currColors(index2,:);
+                    index1 = index1 + 1;
+                    index2 = index2 + 1;
+                    if index2 > size(currColors,1); index2 = 1; end;
+                end
+                img_info('lutColors') = lutColors;
+            end
             handles = handles.Img{handles.Id}.I.replaceDataset(img, handles, img_info);
         else
             handles = handles.Img{handles.Id}.I.replaceDataset(img, handles, img_info);
@@ -103,7 +116,7 @@ switch parameter
     case 'insertData'
         prompt = sprintf('Where the new dataset should be inserted?\n\n1 - beginning of the open dataset\n0 - end of the open dataset\n\nor type any number to define position');
         %insertPosition = inputdlg(prompt, 'Insert dataset', 1, {'0'});
-        insertPosition = mib_inputdlg(NaN, prompt, 'Insert dataset', '0');
+        insertPosition = mib_inputdlg(handles, prompt, 'Insert dataset', '0');
         if isempty(insertPosition); return; end;
         insertPosition = str2double(insertPosition{1});
         if insertPosition == 0; insertPosition = NaN; end;
@@ -121,7 +134,7 @@ switch parameter
         %options.Interpreter='none';
         [path, filename, ext] = fileparts(fn{1});
         %answer = inputdlg('Please enter new file name','Rename file',1,cellstr([filename, ext]),options);
-        answer = mib_inputdlg(NaN,'Please enter new file name','Rename file',[filename, ext]);
+        answer = mib_inputdlg(handles, 'Please enter new file name','Rename file',[filename, ext]);
         if isempty(answer); return; end;
         movefile(fn{1}, fullfile(path, answer{1}));
         update_filelist(handles);
@@ -143,9 +156,17 @@ switch parameter
         msgbox(sprintf('Filename: %s\nDate: %s\nSize: %.3f KB', properties.name, properties.date, properties.bytes/1000),...
             'File info');
     case {'addchannel' 'addchannel_nth'}   % add color channel
-        [img, ~, ~] = ib_loadImages(fn, options, handles);
+        [img, img_info, ~] = ib_loadImages(fn, options, handles);
         if isnan(img); return; end;
-        result = handles.Img{handles.Id}.I.addColorChannel(img, handles);
+        
+        if isKey(img_info, 'lutColors')
+            lutColors = img_info('lutColors');
+            lutColors = lutColors(1:size(img,3),:);
+        else
+            lutColors = NaN;
+        end
+        
+        result = handles.Img{handles.Id}.I.addColorChannel(img, handles, NaN, lutColors);
         if ~isstruct(result);
             return;
         else

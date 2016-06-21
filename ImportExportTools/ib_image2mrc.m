@@ -28,6 +28,7 @@ function result = ib_image2mrc(O, Options)
 % ver 1.01, 15.09.2014, added 4D datasets as input
 
 result = 0;
+if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end;
 
 if ndims(O) == 3
     O = permute(O, [2 1 3]);
@@ -38,12 +39,13 @@ else
     end
     O = permute(squeeze(O), [2 1 3]);
 end
-%warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
-curInt = get(0, 'DefaulttextInterpreter'); 
-set(0, 'DefaulttextInterpreter', 'none'); 
 
 if Options.showWaitbar
+    %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
+    curInt = get(0, 'DefaulttextInterpreter'); 
+    set(0, 'DefaulttextInterpreter', 'none'); 
     wb = waitbar(0,sprintf('Saving:\n%s\nPlease wait...', Options.volumeFilename),'Name','Saving to MRC');
+    set(findall(wb,'type','text'),'Interpreter','none');
 end
 
 mrcImage = MRCImage();
@@ -68,8 +70,8 @@ pixSizeZ_Angstrom = Options.pixSize.z/coef;
 mrcImage = setPixelSize(mrcImage, pixSizeX_Angstrom, pixSizeY_Angstrom, pixSizeZ_Angstrom);
 
 save(mrcImage, Options.volumeFilename);
-if Options.showWaitbar; delete(wb); end;
-set(0, 'DefaulttextInterpreter', curInt); 
+if Options.showWaitbar; delete(wb); set(0, 'DefaulttextInterpreter', curInt); end;
+
 
 result = result + 1;
 end

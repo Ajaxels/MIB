@@ -33,7 +33,7 @@ separatingPanelPos = get(handles.separatingPanel, 'position');
 if x>axXLim(1) && x<axXLim(2) && y>axYLim(1) && y<axYLim(2) % mouse pointer within the current axes
     set(hObject,'Pointer','crosshair');
     
-    if x > 0 && y > 0 && x<=size(handles.Img{handles.Id}.I.Ishown,2) && y<=size(handles.Img{handles.Id}.I.Ishown,1) && handles.Img{handles.Id}.I.imh ~= 0 % mouse pointer inside the image dimensions
+    if x > 0 && y > 0 && x<=size(handles.Img{handles.Id}.I.Ishown,2) && y<=size(handles.Img{handles.Id}.I.Ishown,1) && isempty(get(handles.Img{handles.Id}.I.imh, 'UserData')) % mouse pointer inside the image dimensions
         %CData = get(handles.Img{handles.Id}.I.imh,'CData');
         %brightness_coef = get(handles.brightnessSlider,'Value');
         %classMaxVal = double(intmax(class(CData)));

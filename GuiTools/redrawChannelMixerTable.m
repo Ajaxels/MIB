@@ -20,6 +20,7 @@ function redrawChannelMixerTable(handles)
 
 
 % update color combo box and channel mixer table
+pause(0.1);
 storeVal = get(handles.ColChannelCombo,'Value');
 set(handles.ColChannelCombo,'Value',1);
 data = logical(zeros(size(handles.Img{handles.Id}.I.img,3),1)); %#ok<LOGL>

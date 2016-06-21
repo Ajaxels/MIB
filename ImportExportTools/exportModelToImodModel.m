@@ -15,6 +15,7 @@ function [Model, selection] = exportModelToImodModel(O, Options)
 %  - .zScaleFactor - a number to indicate a Z step when picking voxels from the contours of materials, when 1 - take each z-section
 %  - .colorList -  a matrix with colors for the materials as [materialId][Red, Green, Blue], (0-1)
 %  - .generateSelectionSw - when @b 1 generate the 'Selection layer' with the used for the model points
+%  - .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
 %
 % Return values:
 % Model: -> IMOD model object
@@ -28,7 +29,9 @@ function [Model, selection] = exportModelToImodModel(O, Options)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 11.04.2016, IB, added showWaitbar option
+
+if ~isfield(Options, 'showWaitbar'); Options.showWaitbar = 1; end;
 
 % create IMOD model
 modelFilename = Options.modelFilename;
@@ -51,9 +54,13 @@ Model = setZScale(Model, Options.pixSize.z/Options.pixSize.x);
 Objects = unique(O);
 Objects(Objects==0) = [];
 noObjects = numel(Objects);
-wb = waitbar(0,sprintf('%s\nPlease wait...',modelFilename),'Name','Saving contours to IMOD model...','WindowStyle','modal');
-set(findall(wb,'type','text'),'Interpreter','none');
-waitbar(0, wb);
+if Options.showWaitbar; 
+    curInt = get(0, 'DefaulttextInterpreter'); 
+    set(0, 'DefaulttextInterpreter', 'none'); 
+    wb = waitbar(0,sprintf('%s\nPlease wait...',modelFilename),'Name','Saving contours to IMOD model...','WindowStyle','modal');
+    set(findall(wb,'type','text'),'Interpreter','none');
+    waitbar(0, wb);
+end
 
 for objectLoop=1:noObjects  % first loop for number of objects in the model
     object = Objects(objectLoop);
@@ -105,9 +112,12 @@ for objectLoop=1:noObjects  % first loop for number of objects in the model
         end
     end
     Model = appendObject(Model, imodObject);
-    waitbar(objectLoop/noObjects,wb);
+    if Options.showWaitbar;     waitbar(objectLoop/noObjects,wb); end;
 end
 write(Model, Options.modelFilename);
 selection = permute(selection, [2 1 3]);
-close(wb);
+if Options.showWaitbar; 
+    delete(wb);
+    set(0, 'DefaulttextInterpreter', curInt);
+end
 end

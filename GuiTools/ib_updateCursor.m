@@ -26,12 +26,6 @@ xy=get(handles.imageAxes,'currentpoint');
 x = round(xy(1,1));
 y = round(xy(1,2));
 
-%oldversion delete the existing cursor
-%oldversion cursors = findall(handles.im_browser,'Tag','brushCursor');
-%oldversion for i=1:numel(cursors)
-%oldversion     delete(cursors(i));
-%oldversion end
-
 % when 1, show the brush cursor
 if handles.showBrushCursor 
     toolsList = get(handles.seltypePopup, 'string');
@@ -49,7 +43,13 @@ if handles.showBrushCursor
     end
     se_size(2) = se_size(1);
     
-%     % to correct aspect ration
+    if strcmp(mode, 'dashed')
+        lineStyle = ':';
+    else
+        lineStyle = '-';
+    end
+    
+%     % to correct aspect ratio
 %     pixSize = handles.Img{handles.Id}.I.pixSize;
 %     if handles.Img{handles.Id}.I.orientation == 1 
 %         se_size(2) = se_size(1)/(pixSize.x/pixSize.z);
@@ -65,38 +65,24 @@ if handles.showBrushCursor
     yv = sin(theta)*se_size(2) + y;
     hold(handles.imageAxes, 'on');
     if ishandle(handles.cursor) 
-        if strcmp(mode, 'dashed')
-            %oldversion handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor/2,'linewidth',1,'linestyle',':');
-            set(handles.cursor, 'XData', xv,'YData', yv,'linewidth', 2, 'linestyle', ':','color', handles.preferences.selectioncolor/2);
-        else
-            %oldversion handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor,'linewidth',2);
-            set(handles.cursor, 'XData', xv,'YData', yv,'linewidth', 2, 'linestyle', '-','color', handles.preferences.selectioncolor/2);
-        end
+        %oldversion handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor/2,'linewidth',1,'linestyle',':');
+        set(handles.cursor, 'XData', xv,'YData', yv,'linewidth', 2, 'linestyle', lineStyle, 'color', handles.preferences.selectioncolor/2);
     else
-        if strcmp(mode, 'dashed')
-            handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor/2,'linewidth',2,'linestyle',':');
-        else
-            handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor,'linewidth',2);
-        end
+        handles.cursor = plot(handles.imageAxes, xv,yv,'color',handles.preferences.selectioncolor/2,'linewidth',2,'linestyle', lineStyle);
         set(handles.cursor, 'tag', 'brushcursor');
     end
-    %oldversion set(handles.cursor, 'tag', 'brushCursor');
+    set(handles.cursor, 'visible', 'on');
     hold(handles.imageAxes, 'off');
 else
     if ishandle(handles.cursor) 
-        set(handles.cursor, 'XData', [],'YData', []);
+        set(handles.cursor, 'visible', 'off');
+        %set(handles.cursor, 'XData', [],'YData', []);
     elseif isfield(handles, 'cursor')   % to fix situation when pressing the Buffer toggle when cursor is not shown
         hold(handles.imageAxes, 'on');
         handles.cursor = plot(handles.imageAxes, [],[]);
         hold(handles.imageAxes, 'off');
     end
-    %oldversion handles.cursor = 0;
 end
-% -- next two lines triggers a problem in the Brush tool in the erase mode
-% -- when Ctrl+brush is used any key press crashes MIB
-% -- so I commented them
-% -- % set(handles.im_browser, 'windowbuttonmotionfcn' , {@im_browser_winMouseMotionFcn, handles});
-% -- % set(handles.im_browser, 'windowbuttonupfcn', '');
 
 guidata(handles.im_browser, handles);
 end

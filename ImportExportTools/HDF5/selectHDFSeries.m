@@ -93,6 +93,7 @@ if ~isempty(info.Datasets)
                         handles.dataDim{index} = [handles.dataDim{index} strcut(currIds(1)+1:currIds(1)+1)];
                     end
                 end
+                handles.dataDim{index} = fliplr(handles.dataDim{index}); % flip dimension
             end
         end
         index = index + 1;    
@@ -121,6 +122,7 @@ for group=1:numel(info.Groups)
                         handles.dataDim{index} = [handles.dataDim{index} strcut(currIds(1)+1:currIds(1)+1)];
                     end
                 end
+                handles.dataDim{index} = fliplr(handles.dataDim{index}); % flip dimension
             end
         end
         index = index + 1;
@@ -213,14 +215,22 @@ function continueBtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-if strcmp(get(handles.transposeEdit, 'enable'), 'on')
+if strcmp(get(handles.transposeEdit, 'enable'), 'on') && get(handles.transposeCheck, 'value') == 1
     transStr = get(handles.transposeEdit, 'string');
-    transStr(transStr=='x') = '1';
-    transStr(transStr=='y') = '2';
-    transStr(transStr=='c') = '3';
-    transStr(transStr=='z') = '4';
-    transStr(transStr=='t') = '5';
-    handles.output4 = str2num(transStr')';
+    outputDim = 'yxczt';    % dimensions listed in the table
+    outputDim = outputDim(ismember(outputDim, transStr));     % clip outputDim for situations when some dimension is missing
+    for i=1:numel(outputDim)
+        [keyValue, transMatrix(i)] = find(outputDim==transStr(i));
+    end
+        
+    
+%     
+%     [keyValue, transMatrix(1)] = find(outputDim==transStr(1));
+%     [keyValue, transMatrix(2)] = find(outputDim==transStr(2));
+%     [keyValue, transMatrix(3)] = find(outputDim==transStr(3));
+%     [keyValue, transMatrix(4)] = find(outputDim==transStr(4));
+%     [keyValue, transMatrix(5)] = find(outputDim==transStr(5));
+    handles.output4 = transMatrix;
 else
     handles.output4 = NaN;
 end
@@ -278,27 +288,42 @@ rowData = tableData(eventdata.Indices(1),:);
 set(handles.selectedSeriesText,'String', rowData(1));
 handles.output = rowData(1);
 
-dim_xyczt = zeros(1,numel(rowData)-2);
+dim_yxczt = zeros(1,numel(rowData)-2);
 for i=1:numel(rowData)-2
-    dim_xyczt(i) = str2double(rowData{i+1});
+    dim_yxczt(i) = str2double(rowData{i+1});
 end
-handles.output3 = dim_xyczt;
-
+handles.output3 = dim_yxczt;
+transMatrix = NaN;
 if isfield(handles, 'dataDim') && eventdata.Indices(1) <= numel(handles.dataDim)
     if ~isempty(handles.dataDim{eventdata.Indices(1)})
-        handles.dataDim{eventdata.Indices(1)};
+        outputDim = 'yxczt';    % dimensions listed in the table
+        dataDim = handles.dataDim{eventdata.Indices(eventdata.Indices(1))}; % data dimensions reported by hdf5
+        missingAxis = find(~ismember(outputDim, dataDim)==1);    % index of the missing axis
         
+        %outputDim = outputDim(ismember(outputDim, dataDim));    % clip outputDim for situations when some dimension is missing
+        missingIndex = 1;
+        for i=1:numel(outputDim)
+            %[keyValue, transMatrix(i)] = find(dataDim==outputDim(i));
+            [keyValue, keyPosition] = find(dataDim==outputDim(i));
+            if ~isempty(keyValue)
+                transMatrix(i) = keyPosition;
+            else
+                transMatrix(i) = missingAxis(missingIndex);
+                missingIndex = missingIndex + 1;
+            end
+        end
+        
+        
+%         [keyValue, transMatrix(1)] = find(dataDim=='y');
+%         [keyValue, transMatrix(2)] = find(dataDim=='x');
+%         [keyValue, transMatrix(3)] = find(dataDim=='c');
+%         [keyValue, transMatrix(4)] = find(dataDim=='z');
+%         [keyValue, transMatrix(5)] = find(dataDim=='t');
+        outputDim = outputDim(transMatrix);  % transformation matrix
+        set(handles.transposeEdit, 'string', outputDim);
     end
 end
-
-transStr = get(handles.transposeEdit, 'string');
-transStr(transStr=='x') = '1';
-transStr(transStr=='y') = '2';
-transStr(transStr=='c') = '3';
-transStr(transStr=='z') = '4';
-transStr(transStr=='t') = '5';
-handles.output4 = str2num(transStr')';
-
+handles.output4 = transMatrix;
 
 % Update handles structure
 guidata(hObject, handles);

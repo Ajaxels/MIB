@@ -86,7 +86,7 @@ end
 %     if files(fn_index).height ~= files(1).height || files(fn_index).width ~= files(1).width && autoCropSw==0
 %         if autoCropSw == 0
 %             %answer = inputdlg(sprintf('!!! Warning !!!\nThe XY dimensions of images mismatch!\n\nContinue anyway?\nBackground color intensity:'),'Dimensions mismatch',1,{num2str(intmax(files(1).imgClass))});
-%             answer = mib_inputdlg(NaN,sprintf('!!! Warning !!!\nThe XY dimensions of images mismatch!\nContinue anyway?\nEnter the background color intensity:'),'Dimensions mismatch',num2str(intmax(files(1).imgClass)));
+%             answer = mib_inputdlg(handles,sprintf('!!! Warning !!!\nThe XY dimensions of images mismatch!\nContinue anyway?\nEnter the background color intensity:'),'Dimensions mismatch',num2str(intmax(files(1).imgClass)));
 %             if isempty(answer)
 %                 if options.progressDlg; delete(wb); end;
 %                 img=NaN;
@@ -99,7 +99,7 @@ end
 % end
 
 if numel(unique(cell2mat({files.color}))) > 1 || numel(unique(cell2mat({files.height}))) > 1 || numel(unique(cell2mat({files.width}))) > 1 && autoCropSw==0
-    answer = mib_inputdlg(NaN,sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch','0');
+    answer = mib_inputdlg(handles, sprintf('!!! Warning !!!\nThe XY dimensions or number of color channels mismatch!\nContinue anyway?\n\nEnter the background color intensity (0-%d):', intmax(files(1).imgClass)),'Dimensions mismatch','0');
     if isempty(answer)
         img=NaN;
         return;

@@ -85,7 +85,7 @@ for fn_index = 1:no_files
     maxT = min([time files(fn_index).time]);
     if strcmp(files(fn_index).object_type, 'movie')      % movie object
         matlabVersion = ver('Matlab');
-        if str2double(matlabVersion.Version) < 8.0
+        if str2double(matlabVersion(1).Version) < 8.0
             xyloObj = mmreader(files(fn_index).filename); %#ok<DMMR,TNMLP>
         else
             xyloObj = VideoReader(files(fn_index).filename); %#ok<TNMLP>

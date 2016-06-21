@@ -116,7 +116,7 @@ else
     [vSizeX, vSizeY, vSizeZ, vSizeC, vSizeT] = handles.connImaris.getSizes();
     if vSizeZ > 1 && vSizeT > 1 && strcmp(mode, '3D')
         if ~isfield(options, 'insertInto')
-            insertInto = mib_inputdlg(NaN,sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), 'Time point', handles.Img{handles.Id}.I.slices{5}(1));
+            insertInto = mib_inputdlg(handles, sprintf('!!! Warning !!!\n\nA 5D dataset is open in Imaris!\nPlease enter a time point to update (starting from 0)\nor type "-1" to replace dataset completely'), 'Time point', handles.Img{handles.Id}.I.slices{5}(1));
             if isempty(insertInto);            return;        end;
         else
             insertInto = options.insertInto;

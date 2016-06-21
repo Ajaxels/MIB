@@ -26,6 +26,7 @@
 % pixels is 0) to the specified position
 % * *Copy channel...*, copy one channel to another position 
 % * *Invert channel...*, invert intensities of the specified color channel
+% * *Rotate channel...*, rotate the specified color channel
 % * *Swap channels...*, allows to swap two color channels between each other
 % * *Delete channel...*, deletes specified color channel from the dataset
 %

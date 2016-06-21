@@ -57,7 +57,7 @@ switch parameter
         prompt = {sprintf('Please enter the URL\n(including the protocol type (e.g., http://))\nof an image to import:')};
         %options.Resize='on';
         %answer = inputdlg(prompt,'Open URL',1,{webLink},options);
-        answer = mib_inputdlg(NaN, prompt,'Open URL',webLink);
+        answer = mib_inputdlg(handles, prompt,'Open URL',webLink);
         if size(answer) == 0; return; end;
         answer{2} = containers.Map('URL', answer{1});
         try
@@ -158,7 +158,7 @@ if (~isempty(answer{2}))
         handles = handles.Img{handles.Id}.I.replaceDataset(img, handles, handles.Img{handles.Id}.I.img_info);
     end
 else
-    handles = handles.Img{handles.Id}.I.replaceDataset(img, handles);
+    handles.Img{handles.Id}.I.replaceDataset(img, handles);
     handles = guidata(handles.im_browser);
     handles.Img{handles.Id}.I.updateParameters();    % update pixels size, and resolution
 end

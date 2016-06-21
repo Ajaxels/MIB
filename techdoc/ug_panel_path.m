@@ -41,8 +41,8 @@
 % * *Update* - the log is not updated automatically, so press this button to update it manually
 % 
 %% 6. Info button
-% The |Info| button opens a window with a table of parameters of the opened dataset. It is possible to modify the parameters
-% using the buttons and the right mouse click popup menu.
+% The |Info| button opens a window with a tree list of parameters for the opened dataset. It is possible to modify the parameters
+% using the buttons.
 %
 % The XY image resolution is stored in the |XResolution| and |YResolution|
 % fields, and in the BoundingBox info in the |ImageDescription| field.

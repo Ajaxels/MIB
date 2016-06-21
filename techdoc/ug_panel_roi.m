@@ -48,7 +48,10 @@
 %% 5. Remove button
 % Press the |Remove| button to delete a ROI highlighed in the |ROI list|.
 %
-%% 6. ROI List
+%% 6. ROI to Selection button
+% Add area under the shown ROI to the Selection layer.
+%
+%% 7. ROI List
 % The |ROI List| may be used to select single or all ROIs for filtering or
 % analysis. Additional actions are available for the ROIS:
 %
@@ -62,19 +65,19 @@
 % * *Remove*, delete ROI from the list
 % 
 %
-%% 7. Options
+%% 8. Options
 % Define visualization options for ROIs
 %
-%% 8. Load button
+%% 9. Load button
 % Load ROI from a disk. 
 %
-%% 9. Save button
+%% 10. Save button
 % Save ROI information to disk in Matlab format (a structure with _label,
 % type, X, Y, orientation_ fields).
-%% 10. Show label
+%% 11. Show label
 % When enabled, a text with the label of the selected ROI is displayed in
 % the |Image View| panel.
-%% 11. Show ROI
+%% 12. Show ROI
 % When checked the ROIs are shown in the |Image View| panel. Alternatively the viewing state of the ROI objects may be
 % switched using the *|R|* button in the <ug_gui_toolbar.html Toolbar>.
 %

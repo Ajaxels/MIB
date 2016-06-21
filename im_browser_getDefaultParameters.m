@@ -121,9 +121,9 @@ if ~isdeployed
     
     % add Fiji Java libraries
 %     fijiJavaPath = 0;
-%     javaPathfn = fullfile(fileparts(mfilename('fullpath')), 'java_path.txt');
+%     javaPathfn = fullfile(fileparts(mfilename('fullpath')), 'mib_java_path.txt');
 %     if exist(javaPathfn,'file') ~= 2
-%         msgbox(sprintf('A path-file for Java libraries was not found!\n\nPlease add "java_path.txt" file with the list of JAR directories (for example: "C:\\Fiji\\jars") to the im_browser directory (%s)', javaPathfn),'Missing Fiji JARs','error');
+%         msgbox(sprintf('A path-file for Java libraries was not found!\n\nPlease add "mib_java_path.txt" file with the list of JAR directories (for example: "C:\\Fiji\\jars") to the im_browser directory (%s)', javaPathfn),'Missing Fiji JARs','error');
 %     else
 %         fid = fopen(javaPathfn);
 %         tline = fgetl(fid);
@@ -136,7 +136,7 @@ if ~isdeployed
 %         fclose(fid);
 %         
 %         if exist(fijiJavaPath,'dir') ~= 7    % not a folder
-%             sprintf('Fiji path was not correct!\n\nPlease fix it (for example: "C:\\Fiji\\") in "java_path.txt" file at the im_browser directory (%s)', javaPathfn);
+%             sprintf('Fiji path was not correct!\n\nPlease fix it (for example: "C:\\Fiji\\") in "mib_java_path.txt" file at the im_browser directory (%s)', javaPathfn);
 %         else
 %             add_to_classpath(javapath, fullfile(fijiJavaPath,'jars'));
 %             add_to_classpath(javapath, fullfile(fijiJavaPath,'plugins'));
@@ -342,7 +342,7 @@ if exist('im_browser_pars','var') && isfield(im_browser_pars,'lastpath')
 end
 
 % set variable for the brush cursor
-handles.cursor = [];         % a handle to the plot type, that has the shape of the brush cursor
+handles.cursor = [];            % a handle to the plot type, that has the shape of the brush cursor
 handles.showBrushCursor = 1;    % a switch that defines whether the brush cursor has to be shown
 
 % default value for autoupdate of histogram in the imAdjustment window
@@ -434,25 +434,11 @@ for i=1:numel(childrenPans)
     set(childrenPans(i), 'units', 'normalized');
 end
 %% add plugins to the menu
-if ~isdeployed;
-    func_name='im_browser.m';
-    func_dir=which(func_name);
-    func_dir=fileparts(func_dir);
-    func_dir = fullfile(func_dir, 'Plugins');
-else
-    if isunix()
-        [~, user_name] = system('whoami');
-        pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
-        func_dir = fullfile(pathName, 'Plugins');
-    else
-        func_dir = fullfile(pwd, 'Plugins');
-    end
-end
+func_dir = fullfile(handles.pathMIB, 'Plugins');
 
 addpath(func_dir);
 customContents1 = dir(func_dir);
 if numel(customContents1) > 2
-    
     for customDirIdx = 3:numel(customContents1)
         if customContents1(customDirIdx).isdir
             hSubmenu = uimenu(handles.menuPlugins,'Label', customContents1(customDirIdx).name);
@@ -499,6 +485,7 @@ set(handles.lastSliceBtn,'cdata',btn1);
 set(handles.firstSliceBtn,'cdata',btn2);
 
 %% Add icons to menu
+pause(.1);
 ib_addIcons(handles);
 % Disable items in the menu that are not available in the deployed version
 if isdeployed

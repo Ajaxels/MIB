@@ -339,11 +339,6 @@ classdef Measure < matlab.mixin.Copyable
         function editMeasurements(obj, handles, index, colCh)
             if nargin < 4; colCh = obj.Data(index).colCh; end;
             
-            % temporary switch off selection
-            disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
-            handles.preferences.disableSelection = 'yes'; % disable selection
-            guidata(handles.im_browser, handles);   % store handles
-            
             type = obj.Data(index).type;
             switch cell2mat(type)
                 case 'Distance (linear)'
@@ -359,8 +354,6 @@ classdef Measure < matlab.mixin.Copyable
                 case 'Point'
                     obj.PointFun(handles, index, colCh);
             end
-            % restore selected state for the selection
-            handles.preferences.disableSelection = disableSelectionSwitch;
         end
         
         function removeMeasurements(obj, index)
@@ -562,6 +555,13 @@ classdef Measure < matlab.mixin.Copyable
             
             if nargin < 5; instant = 0; end;
             
+            % temporary switch off selection
+            %disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
+            %handles.preferences.disableSelection = 'yes'; % disable selection
+            %guidata(handles.im_browser, handles);   % store handles
+            brushSize = get(handles.segmSpotSizeEdit,'string');
+            set(handles.segmSpotSizeEdit,'string', '0');
+            
             switch type
                 case 'imline'
                     % recalculate coordinates from data to image axes
@@ -634,6 +634,13 @@ classdef Measure < matlab.mixin.Copyable
             obj.roi.type = [];
             obj.roi.imroi = [];
             obj.roi.cb = [];
+            
+            % restore the brush size
+            set(handles.segmSpotSizeEdit,'string', brushSize);
+            
+            % restore selected state for the selection
+            %handles.preferences.disableSelection = disableSelectionSwitch;
+            %guidata(handles.im_browser, handles);
         end
         
         function updateROIposition1(obj, new_position)
@@ -867,11 +874,12 @@ classdef Measure < matlab.mixin.Copyable
             im = handles.Img{handles.Id}.I.getFullSlice('image', NaN, NaN, colCh);
             
             % interpolate the intensity profile along the measurement line
-            profile = interp2(x,y,double(im),xi,yi);
+            for ch=1:size(im,3)
+                profile(ch,:) = interp2(x,y,double(im),xi,yi); %#ok<AGROW>
+            end
             
             % calculate the average intensity
-            intensity = mean(profile);
-            
+            intensity = mean(profile, 2);
             
             % store the measurement
             if isempty(index)
@@ -1061,10 +1069,12 @@ classdef Measure < matlab.mixin.Copyable
             im = handles.Img{handles.Id}.I.getFullSlice('image', NaN, NaN, colCh);
             
             % interpolate the intensity profile along the measurement line
-            profile = interp2(x,y,double(im),xi,yi);
+            for ch=1:size(im,3)
+                profile(ch, :) = interp2(x,y,double(im),xi,yi);
+            end
             
             % calculate the average intensity
-            intensity = mean(profile);
+            intensity = mean(profile, 2);
             % store the measurement
             if isempty(index)
                 n = obj.getNumberOfMeasurements + 1;
@@ -1181,15 +1191,16 @@ classdef Measure < matlab.mixin.Copyable
             incircle = inpolygon(x,y,X,Y);
             
             im = handles.Img{handles.Id}.I.getFullSlice('image', NaN, NaN, colCh);
-            
-            % calculate the average intensity
-            intensity = mean(im(incircle));
+            for ch=1:size(im,3)
+                % profile
+                im_temp = im(:,:,ch);
+                profile(ch,:) = im_temp(incircle).'; %#ok<AGROW>
+                % calculate the average intensity
+                intensity(ch) = mean(im_temp(incircle)); %#ok<AGROW>
+            end
             
             % distance from center
             ti = hypot(x(incircle)-xc,y(incircle)-yc).';
-            
-            % profile
-            profile = im(incircle).';
             
             % store the measurement
             if isempty(index)
@@ -1252,7 +1263,7 @@ classdef Measure < matlab.mixin.Copyable
             
             prompt = sprintf('There are %d vertices in the line. Please enter a coefficient to decrease it if needed; any in range 1-%d\n\nIf coefficient is 2, the number of vertices will be reduced in 2 times', size(position,1), size(position,1));
             title = 'Convert to polyline';
-            answer = mib_inputdlg(NaN,prompt,title,'10');
+            answer = mib_inputdlg(handles, prompt, title,'10');
             if isempty(answer); return; end;
             
             coef = round(str2double(cell2mat(answer)));
@@ -1404,12 +1415,13 @@ classdef Measure < matlab.mixin.Copyable
             L = sum( hypot( diff(xi)*pixX,diff(yi)*pixY ) );
             
             im = handles.Img{handles.Id}.I.getFullSlice('image', NaN, NaN, colCh);
-            
-            % interpolate the intensity profile along the measurement line
-            profile = interp2(x,y,double(im),xi,yi);
+            for ch=1:size(im,3) 
+                % interpolate the intensity profile along the measurement line
+                profile(ch, :) = interp2(x,y,double(im),xi,yi);
+            end
             
             % calculate the average intensity
-            intensity = mean(profile);
+            intensity = mean(profile, 2);
             
             if isempty(index)
                 n = obj.getNumberOfMeasurements + 1;
@@ -1489,14 +1501,16 @@ classdef Measure < matlab.mixin.Copyable
             end;
             if isempty(index)   % add new measurement
                 n = obj.getNumberOfMeasurements + 1;
-                answer = mib_inputdlg(NaN,'Enter a label','Add point',sprintf('Feature %d', n));
+                answer = mib_inputdlg(handles, 'Enter a label','Add point',sprintf('Feature %d', n));
             else                % update existing
                 n = index;
-                answer = mib_inputdlg(NaN,'Enter a label','Add point',tempData.value);
+                answer = mib_inputdlg(handles, 'Enter a label','Add point',tempData.value);
             end
             if isempty(answer); answer = {''}; end;
-            profile = handles.Img{handles.Id}.I.img(ceil(position(2)),ceil(position(1)),colCh, z);
-            intensity = profile;
+            for ch=1:size(im,3)
+                profile(ch) = handles.Img{handles.Id}.I.img(ceil(position(2)),ceil(position(1)),ch, z); %#ok<AGROW>
+                intensity(ch) = profile(ch); %#ok<AGROW>
+            end
             
             newData.n = n;
             newData.type = cellstr('Point');
@@ -1541,6 +1555,11 @@ classdef Measure < matlab.mixin.Copyable
             if nargin < 3; index = []; end;
             
             result = 0;
+            
+            % temporary switch off selection
+            %disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
+            %handles.preferences.disableSelection = 'yes'; % disable selection
+            %guidata(handles.im_browser, handles);   % store handles
             
             if isempty(index)   % add new measurement
                 % select two preliminary points
@@ -1619,10 +1638,12 @@ classdef Measure < matlab.mixin.Copyable
             im = handles.Img{handles.Id}.I.getFullSlice('image', NaN, NaN, colCh);
             
             % interpolate the intensity profile along the measurement line
-            profile = interp2(x,y,double(im),xi,yi);
+            for ch=1:size(im,3)
+                profile(ch,:) = interp2(x,y,double(im(:,:,ch)),xi,yi); %#ok<AGROW>
+            end
             %profile = ones([size(ti), 1]);
             % calculate the average intensity
-            intensity = mean(profile);
+            intensity = mean(profile,2);
             
             % store the measurement
             if isempty(index)
@@ -1643,6 +1664,9 @@ classdef Measure < matlab.mixin.Copyable
             newData.profile = [ti ; profile];
             
             obj.addMeasurements(newData, n);
+            % restore selected state for the selection
+            % handles.preferences.disableSelection = disableSelectionSwitch;
+            
             handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
             result = 1;
         end

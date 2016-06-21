@@ -29,7 +29,7 @@ options.blockModeSwitch = 0;    % overwrite blockmode switch
 wb = waitbar(0,sprintf('Rotating image\nPlease wait...'),'Name','Rotate dataset','WindowStyle','modal');
 
 % rotate image
-[hMax, wMax, cMax, zMax, tMax] = handles.Img{handles.Id}.I.getDatasetDimensions('image', 4, NaN, options);
+[hMax, wMax, cMax, zMax, tMax] = handles.Img{handles.Id}.I.getDatasetDimensions('image', 4, 0, options);
 cMax = numel(cMax);
 
 imgOut = zeros([wMax, hMax, cMax, zMax, tMax], class(handles.Img{handles.Id}.I.img)); %#ok<ZEROLIKE>

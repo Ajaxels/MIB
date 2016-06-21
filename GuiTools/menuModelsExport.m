@@ -23,7 +23,7 @@ function menuModelsExport(hObject, eventdata, handles, parameter)
 if strcmp(parameter, 'matlab')
     prompt = {'Variable for the structure to keep the model:'};
     title = 'Input a destination variable for export';
-    answer = mib_inputdlg(NaN,prompt,title,'O');
+    answer = mib_inputdlg(handles, prompt,title,'O');
     if size(answer) == 0; return; end;
     options.blockModeSwitch = 0;
     O.model = handles.Img{handles.Id}.I.getData4D('model', 4, NaN, options);
