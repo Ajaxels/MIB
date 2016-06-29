@@ -188,6 +188,24 @@ obj.img_info('Width') = xMax;
 obj.img_info('Stacks') = obj.no_stacks;
 obj.updateBoundingBox();
 
+% update obj.slices
+if obj.orientation == 4
+    obj.slices{1} = [1, obj.height];
+    obj.slices{2} = [1, obj.width];
+elseif obj.orientation == 1
+    obj.slices{2} = [1, obj.width];
+    obj.slices{4} = [1, obj.no_stacks];
+elseif obj.orientation == 2
+    obj.slices{1} = [1, obj.height];
+    obj.slices{4} = [1, obj.no_stacks];
+end
+if get(handles.lutCheckbox, 'value') == 1
+    obj.slices{3} = 1:size(obj.img,3);
+else
+    obj.slices{3} = 1:min([size(obj.img,3) 3]);
+end
+
+
 if isKey(obj.img_info, 'SliceName')
     sliceNames = obj.img_info('SliceName');
     % generate vector of slice names

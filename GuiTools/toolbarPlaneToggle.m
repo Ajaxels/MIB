@@ -23,6 +23,11 @@ if nargin < 4;     moveMouseSw = 0; end;
 set(handles.zyPlaneToggle, 'state', 'off');
 set(handles.xyPlaneToggle, 'state', 'off');
 set(handles.zxPlaneToggle, 'state', 'off');
+
+if handles.Img{handles.Id}.I.no_stacks == 1
+    set(handles.xyPlaneToggle, 'state', 'on');
+    return;
+end;
 set(hObject,'State','on');
 
 % when volume rendering is enabled

@@ -265,7 +265,6 @@ uiresume(handles.ib_resampleGui);
 end
 
 function editbox_Callback(hObject, eventdata, handles)
-return;
 if get(handles.dimensionsRadio,'Value')
     switch get(hObject,'Tag')
         case 'dimX'

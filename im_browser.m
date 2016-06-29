@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.20 / 20.06.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.21 / 29.06.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -387,10 +387,13 @@ pause(0.1);
 
 % add double click callbacks for the sliders of the widgets,
 % see more http://undocumentedmatlab.com/blog/setting-listbox-mouse-actions
-jFilesListbox = findjobj(handles.filesListbox); % jScrollPane
-jFilesListbox = jFilesListbox.getVerticalScrollBar;
-jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
-set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.filesListbox, 1});
+try
+    jFilesListbox = findjobj(handles.filesListbox); % jScrollPane
+    jFilesListbox = jFilesListbox.getVerticalScrollBar;
+    jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
+    set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.filesListbox, 1});
+catch err
+end
 
 if exist('frame','var')     % close splash window
     frame.hide;
@@ -1175,7 +1178,8 @@ handles.Id = buttonID;
 set(hObject, 'value', 1);
 
 %handles.Img{handles.Id}.I.imh = 0;
-handles.Img{handles.Id}.I.imh = image(handles.imageAxes, 'CData',[],'UserData', 'new');
+handles.Img{handles.Id}.I.imh = matlab.graphics.primitive.Image('CData',[], 'UserData', 'new');
+
 handles.U.clearContents();  % clear undo history
 
 % turn off volume rendering

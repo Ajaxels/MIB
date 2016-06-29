@@ -4,6 +4,10 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%% 1.21 29.06.2016 
+% * Fixed horizontal/vertical flipping for 2D datasets
+% * Fix of several small bugs
+%
 %% 1.20 20.06.2016 
 % * Added Volume Rendering for small datasets (Toolbar->Volume rendering button)
 % * Added the Crop To mode to the Crop tool (Menu->Dataset->Crop dataset...)
