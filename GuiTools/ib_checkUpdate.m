@@ -125,8 +125,8 @@ if isdeployed
     set(handles.updaterBtn, 'String', 'Download');
     if ismac()
         link = 'http://mib.helsinki.fi/web-update/im_browser_current_version_deployed_mac.txt';
-        set(handles.updaterBtn, 'enable','off');
-        set(handles.updaterBtn, 'tooltipstring', 'The automatic update is not yet available for Mac OS');
+        %set(handles.updaterBtn, 'enable','off');
+        %set(handles.updaterBtn, 'tooltipstring', 'The automatic update is not yet available for Mac OS');
     else
         link = 'http://mib.helsinki.fi/web-update/im_browser_current_version_deployed.txt';
     end
@@ -242,7 +242,7 @@ else
 %     delete(wb);
 %     msgbox(sprintf('To finish the update please close the Microscopy Image Browser and start updateMIB.exe!'),'Update status','help');
     if ismac()
-        0;
+        web('http://mib.helsinki.fi/web-update/MIB_Mac.dmg', '-browser');
     elseif ispc()
         web('http://mib.helsinki.fi/web-update/MIB_distrib.exe', '-browser');
     end

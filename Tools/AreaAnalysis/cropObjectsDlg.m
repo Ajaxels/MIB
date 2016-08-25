@@ -30,7 +30,7 @@ function varargout = cropObjectsDlg(varargin)
 % Updates
 % 07.03.2016, IB, updated for 4D datasets
 
-% Last Modified by GUIDE v2.5 16-May-2015 16:17:16
+% Last Modified by GUIDE v2.5 07-Jul-2016 14:03:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -155,6 +155,8 @@ switch tagId
         set(handles.selectDirBtn, 'enable','off');
         set(handles.dirEdit, 'enable','off');
 end
+cropMaskCheck_Callback(handles.cropMaskCheck, eventdata, handles);
+cropModelCheck_Callback(handles.cropModelCheck, eventdata, handles)
 end
 
 % --- Outputs from this function are returned to the command line.
@@ -384,12 +386,6 @@ for t=uniqueTime'   % has to be a horizontal vector
         
         % crop and save model
         if get(handles.cropModelCheck, 'value')
-            % generate filename
-            %fnModel = fullfile(handles.outputDir, sprintf('Labels_%s_%06d.mat',  fnTemplate, objId));
-            [~, fnModel] = fileparts(filename);
-            fnModel = ['Labels_' fnModel '.mat']; %#ok<AGROW>
-            fnModel = fullfile(handles.outputDir, fnModel);
-            
             imgOut2.hLabels = copy(handles.h.Img{handles.h.Id}.I.hLabels);
             % crop labels
             imgOut2.hLabels.crop([xMin, yMin, NaN, NaN, zMin, NaN]);
@@ -408,28 +404,119 @@ for t=uniqueTime'   % has to be a horizontal vector
                     matlabVar.labelPosition = labelPosition;
                 end
             else
-                if handles.h.Img{handles.h.Id}.I.hLabels.getLabelsNumber() > 1  % save annotations
-                    [labelText, labelPosition] = handles.h.Img{handles.Id}.I.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                    save(fnModel, 'imOut', 'material_list', 'color_list', 'labelText', 'labelPosition', '-mat', '-v7.3');
-                else    % save without annotations
-                    save(fnModel, 'imOut', 'material_list', 'color_list', '-mat', '-v7.3');
+                % generate filename
+                [~, fnModel] = fileparts(filename);
+                bounding_box = imgOut2.getBoundingBox(); %#ok<NASGU>
+                
+                switch get(handles.modelFormatPopup, 'value')
+                    case 1  % Matlab format
+                        fnModel = ['Labels_' fnModel '.mat']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        if handles.h.Img{handles.h.Id}.I.hLabels.getLabelsNumber() > 1  % save annotations
+                            [labelText, labelPosition] = handles.h.Img{handles.Id}.I.hLabels.getLabels(); %#ok<NASGU,ASGLU>
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelPosition', '-mat', '-v7.3');
+                        else    % save without annotations
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
+                        end
+                    case 2  % Amira Mesh
+                        fnModel = ['Labels_' fnModel '.am']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        pixStr = imgOut2.pixSize;
+                        pixStr.minx = bounding_box(1);
+                        pixStr.miny = bounding_box(3);
+                        pixStr.minz = bounding_box(5);
+                        showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
+                        bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, color_list, material_list, 1, showWaitbar);
+                    case 3 % MRC
+                        fnModel = ['Labels_' fnModel '.mrc']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        Options.volumeFilename = fnModel;
+                        Options.pixSize = imgOut2.pixSize;
+                        savingOptions.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                        ib_image2mrc(imOut, Options);
+                    case 4  % NRRD
+                        fnModel = ['Labels_' fnModel '.nrrd']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        Options.overwrite = 1;
+                        Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
+                        bitmap2nrrd(fnModel, imOut, bounding_box, Options);
+                    case {5, 6}  % LZW TIF / uncompressed TIF
+                        fnModel = ['Labels_' fnModel '.tif']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        if get(handles.formatPopup, 'value') == 5
+                            compression = 'lzw';
+                        else
+                            compression = 'none';
+                        end
+                        ImageDescription = {imgOut2.img_info('ImageDescription')};
+                        imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
+                        savingOptions = struct('Resolution', [imgOut2.img_info('XResolution') imgOut2.img_info('YResolution')],...
+                            'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression);
+                        ib_image2tiff(fnModel, imOut, savingOptions, ImageDescription);
                 end
             end
         end
         
         % crop and save mask
         if get(handles.cropMaskCheck, 'value')
-            % generate filename
-            %fnModel = fullfile(handles.outputDir, sprintf('%s_%06d.mask',  fnTemplate, objId));
-            [~, fnModel] = fileparts(filename);
-            fnModel = [fnModel '.mask']; %#ok<AGROW>
-            fnModel = fullfile(handles.outputDir, fnModel);
-            
             imOut =  maskImg(yMin:yMax, xMin:xMax, zMin:zMax);
             if get(handles.matlabRadio, 'value') == 1   % export to Matlab
                 matlabVar.Mask = imOut;
             else
-                save(fnModel, 'imOut','-mat', '-v7.3');
+                % generate filename
+                [~, fnModel] = fileparts(filename);
+                bounding_box = imgOut2.getBoundingBox(); %#ok<NASGU>
+                
+                switch get(handles.maskFormatPopup, 'value')
+                    case 1  % Matlab format
+                        fnModel = ['Mask_' fnModel '.mask']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        save(fnModel, 'imOut','-mat', '-v7.3');
+                    case 2  % Amira Mesh
+                        fnModel = ['Mask_' fnModel '.am']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        pixStr = imgOut2.pixSize;
+                        pixStr.minx = bounding_box(1);
+                        pixStr.miny = bounding_box(3);
+                        pixStr.minz = bounding_box(5);
+                        showWaitbar = 0;  % show or not waitbar in bitmap2amiraMesh
+                        bitmap2amiraLabels(fnModel, imOut, 'binary', pixStr, handles.h.preferences.maskcolor, cellstr('Mask'), 1, showWaitbar);
+                    case 3 % MRC
+                        fnModel = ['Mask_' fnModel '.mrc']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        Options.volumeFilename = fnModel;
+                        Options.pixSize = imgOut2.pixSize;
+                        savingOptions.showWaitbar = 0;  % show or not waitbar in exportModelToImodModel
+                        ib_image2mrc(imOut, Options);
+                    case 4  % NRRD
+                        fnModel = ['Mask_' fnModel '.nrrd']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        Options.overwrite = 1;
+                        Options.showWaitbar = 0;  % show or not waitbar in bitmap2nrrd
+                        bitmap2nrrd(fnModel, imOut, bounding_box, Options);
+                    case {5, 6}  % LZW TIF / uncompressed TIF
+                        fnModel = ['Mask_' fnModel '.tif']; %#ok<AGROW>
+                        fnModel = fullfile(handles.outputDir, fnModel);
+                        
+                        if get(handles.formatPopup, 'value') == 5
+                            compression = 'lzw';
+                        else
+                            compression = 'none';
+                        end
+                        ImageDescription = {imgOut2.img_info('ImageDescription')};
+                        imOut = reshape(imOut,[size(imOut,1) size(imOut,2) 1 size(imOut,3)]);
+                        savingOptions = struct('Resolution', [imgOut2.img_info('XResolution') imgOut2.img_info('YResolution')],...
+                            'overwrite', 1, 'Saving3d', 'multi', 'Compression', compression);
+                        ib_image2tiff(fnModel, imOut, savingOptions, ImageDescription);
+                end
             end
         end
         
@@ -449,4 +536,24 @@ end
 handles.output = 1;
 guidata(hObject, handles);
 delete(handles.cropObjectsDlg);
+end
+
+
+% --- Executes on button press in cropModelCheck.
+function cropModelCheck_Callback(hObject, eventdata, handles)
+if get(handles.cropModelCheck, 'value') == 1 && get(handles.fileRadio, 'value') == 1
+    set(handles.modelFormatPopup,'enable','on');
+else
+    set(handles.modelFormatPopup,'enable','off');
+end
+end
+
+
+% --- Executes on button press in cropMaskCheck.
+function cropMaskCheck_Callback(hObject, eventdata, handles)
+if get(handles.cropMaskCheck, 'value') == 1 && get(handles.fileRadio, 'value') == 1
+    set(handles.maskFormatPopup,'enable','on');
+else
+    set(handles.maskFormatPopup,'enable','off');
+end
 end

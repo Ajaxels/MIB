@@ -35,6 +35,7 @@ function ib_moveLayers(hObject, eventdata, handles, obj_type_from, obj_type_to, 
 % Updates
 % 18.09.2016, changed .slices to cells
 % 20.01.2016, replaced layers_id from current/all to 2D/3D; updated for 4D
+% 22.08.2016, fixed 3D case when the blockmode enabled from the YZ/XZ orientations
 
 handles = guidata(hObject);
 t1 = tic;
@@ -128,35 +129,39 @@ if strcmp(layers_id,'4D') || (strcmp(layers_id,'3D') && handles.Img{handles.Id}.
             end
     end
 else    % move layers for 2D/3D and ROI and block modes
+    if handles.Img{handles.Id}.I.blockModeSwitch
+        doNotTranspose = 0;
+    else
+        doNotTranspose = 4;
+    end
     switch obj_type_from
         case 'mask'     % select mask layer
             if switch3d
-                img = ib_getDataset('mask', handles, 4, NaN, options);
+                img = ib_getDataset('mask', handles, doNotTranspose, NaN, options);
             else
                 img = ib_getSlice('mask', handles);
             end
         case 'model'      % select obj layer
             if handles.Img{handles.Id}.I.modelExist == 0 || strcmp(handles.Img{handles.Id}.I.model_type, 'int8'); delete(wb); return; end;     % different model type
             if switch3d
-                img = ib_getDataset('model', handles, 4, contSelIndex, options);
+                img = ib_getDataset('model', handles, doNotTranspose, contSelIndex, options);
             else
                 img = ib_getSlice('model', handles, NaN, NaN, contSelIndex);
             end
         case 'selection'
             if switch3d
-                img = ib_getDataset('selection', handles, 4, NaN, options);
-                handles.Img{handles.Id}.I.clearSelection(NaN, NaN, NaN, handles.Img{handles.Id}.I.slices{5}(1));
+                img = ib_getDataset('selection', handles, doNotTranspose, NaN, options);
+                handles.Img{handles.Id}.I.clearSelection('3D');
             else
                 img = ib_getSlice('selection', handles);
-                indeces = handles.Img{handles.Id}.I.slices;
-                handles.Img{handles.Id}.I.clearSelection(indeces{1}(1):indeces{1}(2),indeces{2}(1):indeces{2}(2),indeces{4}(1):indeces{4}(2),indeces{5}(1):indeces{5}(2));
+                handles.Img{handles.Id}.I.clearSelection('2D');
             end
     end
     
     % filter results
     if selected_sw && ~strcmp(obj_type_from,'model') && ~isnan(handles.Img{handles.Id}.I.model(1,1,1)) && ~strcmp(obj_type_to,'model')
         if switch3d
-            sel_img = ib_getDataset('model', handles, 4, contSelIndex, options);
+            sel_img = ib_getDataset('model', handles, doNotTranspose, contSelIndex, options);
         else
             sel_img = ib_getSlice('model', handles, NaN, NaN, contSelIndex);
         end
@@ -169,7 +174,7 @@ else    % move layers for 2D/3D and ROI and block modes
     if maskedAreaSw
         if ~strcmp(obj_type_from,'mask') && ~strcmp(obj_type_to,'mask')
             if switch3d
-                mask = ib_getDataset('mask', handles, 4, NaN, options);
+                mask = ib_getDataset('mask', handles, doNotTranspose, NaN, options);
             else
                 mask = ib_getSlice('mask', handles);
             end
@@ -186,19 +191,19 @@ else    % move layers for 2D/3D and ROI and block modes
             case 'selection'
                 switch action_type
                     case 'add'
-                        selection = ib_getDataset('selection', handles, 4, NaN, options);
+                        selection = ib_getDataset('selection', handles, doNotTranspose, NaN, options);
                         for i=1:numel(img)
                             selection{i} = bitor(selection{i}, img{i}); %selection{:}(img{:}==1) = 1;
                         end
                     case 'replace'
                         selection = img;
                     case 'remove'
-                        selection = ib_getDataset('selection', handles, 4, NaN, options);
+                        selection = ib_getDataset('selection', handles, doNotTranspose, NaN, options);
                         for i=1:numel(img)
                             selection{i} = selection{i}-img{i};  %selection{:}(img{:}==1) = 0;
                         end
                 end
-                ib_setDataset('selection', selection, handles, 4, NaN, options);
+                ib_setDataset('selection', selection, handles, doNotTranspose, NaN, options);
             case 'mask'
                 handles.Img{handles.Id}.I.maskExist = 1;
                 if ~strcmp(handles.Img{handles.Id}.I.model_type, 'uint6')
@@ -208,19 +213,19 @@ else    % move layers for 2D/3D and ROI and block modes
                 end
                 switch action_type
                     case 'add'
-                        mask = ib_getDataset('mask', handles, 4, NaN, options);
+                        mask = ib_getDataset('mask', handles, doNotTranspose, NaN, options);
                         for i=1:numel(mask)
                             mask{i} = bitor(mask{i}, img{i});   % mask{:}(img{:}==1) = 1;
                         end
                     case 'replace'
                         mask = img;
                     case 'remove'
-                        mask = ib_getDataset('mask', handles, 4, NaN, options);
+                        mask = ib_getDataset('mask', handles, doNotTranspose, NaN, options);
                         for i=1:numel(img)
                             mask{i} = mask{i} - img{i}; % mask{:}(img{:}==1) = 0;
                         end
                 end
-                ib_setDataset('mask', mask, handles, 4, NaN, options);
+                ib_setDataset('mask', mask, handles, doNotTranspose, NaN, options);
                 set(handles.maskShowCheck,'Value',1);
             case 'model'
                 if handles.Img{handles.Id}.I.modelExist == 0 || strcmp(handles.Img{handles.Id}.I.model_type, 'int8'); delete(wb); return; end;
@@ -229,7 +234,7 @@ else    % move layers for 2D/3D and ROI and block modes
                     contSelIndex = get(handles.segmSelList,'Value')-2;
                     contAddIndex = get(handles.segmAddList,'Value')-2;
                 end
-                model = ib_getDataset('model', handles, 4, NaN, options);     %model = ib_getDataset('model', handles, 4, contAddIndex); <- seems to be slower
+                model = ib_getDataset('model', handles, doNotTranspose, NaN, options);     %model = ib_getDataset('model', handles, 4, contAddIndex); <- seems to be slower
                 
                 handles.Img{handles.Id}.I.modelExist = 1;
                 switch action_type
@@ -253,7 +258,7 @@ else    % move layers for 2D/3D and ROI and block modes
                             end
                         end
                 end
-                ib_setDataset('model', model, handles, 4, NaN, options);
+                ib_setDataset('model', model, handles, doNotTranspose, NaN, options);
         end
     else    % 2d mode, the current slice only
         switch obj_type_to

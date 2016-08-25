@@ -1,5 +1,4 @@
 % This script will compile all the C files
-
 %% Compiling coherence filter
 wb = waitbar(0, sprintf('Compiling Coherence Filter\nPlease wait...'), 'Name', 'Compiling c files');
 

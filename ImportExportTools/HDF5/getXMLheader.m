@@ -98,7 +98,12 @@ end
 
 % add optional information about color channels
 if isfield(ViewSetup{1}, 'color')
-    img_info('lutColors') = str2num(cell2mat(cellfun(@(x) x.color.Text, ViewSetup', 'UniformOutput', false))); %#ok<ST2NM>
+    %img_info('lutColors') = str2num(cell2mat(cellfun(@(x) x.color.Text, ViewSetup', 'UniformOutput', false))); %#ok<ST2NM>
+    colorText = cellfun(@(x) x.color.Text, ViewSetup', 'UniformOutput', false);
+    for i=1:numel(colorText)
+        colorTextVal(i,:) = str2num(colorText{i});
+    end
+    img_info('lutColors') = colorTextVal;
 end
 
 
@@ -109,7 +114,7 @@ img_info('Filename') = fullfileH5;
 %img_info('SliceName') - [optional] a cell array with names of the slices; for combined Z-stack, it is a name of the file that corresponds to the slice. Dimensions of the array should be equal to the obj.no_stacks
 if isfield(ViewSetup{1}, 'voxelSize')
     units = ViewSetup{1}.voxelSize.unit.Text;
-    if strcmp(units, 'µm')
+    if strcmp(units, sprintf('\xB5m'))  % if units are micrometers
         units = 'um';
     end
     pixSize.units = units;

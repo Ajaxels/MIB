@@ -88,15 +88,15 @@ for fieldIdx = 1:numel(fields)
     % special characters, to be compatible with AmiraMesh
     % format
     currKey = regexprep(fields{fieldIdx},'[_%! ()[]{}/|\\#?.,]', '_');
-    currKey = strrep(currKey,'Â','A');
-    currKey = strrep(currKey,'µ','u');
-        
+    currKey = strrep(currKey, sprintf('\xC5'), 'A');    % replace Angstrem with A
+    currKey = strrep(currKey, sprintf('\xB5'), 'u');    % replace mu with u
+    
     if isstruct(img_info(fields{fieldIdx}))
         extraFields = fieldnames(img_info(fields{fieldIdx}));
         for extraFieldId = 1:numel(extraFields)
             currKey2 = regexprep(extraFields{extraFieldId},'[_%! ()[]{}/|\\#?.,]', '_');
-            currKey2 = strrep(currKey2,'Â','A');
-            currKey2 = strrep(currKey2,'µ','u');
+            currKey2 = strrep(currKey2, sprintf('\xC5'), 'A');   % replace Angstrem with A
+            currKey2 = strrep(currKey2, sprintf('\xB5'), 'u');   % replace mu with u
         
             if isstruct(img_info(fields{fieldIdx}).(extraFields{extraFieldId}))
                 fprintf(fid, '\t\t%s_%s skipped,\n',currKey, currKey2);

@@ -4,7 +4,8 @@ function clearSelection(obj, height, width, z, t)
 % the area where the 'Selection' layer should be cleared.
 %
 % Parameters:
-% height: [@em optional], can be @b NaN, a vector of heights, for example [1:imageData.height]
+% height: [@em optional], can be @b NaN, a vector of heights(for example
+% [1:imageData.height]) or a string with the mode ('2D', '3D', '4D') 
 % width: [@em optional], can be @b NaN, a vector of width, for example [1:imageData.width]
 % z: [@em optional] a vector of z-values, for example [1:imageData.no_stacks]
 % t: [@em optional] a vector of t-values, for example [1:imageData.time]
@@ -25,6 +26,7 @@ function clearSelection(obj, height, width, z, t)
 %
 % Updates
 % 20.01.2016, updated for 4D data
+% 22.08.2016, added additional options for the first parameter ('2D,3D,4D')
 
 if nargin < 5; t = NaN; end;
 if nargin < 4; z = NaN; end;
@@ -36,19 +38,34 @@ if isnan(z(1)); z = 1:size(obj.img, 4); end;
 if isnan(width(1)); width = 1:size(obj.img, 2); end;
 if isnan(height(1)); height = 1:size(obj.img, 1); end;
 
-if ~strcmp(obj.model_type, 'uint6')
-    if nargin < 2
-        obj.selection = NaN;
-        obj.selection = zeros(size(obj.img,1),size(obj.img,2),size(obj.img,4),size(obj.img,5),'uint8');
-    else
-        obj.selection(height, width, z, t) = 0;
+if ischar(height)
+    [h,w,~,d,t] = obj.getDatasetDimensions();
+    switch height
+        case '2D'
+            img = zeros([h,w], 'uint8');
+            obj.setData2D('selection', img);
+        case '3D'
+            img = zeros([h,w,d], 'uint8');
+            obj.setData3D('selection', img);
+        case '4D'
+            img = zeros([h,w,d,t], 'uint8');
+            obj.setData4D('selection', img);
     end
 else
-    if isnan(obj.model(1)); return; end;    % selection is disabled
-    if nargin < 2
-        obj.model = bitset(obj.model, 8, 0);
+    if ~strcmp(obj.model_type, 'uint6')
+        if nargin < 2
+            obj.selection = NaN;
+            obj.selection = zeros(size(obj.img,1), size(obj.img,2), size(obj.img,4), size(obj.img,5), 'uint8');
+        else
+            obj.selection(height, width, z, t) = 0;
+        end
     else
-        obj.model(height, width, z, t) = bitset(obj.model(height, width, z, t), 8, 0);
+        if isnan(obj.model(1)); return; end;    % selection is disabled
+        if nargin < 2
+            obj.model = bitset(obj.model, 8, 0);
+        else
+            obj.model(height, width, z, t) = bitset(obj.model(height, width, z, t), 8, 0);
+        end
     end
 end
 end

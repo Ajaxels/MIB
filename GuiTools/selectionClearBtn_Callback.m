@@ -22,6 +22,7 @@ function selectionClearBtn_Callback(hObject, eventdata, handles, sel_switch)
 % Updates
 % 18.09.2016, changed .slices() to .slices{:}; .slicesColor->.slices{3}
 % 29.01.2016, changed sel_switch parameters from 'current'->'2D', 'all'->'3D', , added '4D'
+% 22.08.2016, updated for the block-mode
 
 % clear the Selection layer
 
@@ -41,15 +42,14 @@ else
     sel_switch = '2D';
 end
 
+[h,w,~,d,~] = handles.Img{handles.Id}.I.getDatasetDimensions();
 if strcmp(sel_switch,'2D')
     ib_do_backup(handles, 'selection', 0);
-    handles.Img{handles.Id}.I.clearSelection(handles.Img{handles.Id}.I.slices{1}(1):handles.Img{handles.Id}.I.slices{1}(2),...
-        handles.Img{handles.Id}.I.slices{2}(1):handles.Img{handles.Id}.I.slices{2}(2),...
-        handles.Img{handles.Id}.I.slices{4}(1):handles.Img{handles.Id}.I.slices{4}(2),...
-        handles.Img{handles.Id}.I.slices{5}(1):handles.Img{handles.Id}.I.slices{5}(2));
+    handles.Img{handles.Id}.I.clearSelection(sel_switch);
 elseif strcmp(sel_switch,'3D')
     ib_do_backup(handles, 'selection', 1);
-    handles.Img{handles.Id}.I.clearSelection(NaN, NaN, NaN, handles.Img{handles.Id}.I.slices{5}(1));
+    img = zeros([h,w,d], 'uint8');
+    handles.Img{handles.Id}.I.setData3D('selection', img);
 else
     handles.Img{handles.Id}.I.clearSelection();
 end

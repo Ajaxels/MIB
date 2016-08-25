@@ -39,7 +39,16 @@ omeroJavaPath = 0;
 %     pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
 % end
 
-pathName = userpath();
+if ispc
+    pathName = userpath();
+else
+    % find directory to store preferences
+    pathName = getenv('HOME');
+    pathName = fullfile(pathName, 'Documents', 'MATLAB');
+    if isdir(pathName) == 0;
+        mkdir(pathName);
+    end
+end
 if pathName(end) == ';'; pathName(end) = []; end;
 
 javaPathfn = fullfile(pathName, 'mib_java_path.txt');
@@ -47,6 +56,7 @@ if exist(javaPathfn,'file') ~= 2
     fid = fopen(javaPathfn, 'w');
     if fid == -1; 
         warndlg(sprintf('A Java-path file for Java libraries can not be created in\n%s\n\nPlease modify permissions for this folder', javaPathfn),'Can not create file');
+        pause;
     end
     fprintf(fid, 'c:\\Tools\\Science\\Fiji.app\\\nc:\\Matlab\\Scripts\\OMERO_5\\libs\n/Applications/Fiji.app/\n/Users/ibelev/Documents/MATLAB/OMERO_5/libs');
     fclose(fid);

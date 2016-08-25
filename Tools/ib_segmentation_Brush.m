@@ -40,7 +40,6 @@ ib_do_backup(handles, 'selection', 0,backupOptions);  % do backup
 
 radius = str2double(get(handles.segmSpotSizeEdit,'String'));
 if radius == 0; return; end;
-
 handles.Img{handles.Id}.I.brush_prev_xy = [x, y];
 
 if strcmp(modifier, 'control')    % subtracts selections

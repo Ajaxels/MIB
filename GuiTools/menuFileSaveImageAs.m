@@ -152,7 +152,7 @@ for t=t1:t2
             options.t = t;
             switch options.Format
                 case 'bdv.hdf5'
-                    options.pixSize.units = 'µm';
+                    options.pixSize.units = sprintf('\xB5m'); % 'µm';
                     saveBigDataViewerFormat(options.filename, img, options);
                 case 'matlab.hdf5'
                     image2hdf5(fullfile(path, [filename '.h5']), img, options);
@@ -242,7 +242,7 @@ for t=t1:t2
     end
     if showLocalWaitbar;        waitbar(t/dT, wb);    end;
 end
-update_filelist(handles, filename);     % update list of files, use filename to highlight the saved file
+update_filelist(handles, [filename ext]);     % update list of files, use filename to highlight the saved file
 if showLocalWaitbar; delete(wb); end;
 toc;
 end

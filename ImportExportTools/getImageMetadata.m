@@ -119,10 +119,7 @@ for fn_index = 1:no_files
         files(fn_index).filename = img_info('Filename');
         files(fn_index).object_type = img_info('Format');
         files(fn_index).extension = 'xml';
-        files(fn_index).height = img_info('Height');
-        files(fn_index).width = img_info('Width');
         files(fn_index).color = img_info('Colors');
-        files(fn_index).noLayers = img_info('Stacks');
         files(fn_index).level = img_info('ReturnedLevel');
         files(fn_index).ColorType = img_info('ColorType');
         if img_info('Time') == 0;  img_info('Time') = 1;    end;    % when time is 0 make it 1;
@@ -146,6 +143,9 @@ for fn_index = 1:no_files
             noLevels = numel(info.Groups(offsetIndex).Groups(1).Groups);  % number of levels in the image pyramid
             img_info('Levels') = noLevels;
             
+            pixSize = img_info('pixSize');
+            remove(img_info,'pixSize');
+            
             if noLevels > 1
                 prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
                 answer = mib_inputdlg(handles, prompt, 'Select image', '1');
@@ -158,8 +158,12 @@ for fn_index = 1:no_files
                     return;
                 end
                 
-                % update dimensions for the binned datasets
+                % update dimensions and pixel sizes for the binned datasets
                 xyzVal = info.Groups(offsetIndex).Groups(1).Groups(level).Datasets.Dataspace.Size;    % unbinned
+                pixSize.x = pixSize.x * img_info('Height')/xyzVal(2);
+                pixSize.y = pixSize.y * img_info('Width')/xyzVal(1);
+                pixSize.z = pixSize.z * img_info('Stacks')/xyzVal(3);
+                
                 img_info('Height') = xyzVal(2);
                 img_info('Width') = xyzVal(1);
                 img_info('Stacks') = xyzVal(3);
@@ -181,14 +185,15 @@ for fn_index = 1:no_files
             files(fn_index).imgClass = img_info('imgClass');
             
             files(fn_index).dim_xyczt = [img_info('Width'), img_info('Height'), img_info('Colors'), img_info('Stacks'), img_info('Time')];
-            pixSize = img_info('pixSize');
-            remove(img_info,'pixSize');
         else
             if options.waitbar==1; delete(wb); end;
             img_info = containers.Map;
             errordlg(sprintf('!!! Error !!!\n\nCan''t detect the format!'));
             return;
         end
+        files(fn_index).height = img_info('Height');
+        files(fn_index).width = img_info('Width');
+        files(fn_index).noLayers = img_info('Stacks');
     elseif strfind('h5hdf', ext(2:end)) > 0 & options.bioformatsCheck == 0         %#ok<AND2> % HDF5 format
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'hdf5_image';
@@ -584,6 +589,7 @@ for fn_index = 1:no_files
             if options.waitbar==1; delete(wb); end; 
             return;
         end
+        close(mrcFile);
     elseif options.bioformatsCheck == 1    % load meta for bio-image formats
 %         if ~isdeployed
 %             javapath = javaclasspath('-all');
@@ -597,6 +603,7 @@ for fn_index = 1:no_files
             r = loci.formats.ChannelSeparator(r);
             r.setMetadataStore(loci.formats.MetadataTools.createOMEXMLMetadata());
             r.setId(filenames(fn_index));
+
             numSeries = r.getSeriesCount();
             if numSeries > 1
                 [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
@@ -674,8 +681,8 @@ for fn_index = 1:no_files
 %                 % test of work with OME-metadata
 %                 omeMeta = filesTemp.hDataset.getMetadataStore();
 %                 omeXML = char(omeMeta.dumpXML());    % to xml
-%                 omeXML = strrep(omeXML,'µ','u');     % replace utf-8 characters
-%                 omeXML = strrep(omeXML,'Â','A');
+%                 omeXML = strrep(omeXML,sprintf('\xB5'),'u');     % replace utf-8 characters
+%                 omeXML = strrep(omeXML,sprintf('\xC5'),'A');
 %                 dummyXMLFilename = fullfile(dirId, 'dummy.xml');    % save xml to a file
 %                 fid = fopen(dummyXMLFilename, 'w');
 %                 fprintf(fid,'%s',omeXML);
@@ -693,8 +700,8 @@ for fn_index = 1:no_files
                     % special characters, to be compatible with AmiraMesh
                     % format
                     %currKey = regexprep(currKey,'[_%! ()[]{}/|\\#?.,]', '_');
-                    %currKey = strrep(currKey,'Â','A');
-                    %currKey = strrep(currKey,'µ','u');
+                    %currKey = strrep(currKey,sprintf('\xC5'),'A');
+                    %currKey = strrep(currKey,sprintf('\xB5'),'u');
 
                     img_info(currKey) = value;
                 end
@@ -722,8 +729,8 @@ for fn_index = 1:no_files
 %                     field = strrep(field,'|','_');
 %                     field = strrep(field,'#','');
 %                     field = strrep(field,'?','');
-%                     field = strrep(field,'Â','A');
-%                     field = strrep(field,'µ','u');
+%                     field = strrep(field,sprintf('\xC5'),'A');
+%                     field = strrep(field,sprintf('\xB5'),'u');
 %                     field = strrep(field,'.','_');
 %                     field = strrep(field,' ','_');
 %                     field = strrep(field, 65533, '');
@@ -791,8 +798,9 @@ for fn_index = 1:no_files
         if fn_index == 1
             omeMeta = filesTemp.hDataset.getMetadataStore();
             omeXML = char(omeMeta.dumpXML());    % to xml
-            omeXML = strrep(omeXML,'µ','u');     % replace utf-8 characters
-            omeXML = strrep(omeXML,'Â','A');
+            omeXML = strrep(omeXML, sprintf('\xB5'),'u');     % mu, replace utf-8 characters
+            omeXML = strrep(omeXML,sprintf('\xC5'),'A');      % Angstrem
+            
             dummyXMLFilename = fullfile(dirId, 'dummy.xml');    % save xml to a file
             fid = fopen(dummyXMLFilename, 'w');
             fprintf(fid,'%s',omeXML);

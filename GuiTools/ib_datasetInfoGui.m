@@ -298,13 +298,20 @@ end
 % --- Executes when ib_datasetInfoGui is resized.
 function ib_datasetInfoGui_ResizeFcn(hObject, eventdata, handles)
 if isstruct(handles) == 0; return; end;
-guiPos = get(handles.ib_datasetInfoGui, 'position');
-set(handles.uipanel1, 'Position', [2, 65, guiPos(3)-5, guiPos(4)-70]);
-selTextPos = get(handles.selectedText, 'Position');
-set(handles.selectedText, 'Position', [selTextPos(1), guiPos(4)-120, guiPos(3)-25 selTextPos(4)]);
-set(handles.uiTreePanel, 'Position', [selTextPos(1), 10, guiPos(3)-25 guiPos(4)-135]);
+scaleFactor = 1;
+if ismac()
+    scaleFactor = 1.5;     % increase size of the widgets by 1.5 times
+else  % linux
+    scaleFactor = 1.2;     % increase size of the widgets by 1.2 times
+end
 
-set(handles.uiTreeContainer,'Position', [5, 5, guiPos(3)-25-8, guiPos(4)-135-8]);
+guiPos = get(handles.ib_datasetInfoGui, 'position');
+set(handles.uipanel1, 'Position', [2*scaleFactor, 65*scaleFactor, guiPos(3)-5*scaleFactor, guiPos(4)-70*scaleFactor]);
+selTextPos = get(handles.selectedText, 'Position');
+set(handles.selectedText, 'Position', [selTextPos(1), guiPos(4)-120*scaleFactor, guiPos(3)-25*scaleFactor selTextPos(4)]);
+set(handles.uiTreePanel, 'Position', [selTextPos(1), 10*scaleFactor, guiPos(3)-25*scaleFactor guiPos(4)-135*scaleFactor]);
+
+set(handles.uiTreeContainer,'Position', [5*scaleFactor, 5*scaleFactor, guiPos(3)-(25+8)*scaleFactor, guiPos(4)-(135+8)*scaleFactor]);
 end
 
 

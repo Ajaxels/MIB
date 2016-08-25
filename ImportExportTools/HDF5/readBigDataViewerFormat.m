@@ -110,7 +110,7 @@ if strcmpi(extName, '.xml')    % get meta structure
     %img_info('SliceName') - [optional] a cell array with names of the slices; for combined Z-stack, it is a name of the file that corresponds to the slice. Dimensions of the array should be equal to the obj.no_stacks
     if isfield(ViewSetup{1}, 'voxelSize')
         units = ViewSetup{1}.voxelSize.unit.Text;
-        if strcmp(units, 'µm')
+        if strcmp(units, sprintf('\xB5m'))
             units = 'um';
         end
         pixSize.units = units;

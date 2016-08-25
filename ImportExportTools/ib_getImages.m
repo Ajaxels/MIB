@@ -281,6 +281,7 @@ for fn_index = 1:no_files
             img(1:maxY,1:maxX,1:maxC,layer_id:layer_id+files(fn_index).noLayers-1) = reshape(mrc_image, [size(mrc_image,1), size(mrc_image,2),1,size(mrc_image,3)]);
         end
         layer_id = layer_id + files(fn_index).noLayers;
+        close(mrcFile);
     elseif strcmp(files(fn_index).object_type,'bioformats')        % bioformats images
         for serieIndex=1:numel(files(fn_index).seriesName)
             I  = bfopen3(files(fn_index).hDataset, files(fn_index).seriesName(serieIndex));

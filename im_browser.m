@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.21 / 29.06.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.22 / 22.08.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -144,6 +144,12 @@ try
             %pathName = fullfile('./Users', user_name(1:end-1), 'Documents/MIB');
             [status, result] = system('path');
             pathName = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+            
+            % the code above does not work on Mac OS X Yosemite and R2016a
+            % so fix MIB location 
+            if isempty(pathName)
+                pathName = '/Applications/MIB/application/';
+            end
         else
             %pathName = pwd;
 %             USERPROFILE_PATH = getenv('USERPROFILE');

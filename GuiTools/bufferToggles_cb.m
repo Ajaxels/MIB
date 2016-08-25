@@ -48,7 +48,7 @@ switch parameter
         destinationButton = str2double(answer{1});
         if destinationButton > 8 || destinationButton<1; errordlg('The destination should be a number from 1 to 8!','Wrong destination'); return; end;
         if ismac()
-            eval(sprintf('bgColor = get(handles.bufferToggle%d,''ForeroundColor'');', destinationButton));     % make green
+            eval(sprintf('bgColor = get(handles.bufferToggle%d,''ForegroundColor'');', destinationButton));     % make green
         else
             eval(sprintf('bgColor = get(handles.bufferToggle%d,''BackgroundColor'');', destinationButton));     % make green
         end

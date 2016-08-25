@@ -336,7 +336,7 @@ for z=1:tilesZ
                     
                     switch optionsHDF.Format
                         case 'bdv.hdf5'
-                            optionsHDF.pixSize.units = 'µm';
+                            optionsHDF.pixSize.units = sprintf('\xB5m');
                             saveBigDataViewerFormat(optionsHDF.filename, imgOut2.img, optionsHDF);
                         case 'matlab.hdf5'
                             [localDir, localFn] = fileparts(filename);
@@ -362,11 +362,12 @@ for z=1:tilesZ
                 
                 switch modelExt
                     case '.mat'     % matlab
+                        model_var = 'imOut'; %#ok<NASGU>
                         if handles.h.Img{handles.h.Id}.I.hLabels.getLabelsNumber() > 1  % save annotations
                             [labelText, labelPosition] = handles.h.Img{handles.Id}.I.hLabels.getLabels(); %#ok<NASGU,ASGLU>
-                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'labelText', 'labelPosition', '-mat', '-v7.3');
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'model_var', 'labelText', 'labelPosition', '-mat', '-v7.3');
                         else    % save without annotations
-                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', '-mat', '-v7.3');
+                            save(fnModel, 'imOut', 'material_list', 'color_list', 'bounding_box', 'model_var', '-mat', '-v7.3');
                         end
                     case '.am'      % Amira Mesh
                         pixStr = handles.h.Img{handles.h.Id}.I.pixSize;
@@ -436,7 +437,7 @@ for z=1:tilesZ
                         
                         switch optionsModelHDF.Format
                             case 'bdv.hdf5'
-                                optionsModelHDF.pixSize.units = 'µm';
+                                optionsModelHDF.pixSize.units = sprintf('\xB5m');
                                 saveBigDataViewerFormat(optionsModelHDF.filename, imgOut2.img, optionsModelHDF);
                             case 'matlab.hdf5'
                                 [localDir, localFn] = fileparts(optionsModelHDF.filename);

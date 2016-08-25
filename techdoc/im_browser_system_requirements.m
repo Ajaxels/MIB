@@ -89,9 +89,14 @@
 %% Fiji: volume rendering and connection
 % Microscopy Image Browser can use Fiji 3D Viewer plugin for visualization
 % of volumes and models. In addition, there is a <ug_panel_fiji_connect.html Fiji Connect panel> that allows interaction between |im_browser| and Fiji.
+%
+% *!!! Warning !!!*
+%
+% It seems that Fiji 3D viewer is not compatible with Matlab on MacOS, please do not change write permission for the |sys\java\jre\win64\jre\lib\ext| on the MacOS
+%
 % Below are the datails of the installation process.
 %
-% * Download Fiji from <http://fiji.sc/wiki/index.php/Downloads here>
+% * Download Fiji, *Please use the Fiji Life-Line version, 2015 December 22*  <http://fiji.sc/wiki/index.php/Downloads [link]>
 % * Unzip and start Fiji  (fiji-win32.exe or fiji-win64.exe) 
 % * Update Fiji: Fiji->Menu->Help->Update Fiji  (it may be required to repeat this step one more time after restart of Fiji)
 % * In the Fiji folder should appear a folder |scripts| with the |Miji.m| file

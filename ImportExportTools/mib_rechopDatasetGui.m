@@ -30,7 +30,7 @@ function varargout = mib_rechopDatasetGui(varargin)
 % Updates
 %
 
-% Last Modified by GUIDE v2.5 18-May-2015 08:19:48
+% Last Modified by GUIDE v2.5 19-Aug-2016 09:32:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -66,7 +66,7 @@ handles.h = varargin{1};    % handles of im_browser
 % check for the existing dataset
 
 if ismac()
-    eval(sprintf('bgColor = get(handles.h.bufferToggle%d,''ForeroundColor'');', handles.h.Id));     % get color
+    eval(sprintf('bgColor = get(handles.h.bufferToggle%d,''ForegroundColor'');', handles.h.Id));     % get color
 else
     eval(sprintf('bgColor = get(handles.h.bufferToggle%d,''BackgroundColor'');', handles.h.Id));     % get color
 end
@@ -593,9 +593,13 @@ else                                % fuse to existing
                 return;
             end
             
-            x2 = x1+size(R.imOut,2)-1;
-            y2 = y1+size(R.imOut,1)-1;
-            z2 = z1+size(R.imOut,3)-1;
+            if ~isfield(R, 'model_var')
+                R.model_var = 'imOut';
+            end
+            
+            x2 = x1+size(R.(R.model_var),2)-1;
+            y2 = y1+size(R.(R.model_var),1)-1;
+            z2 = z1+size(R.(R.model_var),3)-1;
             
             if x2 > handles.h.Img{handles.h.Id}.I.width || y2 > handles.h.Img{handles.h.Id}.I.height || z2 > handles.h.Img{handles.h.Id}.I.no_stacks
                 errordlg(sprintf('!!! Error !!!\nWrong maximal coordinate of the  bounding box!\n\nFilename: %s', handles.filenames{fnId}), 'Wrong bounding box!');
@@ -606,7 +610,7 @@ else                                % fuse to existing
             opt.x = [x1 x2];
             opt.y = [y1 y2];
             opt.z = [z1 z2];
-            handles.h.Img{handles.h.Id}.I.setData3D('model', R.imOut, NaN, 4, NaN, opt);
+            handles.h.Img{handles.h.Id}.I.setData3D('model', R.(R.model_var), NaN, 4, NaN, opt);
         end
 
         waitbar(fnId/no_files, wb);
@@ -686,15 +690,17 @@ switch modelExt
 end
 
 % get bounding box
-if isKey(img_info, 'ImageDescription')
-    curr_text = img_info('ImageDescription');             % get current bounding box x1,y1,z1
-    bb_info_exist = strfind(curr_text,'BoundingBox');
-    if bb_info_exist == 1   % use information from the BoundingBox parameter for pixel sizes if it is exist
-        spaces = strfind(curr_text,' ');
-        if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
-        tab_pos = strfind(curr_text,sprintf('|'));
-        pos = min([spaces(7) tab_pos]);
-        R.bounding_box = str2num(curr_text(spaces(1):pos-1)); %#ok<ST2NM>
+if exist('img_info','var')
+    if isKey(img_info, 'ImageDescription')
+        curr_text = img_info('ImageDescription');             % get current bounding box x1,y1,z1
+        bb_info_exist = strfind(curr_text,'BoundingBox');
+        if bb_info_exist == 1   % use information from the BoundingBox parameter for pixel sizes if it is exist
+            spaces = strfind(curr_text,' ');
+            if numel(spaces) < 7; spaces(7) = numel(curr_text); end;
+            tab_pos = strfind(curr_text,sprintf('|'));
+            pos = min([spaces(7) tab_pos]);
+            R.bounding_box = str2num(curr_text(spaces(1):pos-1)); %#ok<ST2NM>
+        end
     end
 end
 

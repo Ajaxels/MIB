@@ -372,6 +372,7 @@ else    % align the currently opened dataset
         end
         % do alignment
         [handles.hMain.Img{handles.hMain.Id}.I.img, handles.shiftsXY] = ib_alignstack(handles.hMain.Img{handles.hMain.Id}.I.img, parameters, handles.shiftsXY);
+        handles.hMain.Img{handles.hMain.Id}.I.clearSelection();
     elseif get(handles.affineCheck, 'value')
         optionsGetData.blockModeSwitch = 0;
         selection = handles.hMain.Img{handles.hMain.Id}.I.getData3D('selection', NaN, 4, NaN, optionsGetData);

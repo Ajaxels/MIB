@@ -13,8 +13,10 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % - voxel.minx - minimal X coordinate of the bounding box
 % - voxel.miny - minimal Y coordinate of the bounding box
 % - voxel.minz - minimal Z coordinate of the bounding box
-% color_list: [@em optional], a matrix with colors for the materials as [materialId][Red, Green, Blue] from 0-1
-% modelMaterialNames: [@em optional], cell array with names of the materials
+% color_list: [@em optional], a matrix with colors for the materials as
+% [materialId][Red, Green, Blue] from 0-1; can be empty
+% modelMaterialNames: [@em optional], cell array with names of the
+% materials, can be empty 
 % overwrite: [@em optional], if @b 1 do not check whether file with provided filename already exists
 % showWaitbar: [@em optional], if @b 1 - show the wait bar, if @b 0 - do not show
 %
@@ -31,6 +33,7 @@ function result = bitmap2amiraLabels(filename, bitmap, format, voxel, color_list
 % Updates
 % ver 1.01 - 10.08.2010 - added voxel size
 % ver 1.02 - 02.09.2011 - added minimal coordinates of the bounding box
+% ver 1.03 - 07.07.2016 - added possibility to have color_list and modelMaterialNames empty
 
 result = 0;
 %warning('off','MATLAB:gui:latexsup:UnableToInterpretTeXString');    % switch off warnings for latex
@@ -44,24 +47,12 @@ end
 if nargin < 8   % add waitbar switch
     showWaitbar = 1;
 end
-if nargin < 7   % generate color_list
+if nargin < 7   % automatically overwrite files
     overwrite = 0;
 end
-if nargin < 6   % generate color_list
-    maxColor = max(max(max(bitmap)));
-    for color=1:maxColor
-        modelMaterialNames(color) = cellstr(num2str(color));
-    end
-end
-if nargin < 5   % generate color_list
-    maxColor = max(max(max(bitmap)));
-    if maxColor == 1
-        color_list = squeeze(label2rgb(1:maxColor))';
-    else
-        color_list = squeeze(label2rgb(1:maxColor));    
-    end
-    color_list = color_list/255;
-end
+if nargin < 6;   modelMaterialNames = []; end;   
+if nargin < 5;   color_list = []; end;
+
 if nargin < 4   % generate color_list
     voxel.x = 1;
     voxel.y = 1;
@@ -70,8 +61,23 @@ if nargin < 4   % generate color_list
     voxel.miny = 0;
     voxel.minz = 0;
 end
-if nargin < 3
-    format = 'binary';
+if nargin < 3; format = 'binary'; end;
+
+if isempty(color_list)      % generate color_list
+    maxColor = max(max(max(bitmap)));
+    if maxColor == 1
+        color_list = squeeze(label2rgb(1:maxColor))';
+    else
+        color_list = squeeze(label2rgb(1:maxColor));    
+    end
+    color_list = color_list/255;
+end
+
+if isempty(modelMaterialNames)  % generate material names
+    maxColor = max(max(max(bitmap)));
+    for color=1:maxColor
+        modelMaterialNames(color) = cellstr(num2str(color));
+    end
 end
 
 if max(max(color_list)) > 1     % normalize to 0-1 range

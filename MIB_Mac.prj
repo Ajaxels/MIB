@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="986324092" file="/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac.prj" location="/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b" name="MIB_Mac" preferred-package-location="/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="MATLAB Compiler for Standalone Applications">
+  <configuration build-checksum="2349470540" file="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac.prj" location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a" name="MIB_Mac" preferred-package-location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB_Mac</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,56 +8,90 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>1.0</param.version>
+    <param.version>1.22</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
-    <param.summary>Microscopy Image Browser (MIB) is a high-performance software package for advanced image processing, segmentation and visualization of multi</param.summary>
-    <param.description>Understanding the structure - function relationship of cells and cell organelles in their natural context requires multidimensional imaging. Advances in multimodal 3D imaging techniques have enabled a new insight into the morphology of tissues, cells and cell organelles that has not been conceivable before. As the access to such techniques is getting easier, effective processing, visualization, and analysis of a wide variety large datasets are posing a bottleneck for the research. 
+    <param.summary>Microscopy Image Browser (MIB) is a software package for image processing, segmentation and visualization of multidimensional datasets</param.summary>
+    <param.description>You are going to install MIB that has been compiled to stand-alone executables (exe-files).
+If you have not previously installed the MATLAB Compiler Runtime (MCR) it will be automatically downloaded and installed during the installation.
 
-MIB is a freely available, user-friendly software for effective image processing of multidimensional datasets that improves and facilitates the full utilization of acquired data and enables quantitative analysis of morphological features. Its open-source environment enables fine tuning and possibility of adding new plug-ins to customize the program for specific needs of any research project.</param.description>
+Microscopy Image Browser (MIB) a handy tool for image management
+Copyright (c) 2010-2016
+Ilya Belevich, Merja Joensuu, Darshan Kumar, Helena Vihinen and Eija Jokitalo
+http://mib.helsinki.fi
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+GNU GENERAL PUBLIC LICENSE
+Version 2, June 1991
+
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.</param.description>
     <param.screenshot>${PROJECT_ROOT}/Resources/mib_about.jpg</param.screenshot>
     <param.guid />
-    <param.installpath.string>im_browser</param.installpath.string>
+    <param.installpath.string>MIB</param.installpath.string>
     <param.installpath.combo>option.installpath.systemwideapp</param.installpath.combo>
-    <param.logo>${PROJECT_ROOT}/Resources/mib_about.jpg</param.logo>
-    <param.install.notes />
+    <param.logo>${PROJECT_ROOT}/Resources/im_browser_splash_short.jpg</param.logo>
+    <param.install.notes>In the following directions, replace MCR_ROOT by the directory where the MATLAB Runtime is installed on the target machine.
+
+If the environment variable DYLD_LIBRARY_PATH is undefined, set it to the concatenation of the following strings:
+
+    MCR_ROOT/v901/runtime/maci64:
+    MCR_ROOT/v901/sys/os/maci64:
+    MCR_ROOT/v901/bin/maci64
+
+If it is defined, set it to the concatenation of these strings:
+
+    ${LD_LIBRARY_PATH}: 
+    MCR_ROOT/v901/runtime/maci64:
+    MCR_ROOT/v901/sys/os/maci64:
+    MCR_ROOT/v901/bin/maci64</param.install.notes>
+    <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}/MIB_Mac/for_testing</param.intermediate>
     <param.files.only>${PROJECT_ROOT}/MIB_Mac/for_redistribution_files_only</param.files.only>
     <param.output>${PROJECT_ROOT}/MIB_Mac/for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}/MIB_Mac</param.logdir>
     <param.enable.clean.build>false</param.enable.clean.build>
     <param.user.defined.mcr.options />
     <param.embed.ctf>true</param.embed.ctf>
-    <param.server.ctf>${PROJECT_ROOT}/MIB_Mac/for_testing/.ctf</param.server.ctf>
-    <param.server.readme>${PROJECT_ROOT}/MIB_Mac/for_testing/readme.txt</param.server.readme>
     <param.target.type>subtarget.standalone</param.target.type>
     <param.support.packages />
-    <param.required.mcr.products>
-      <item>35000</item>
-      <item>35001</item>
-    </param.required.mcr.products>
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>MIB_web</param.web.mcr.name>
+    <param.web.mcr.name>MIB_Mac_Installer</param.web.mcr.name>
     <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
-    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
     <param.create.log>false</param.create.log>
     <param.log.file />
     <unset>
-      <param.version />
       <param.guid />
       <param.installpath.combo />
-      <param.install.notes />
+      <param.target.install.notes />
       <param.intermediate />
       <param.files.only />
       <param.output />
+      <param.logdir />
       <param.enable.clean.build />
       <param.user.defined.mcr.options />
       <param.embed.ctf />
-      <param.server.ctf />
-      <param.server.readme />
       <param.target.type />
       <param.support.packages />
       <param.web.mcr />
@@ -73,9 +107,32 @@ MIB is a freely available, user-friendly software for effective image processing
       <file>${PROJECT_ROOT}/im_browser_deploy.m</file>
     </fileset.main>
     <fileset.resources>
+      <file>${PROJECT_ROOT}/Classes</file>
+      <file>${PROJECT_ROOT}/GuiTools</file>
+      <file>${PROJECT_ROOT}/ImageFilters</file>
+      <file>${PROJECT_ROOT}/ImportExportTools</file>
+      <file>${PROJECT_ROOT}/Misc_func</file>
+      <file>${PROJECT_ROOT}/Plugins</file>
+      <file>${PROJECT_ROOT}/Resources</file>
+      <file>${PROJECT_ROOT}/Tools</file>
+      <file>${PROJECT_ROOT}/im_browser.fig</file>
+      <file>${PROJECT_ROOT}/im_browser.m</file>
+      <file>${PROJECT_ROOT}/im_browser_deploy.m</file>
+      <file>${PROJECT_ROOT}/im_browser_getDefaultParameters.m</file>
+      <file>${PROJECT_ROOT}/license.txt</file>
+      <file>${PROJECT_ROOT}/techdoc</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}/Plugins</file>
+      <file>${PROJECT_ROOT}/Resources</file>
+      <file>${PROJECT_ROOT}/license.txt</file>
+      <file>${PROJECT_ROOT}/techdoc</file>
+    </fileset.package>
+    <fileset.depfun>
       <file>/Applications/Fiji.app/scripts/InstallJava3D.m</file>
       <file>/Applications/Fiji.app/scripts/IsJava3DInstalled.m</file>
       <file>/Applications/Fiji.app/scripts/Miji.m</file>
+      <file>${MATLAB_ROOT}/toolbox/local/userpath.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/connectOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/findOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/getOmeroJars.m</file>
@@ -83,963 +140,20 @@ MIB is a freely available, user-friendly software for effective image processing
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/loadOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/omeroVersion.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/unloadOmero.m</file>
-      <file>${PROJECT_ROOT}/Classes/@Labels/Labels.m</file>
-      <file>${PROJECT_ROOT}/Classes/@Measure/Measure.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/addColorChannel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/clearContents.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/clearMask.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/clearSelection.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/convertDataToMouseCoordinates.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/convertImage.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/convertModel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/convertMouseToDataCoordinates.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/copyColorChannel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/createModel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/cropDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/deleteColorChannel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/deleteSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/generateModelColors.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getBoundingBox.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getCoordinatesOfShownImage.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getCurrentSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getCurrentSliceNumber.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getData3D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getData4D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getData5D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getDatasetDimensions.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getDatasetSizeInBytes.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getFullSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getMaterialNames.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getRGBimage.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getRoiCrop.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getRoiCropSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/getSliceToShow.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/im_browser_dummy.jpg</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/imageData.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/insertSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/invertColorChannel.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/mark2selection.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveMaskToSelectionDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveModelToMaskDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveModelToSelectionDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveSelectionToMaskDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveSelectionToModelDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/moveView.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/plotImage.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/replaceDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/replaceImageColor.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/resizeImage.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setCurrentSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setData3D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setData4D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setData5D.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setDataset.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setFullSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setMaterialNames.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setRoiCrop.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setRoiCropSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setSlice.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/setSliceToShow.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/swapColorChannels.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/transpose.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/updateAxesLimits.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/updateBoundingBox.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/updateDisplayParameters.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/updateImgInfo.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageData/updateParameters.m</file>
-      <file>${PROJECT_ROOT}/Classes/@imageUndo/imageUndo.m</file>
-      <file>${PROJECT_ROOT}/Classes/@roiRegion/roiRegion.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/backgroundRemovalGUI_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/backgroundStrelSmoothingChk_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/brushSuperpixelsCheck.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/bufferToggles_cb.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/changelayerEdit_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/changelayerSlider_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/channelMixerTable_CellSelectionCallback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/createModelBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/editbox_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/filesListboxContext_cb.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/getClickPoint.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_aboutDlg.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_aboutDlg.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_addIcons.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_channelMixerTable_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_checkUpdate.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_checkUpdate.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_cropGui.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_cropGui.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_datasetInfoGui.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_datasetInfoGui.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_do_backup.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_do_undo.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_getDataset.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_getSlice.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_labelsGui.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_labelsGui.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_moveLayers.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_resampleGui.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_resampleGui.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_setDataset.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_setSlice.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_updateCursor.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/ib_updateFontSize.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imAdjustBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imAdjustments.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/imAdjustments.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_CloseRequestFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_ResizeFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowBrushMotionFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowButtonDownFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowButtonUpFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowKeyPressFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowKeyPressFcn_BrushSuperpixel.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_WindowKeyReleaseFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_brush_scrollWheelFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_filesListbox_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_panAxesFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_scrollWheelFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/im_browser_winMouseMotionFcn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imageFilterDoitBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imageFilterPopup_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imfiltPar1Edit_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/imfiltPar2Edit_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/loadModelBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/localNormSigmaSlider_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/logList.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/logList.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/magicwandMethodPopup_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/maskShowCheck_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetAlignDatasets.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetBoundingBox.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetCrop.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetResample.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetSlice.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuDatasetTransform.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileChoppedImage.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileExportImage.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileImportImage.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileMakeMovie.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileOmeroImport.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFilePreferences.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileSaveImageAs.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuFileSnapshot.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageColorCh.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageContrast.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageConvert.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageIntensity.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageMode.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageProfileArbitrary_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuImageProfileLine_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuMaskImport.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuMaskInvert.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuMaskLoad.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuMaskSaveAs.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuModelFillMembrane.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuModelsExport.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuModelsImport.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuModelsSaveAs.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuSelectionBuffer.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuSelectionBufferCopy_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuSelectionInterpolate.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuSelectionInvert.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuSelectionToMaskBorder.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/menuToolsMeasure.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_BoundingBoxDlg.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_BoundingBoxDlg.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_contrastContext_cb.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_inputdlg.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_inputdlg.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_measureTool.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_measureTool.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/mib_rescaleWidgets.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/modelShowCheck_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/model_cm_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/pixInfo_cb.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/preferencesDlg.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/preferencesDlg.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/redrawChannelMixerTable.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/removeMaterialBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiAddBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiList_cm_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiLoadBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiRemoveBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiSaveBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiShowCheck_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/roiTypePopup_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/saveModelToolbar_ClickedCallback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/scrollbarClick_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/segmBW_Update.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/segmSelectedOnlyCheck_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/selectionClearBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/selectionDilateBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/selectionErBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/selectionFillBtn_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/seltypePopup_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/smoothImage_Callback.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/toolbarInterpolation.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/toolbarPlaneToggle.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/toolbar_zoomBtn.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/unFocus.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/updateGuiWidgets.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/updateMIB.fig</file>
-      <file>${PROJECT_ROOT}/GuiTools/updateMIB.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/updateSegmentationLists.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/update_drives.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/update_filelist.m</file>
-      <file>${PROJECT_ROOT}/GuiTools/zoomEdit_Callback.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/CoherenceFilter.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/anDiffOptionsDlg.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/anDiffOptionsDlg.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/anDiffOptionsDlg_parameters.mat</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/compile_c_files.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/clmp.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/derivatives.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/derivatives.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/derivatives.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/derivatives.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/derivatives.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.id0</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.id1</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.nam</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/imgaussian.til</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/showcs3.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions/showcs3.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/CoherenceFilterStep2D_functions.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/ConstructDiffusionTensor2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/EigenVectors2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/StructureTensor2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/diffusion_scheme_2D_implicit.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/diffusion_scheme_2D_non_negativity.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/diffusion_scheme_2D_novel.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/diffusion_scheme_2D_rotation_invariant.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/diffusion_scheme_2D_standard.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/hessian.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions2D/ut_gauss.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/CoherenceFilterStep3D_functions.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenDecomposition3.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenDecomposition3.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenVectors3D.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenVectors3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenVectors3D.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenVectors3D.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/EigenVectors3D.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor2DiffusionTensor3D.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor2DiffusionTensor3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor2DiffusionTensor3D.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor2DiffusionTensor3D.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor2DiffusionTensor3D.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/StructureTensor3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_implicit.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_non_negativity.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_non_negativity.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_non_negativity.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_non_negativity.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_non_negativity.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_novel.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_novel_getUpdate.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_novel_getUpdate.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_novel_getUpdate.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_novel_getUpdate.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_rotation_invariant.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_rotation_invariant.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_rotation_invariant.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_rotation_invariant.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_rotation_invariant.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_standard.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_standard.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_standard.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_standard.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/functions3D/diffusion_scheme_3D_standard.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/license.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/error_diffusion_scheme_2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/error_diffusion_scheme_3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/fitgaussian.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/fminlbfgs.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/optimize_scheme_2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Coherence_filter/optimization/optimize_scheme_3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/compile_c_files.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/common.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm2d.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm2d.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm2d.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm2d.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm2d.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm3d.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm3d.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm3d.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm3d.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/msfm3d.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/functions/pointmin.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/license.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/msfm.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/e1.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/rk4.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/rk4.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/rk4.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/rk4.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/rk4.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/shortestpath/s1.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/FastMarching/skeleton.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/FrangiFilter2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/FrangiFilter3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/Hessian2D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/Hessian3D.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig2image.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig3volume.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig3volume.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig3volume.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig3volume.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/eig3volume.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/frangi_license.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/imgaussian.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/imgaussian.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/imgaussian.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/imgaussian.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Frangi/imgaussian.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ManGridBW.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ManGridBW.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/MembraneDetection_README.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/centeredRotate.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/filterImageWithMembraneTemplateRotated.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/filterSmallRegions.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/gradientImg.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/imsmooth.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/makeColorOverlay.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/meanvar.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/meanvar.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/meanvar.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/meanvar.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/membraneFeatures.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/norm01.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/normxcorr2_mex.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/script_for_grayscale_distribution.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/shiftDown.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/shiftLeft.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/shiftRight.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/shiftUp.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/skeletonize.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/skript_applyClassifier_to_all_images.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/skript_extractMembraneFeatures_for_allImages.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/skript_trainClassifier_for_membraneDetection.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/structureTensorImage2.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/transformImageFast.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/transformImageFast.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/transformImageFast.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/transformImageFast.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/MembraneDetection/uint8Img.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/Compile_Check</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/Makefile</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/Makefile.windows</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/README.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/Version_History.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/classRF_predict.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/classRF_train.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/compile_linux.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/compile_windows.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/mexClassRF_predict.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/mexClassRF_predict.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/mexClassRF_train.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/mexClassRF_train.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/precompiled_rfsub/win32/rfsub.o</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/precompiled_rfsub/win64/rfsub.o</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/rfsub.o</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/classRF.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/classTree.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/cokus.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/cokus_test.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/mex_ClassificationRF_predict.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/mex_ClassificationRF_train.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/qsort.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/rf.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/rfsub.f</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/rfutils.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/src/twonorm_C_wrapper.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/test_ClassRF_extensively.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/tutorial_ClassRF.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Class_C/twonorm_C_devcpp.dev</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/Compile_Check_kcachegrind</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/Compile_Check_memcheck</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/Makefile</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/README.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/Version_History.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/compile_linux.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/compile_windows.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/diabetes_C_devc.dev</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/mexRF_predict.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/mexRF_predict.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/mexRF_train.mexw32</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/mexRF_train.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/regRF_predict.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/regRF_train.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/cokus.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/cokus_test.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/diabetes_C_wrapper.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/mex_regressionRF_predict.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/mex_regressionRF_train.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/qsort.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/reg_RF.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/src/reg_RF.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/test_RegRF_extensively.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/RF_Reg_C/tutorial_RegRF.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/ib_MembraneDetection.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/ib_MembraneDetection.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/mib_Classifier.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/RandomForest/mib_Classifier.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/compile_c_files.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/drawregionboundaries.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maskimage.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/CHANGES.TXT</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/README.TXT</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list/block.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list/graph.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list/graph.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list/maxflow.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/README.TXT</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/block.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/graph.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/graph.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/instances.inc</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/adjacency_list_new_interface/maxflow.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/forward_star/block.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/forward_star/graph.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/forward_star/graph.h</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow-v2.22/forward_star/maxflow.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow_license.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflow_v222.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflowmex_v222.cpp</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflowmex_v222.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/maxflowmex_v222.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicmex.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicmex.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicmex.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicmex_license.txt</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicsupervoxelmex.c</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicsupervoxelmex.mexmaci64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/Supervoxels/slicsupervoxelmex.mexw64</file>
-      <file>${PROJECT_ROOT}/ImageFilters/anisodiff.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/do_andiff_filtering.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/do_diplib_andiff_filtering.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/getFrangiMask.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/getMorphMask.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/getStrelMask.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/get_black_white_filter.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_MorphOpsGui.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_MorphOpsGui.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_anisotropicDiffusion.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_autoBrightness.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_contrastCLAHE.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_contrastNormalizationMemoryOptimized.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_dilateSelection.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_doImageFiltering.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_erodeSelection.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_fillMembranes.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_imageMorphOpsGui.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_imageMorphOpsGui.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_linearContrast.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_removeBackground.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_smoothImage.m</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_watershedGui.fig</file>
-      <file>${PROJECT_ROOT}/ImageFilters/ib_watershedGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfCheckJavaMemory.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfCheckJavaPath.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfGetFileExtensions.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfGetPlane.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfGetReader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfOpen3DVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfUpgradeCheck.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfopen.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfopen3.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bfsave.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/bioformats_package.jar</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/createMinimalOMEXMLMetadata.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/loci_tools.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/selectLociSeries.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/BioFormats/selectLociSeries.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/Miji_deploy.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/Miji_wrapper.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/fijitest.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_exportToFiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_fijiSelectDataset.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_fijiSelectDataset.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_importFromFiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_renderModelFiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_renderVolumeWithFiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_runFijiMacro.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_startMiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/ib_stopMiji.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Fiji/license.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/.gitignore</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/IceImarisConnector.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/autocast.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/closeImaris.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/createAndSetSpots.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/createDataset.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/display.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/findImaris.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getAllSurpassChildren.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getDataSubVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getDataSubVolumeRM.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getDataVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getDataVolumeRM.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getExtends.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getImarisVersionAsInteger.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getMatlabDatatype.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getSizes.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getSurpassCameraRotationMatrix.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getSurpassSelection.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/getVoxelSizes.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/indexingStart.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/info.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/isAlive.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/isOfType.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/isSupportedPlatform.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mapPositionsUnitsToVoxels.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mapPositionsVoxelsToUnits.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mapRgbaScalarToVector.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mapRgbaVectorToScalar.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mib_setDataSubVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/mib_setDataSubVolumeRM.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/setDataVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/setDataVolumeRM.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/startImaris.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/startImarisServer.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/@IceImarisConnector/version.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/IceImarisConnector_AUTHOR</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/IceImarisConnector_License_gpl-2.0.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/IceImarisConnector_README.md</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/IceImarisConnector_README.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/IceImarisConnector_VERSION</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/SurfacesFromSegmentationImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/ib_getImarisDataset.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/ib_getImarisDataset_standard_connection.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/ib_renderModelImaris.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/ib_setImarisDataset.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Imaris/imaris_send_data_test.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodChunk/ImodChunk.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodChunk/freadChunk.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodChunk/private/genImodChunkStruct.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/ImodContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/freadContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/getPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/getSurfaceIdx.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/private/genImodContourStruct.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/setPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/setSurfaceIdx.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodContour/write.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodMesh/ImodMesh.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodMesh/freadMesh.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodMesh/private/genImodMeshStruct.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/ImodModel.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/appendObject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/close.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/draw.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/findRange.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getDefaultColor.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getIsFlipped.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getMax.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getNObjects.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getObject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getObjectType.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getPixelSize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getXScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getYScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/getZScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/open.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/private/genImodModelStruct.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/private/openWritable.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/private/readHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/private/writeHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setFilename.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setMax.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setObject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setObjectType.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setPixelSize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setXScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setYScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/setZScale.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/showHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/sortPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodModel/write.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/ImodObject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/appendContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/freadObject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/freadObjectMat.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getColor.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getDrawSize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getNContours.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getPoints.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/getType.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/private/genImodObjectStruct.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/private/writeHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/setColor.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/setContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/setDrawSize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/setType.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/showHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@ImodObject/write.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/MRCImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/addLabel.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/addSphere.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/backProject.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/close.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/display.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getCellX.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getCellY.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getCellZ.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getDimensions.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getFID.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getFilename.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getForceWriteByteMode.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getMinAndMaxDensity.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getModeString.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNX.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNXStart.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNY.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNYStart.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNZ.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getNZStart.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getSlice.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getStatistics.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/getVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/isVolumeLoaded.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/loadVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/normalize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/open.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/default.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/defaultIMODStamp.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/emptyVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/getFileNBytes.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/getModeBytes.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/getReadBytesAsSigned.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/getWriteBytesAsSigned.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/openWritable.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/readHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/setStatisticsFromVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/setVolumeAndHeaderFromVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/private/writeHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/putImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/save.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setFilename.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setForceWriteByteMode.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setNZ.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setPixelSize.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setSubvolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/setVolume.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/showHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/writeEM.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/writeVTK.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/@MRCImage/zero.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Docs/IMOD_Matlab_-_Indexing_and_Coordinate_Mapping.html</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Docs/MatTomo Users Guide.html</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Docs/TODO.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Makefile</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Utils/em2mrc.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Utils/writeAndCheck.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/cntShow.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/fitImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/showMRCContour.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/showMRCImage.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/showMovie.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/stackGallery.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/MatTomo/Visualization/volShow.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/ib_importOmero.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/ib_importOmero.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/ib_omeroLoginDlg.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/ib_omeroLoginDlg.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/loadOmero_deploy.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/Omero/loadOmero_wrapper.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/amiraLabels2bitmap.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/amiraMesh2bitmap.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/bitmap2amiraLabels.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/bitmap2amiraMesh.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/exportModelToImodModel.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/.ignore/gs_font_path.txt</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/ImageSelection.class</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/ImageSelection.java</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/LICENSE</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/README.md</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/crop_borders.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/export_fig.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/export_fig/print2array.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/getAmiraMeshHeader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/getImageMetadata.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/getMRCfile.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/getMRCheader.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_amiraImportGui.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_amiraImportGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_getImages.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_image2jpg.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_image2mrc.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_image2png.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_image2tiff.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_imwrite.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_loadImages.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_saveVideoGui.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_saveVideoGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_snapshotGui.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/ib_snapshotGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/image2hdf5.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/mib_chopDatasetGui.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/mib_chopDatasetGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/mib_rechopDatasetGui.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/mib_rechopDatasetGui.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/air.dll</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/biff.dll</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/bitmap2nrrd.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/compilethis.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/get_nrrd_metadata.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/ib_image2nrrd.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrd.dll</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdLoadWithMetadata.c</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdLoadWithMetadata.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdLoadWithMetadata.mexglx</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdLoadWithMetadata.mexw32</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdLoadWithMetadata.mexw64</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdSaveWithMetadata.c</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdSaveWithMetadata.m</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdSaveWithMetadata.mexglx</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdSaveWithMetadata.mexw32</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/nrrdSaveWithMetadata.mexw64</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/teem.dll</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/nrrd/vtkpng.dll</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/selectHDFSeries.fig</file>
-      <file>${PROJECT_ROOT}/ImportExportTools/selectHDFSeries.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/DejaVuSansMono.png</file>
-      <file>${PROJECT_ROOT}/Misc_func/DejaVuSansMono.psd</file>
-      <file>${PROJECT_ROOT}/Misc_func/bwdistsc.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/bwdistsc1.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/bwdistsc_license.txt</file>
-      <file>${PROJECT_ROOT}/Misc_func/chars.bmp</file>
-      <file>${PROJECT_ROOT}/Misc_func/correlationAnalysis_script.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/extrema.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/extrema2.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/findjobj.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/findjobj_license.txt</file>
-      <file>${PROJECT_ROOT}/Misc_func/imclipboard/ImageSelection.class</file>
-      <file>${PROJECT_ROOT}/Misc_func/imclipboard/ImageSelection.java</file>
-      <file>${PROJECT_ROOT}/Misc_func/imclipboard/imclipboard.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/imclipboard/license.txt</file>
-      <file>${PROJECT_ROOT}/Misc_func/numbers.png</file>
-      <file>${PROJECT_ROOT}/Misc_func/numbers2.png</file>
-      <file>${PROJECT_ROOT}/Misc_func/removeDotsFromFilePath.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/rendertext.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/rendertext_license.txt</file>
-      <file>${PROJECT_ROOT}/Misc_func/view3d.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/view3d_license.txt</file>
-      <file>${PROJECT_ROOT}/Misc_func/xlswrite2.m</file>
-      <file>${PROJECT_ROOT}/Misc_func/xlswrite2_license.txt</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/generateStereologyGrid/generateStereologyGrid.m</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/01_open_dataset.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/02_set_parameters.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/03_segment_mask.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/04_define_roi.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/05_workflow.cdr</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/05_workflow.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/06_results.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/Backup_of_05_workflow.cdr</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/ib_TubesVsSheets.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/html/ib_TubesVsSheets_help.html</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/ib_TubesVsSheets_help.m</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/ib_tubesVsSheets.fig</file>
-      <file>${PROJECT_ROOT}/Plugins/Demos/ib_tubesVsSheets/ib_tubesVsSheets.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/NucleusVsCytoplasm.fig</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/NucleusVsCytoplasm.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/NucleusVsCytoplasm_help.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/NucleusVsCytoplasmSnapshot.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/NucleusVsCytoplasm_help.html</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/Step_03.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/Step_04.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/Step_05.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/Step_07.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/Step_10.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/NucleusVsCytoplasm/html/histogram.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/TripleAreaIntensity.fig</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/TripleAreaIntensity.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/TripleAreaIntensity_help.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/TripleAreaIntensity_main.m</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/ExcelResults.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_01.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_03.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_05.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_07.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_09.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_16.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/Step_17.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/TripleAreaIntensitySnapshot.jpg</file>
-      <file>${PROJECT_ROOT}/Plugins/IntensityAnalysis/TripleAreaIntensity/html/TripleAreaIntensity_help.html</file>
-      <file>${PROJECT_ROOT}/Plugins/Tutorials/guiTutorial/guiTutorial.fig</file>
-      <file>${PROJECT_ROOT}/Plugins/Tutorials/guiTutorial/guiTutorial.m</file>
-      <file>${PROJECT_ROOT}/Plugins/Tutorials/otsuThresholding/otsuThresholding.m</file>
-      <file>${PROJECT_ROOT}/Resources/DejaVuSansMono.png</file>
-      <file>${PROJECT_ROOT}/Resources/about.png</file>
-      <file>${PROJECT_ROOT}/Resources/align.png</file>
-      <file>${PROJECT_ROOT}/Resources/bothat.png</file>
-      <file>${PROJECT_ROOT}/Resources/boundingbox.png</file>
-      <file>${PROJECT_ROOT}/Resources/buffer.png</file>
-      <file>${PROJECT_ROOT}/Resources/changemode.png</file>
-      <file>${PROJECT_ROOT}/Resources/chop.png</file>
-      <file>${PROJECT_ROOT}/Resources/classhelp.png</file>
-      <file>${PROJECT_ROOT}/Resources/clear.png</file>
-      <file>${PROJECT_ROOT}/Resources/colorchannels.png</file>
-      <file>${PROJECT_ROOT}/Resources/contrast.png</file>
-      <file>${PROJECT_ROOT}/Resources/copylayers.png</file>
-      <file>${PROJECT_ROOT}/Resources/copyright.png</file>
-      <file>${PROJECT_ROOT}/Resources/crop.png</file>
-      <file>${PROJECT_ROOT}/Resources/curvemeasure.png</file>
-      <file>${PROJECT_ROOT}/Resources/edit-redo-2.png</file>
-      <file>${PROJECT_ROOT}/Resources/expand.png</file>
-      <file>${PROJECT_ROOT}/Resources/exportmatlab.png</file>
-      <file>${PROJECT_ROOT}/Resources/exportmatlab2.png</file>
-      <file>${PROJECT_ROOT}/Resources/fill.png</file>
-      <file>${PROJECT_ROOT}/Resources/filter.png</file>
-      <file>${PROJECT_ROOT}/Resources/help.png</file>
-      <file>${PROJECT_ROOT}/Resources/histogram.png</file>
-      <file>${PROJECT_ROOT}/Resources/im_browser_release_notes_doxygen.m</file>
-      <file>${PROJECT_ROOT}/Resources/im_browser_release_notes_doxygen_beta.m</file>
-      <file>${PROJECT_ROOT}/Resources/imbothat.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imclearborder.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imclose.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imdilate.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imerode.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imfill.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imhmax.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imhmin.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/imopen.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/importmatlab.png</file>
-      <file>${PROJECT_ROOT}/Resources/importmatlab2.png</file>
-      <file>${PROJECT_ROOT}/Resources/imtophat.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/intensity.png</file>
-      <file>${PROJECT_ROOT}/Resources/interpolation.png</file>
-      <file>${PROJECT_ROOT}/Resources/invert.png</file>
-      <file>${PROJECT_ROOT}/Resources/line_interpolation.res</file>
-      <file>${PROJECT_ROOT}/Resources/linemeasure.png</file>
-      <file>${PROJECT_ROOT}/Resources/load.png</file>
-      <file>${PROJECT_ROOT}/Resources/makevideo.png</file>
-      <file>${PROJECT_ROOT}/Resources/matlab16.png</file>
-      <file>${PROJECT_ROOT}/Resources/mib_about.jpg</file>
-      <file>${PROJECT_ROOT}/Resources/mib_quest.gif</file>
-      <file>${PROJECT_ROOT}/Resources/mib_update_wide.gif</file>
-      <file>${PROJECT_ROOT}/Resources/morph.png</file>
-      <file>${PROJECT_ROOT}/Resources/new.png</file>
-      <file>${PROJECT_ROOT}/Resources/notes.png</file>
-      <file>${PROJECT_ROOT}/Resources/numbers.png</file>
-      <file>${PROJECT_ROOT}/Resources/omero.png</file>
-      <file>${PROJECT_ROOT}/Resources/parameters.png</file>
-      <file>${PROJECT_ROOT}/Resources/plugins.png</file>
-      <file>${PROJECT_ROOT}/Resources/preferences.png</file>
-      <file>${PROJECT_ROOT}/Resources/randomforest.png</file>
-      <file>${PROJECT_ROOT}/Resources/render.png</file>
-      <file>${PROJECT_ROOT}/Resources/replacecolor.png</file>
-      <file>${PROJECT_ROOT}/Resources/resample.png</file>
-      <file>${PROJECT_ROOT}/Resources/save.png</file>
-      <file>${PROJECT_ROOT}/Resources/saveas.png</file>
-      <file>${PROJECT_ROOT}/Resources/shape_interpolation.png</file>
-      <file>${PROJECT_ROOT}/Resources/shape_interpolation.res</file>
-      <file>${PROJECT_ROOT}/Resources/slice.png</file>
-      <file>${PROJECT_ROOT}/Resources/smooth.png</file>
-      <file>${PROJECT_ROOT}/Resources/snapshot.png</file>
-      <file>${PROJECT_ROOT}/Resources/splash</file>
-      <file>${PROJECT_ROOT}/Resources/statistics.png</file>
-      <file>${PROJECT_ROOT}/Resources/tophat.png</file>
-      <file>${PROJECT_ROOT}/Resources/transform.png</file>
-      <file>${PROJECT_ROOT}/Resources/update.png</file>
-      <file>${PROJECT_ROOT}/Resources/watershed.png</file>
-      <file>${PROJECT_ROOT}/Tools/Align/alignDatasetsDlg.fig</file>
-      <file>${PROJECT_ROOT}/Tools/Align/alignDatasetsDlg.m</file>
-      <file>${PROJECT_ROOT}/Tools/Align/ib_alignstack.m</file>
-      <file>${PROJECT_ROOT}/Tools/Align/ib_alignstacks.m</file>
-      <file>${PROJECT_ROOT}/Tools/Align/template_matching.m</file>
-      <file>${PROJECT_ROOT}/Tools/Align/template_matching_license.txt</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/MaskStatsDlg.fig</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/MaskStatsDlg.m</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/cropObjectsDlg.fig</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/cropObjectsDlg.m</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/ib_calcCurveLength.m</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/mib_MaskStatsProps.fig</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/mib_MaskStatsProps.m</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/regionprops3.m</file>
-      <file>${PROJECT_ROOT}/Tools/AreaAnalysis/regionprops_license.txt</file>
-      <file>${PROJECT_ROOT}/Tools/RegionGrowing/RegionGrowing_mex.cpp</file>
-      <file>${PROJECT_ROOT}/Tools/RegionGrowing/RegionGrowing_mex.mexmaci64</file>
-      <file>${PROJECT_ROOT}/Tools/RegionGrowing/RegionGrowing_mex.mexw64</file>
-      <file>${PROJECT_ROOT}/Tools/RegionGrowing/license.txt</file>
-      <file>${PROJECT_ROOT}/Tools/RegionGrowing/regiongrowing.m</file>
-      <file>${PROJECT_ROOT}/Tools/calc_correlation.m</file>
-      <file>${PROJECT_ROOT}/Tools/generate_grid_block_size.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_addText2Img.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_calcCorrelation.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_calculatePixSizes.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_calculateResolution.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_connectPoints.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_connect_points.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_flipDataset.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_interpolateLines.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_interpolateShapes.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_invertImage.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_maskGenerator.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_renderModel.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_rotateDataset.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentBlackWhiteThreshold.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_3dBall.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_Annotation.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_Brush.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_Lasso.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_MagicWand.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_MembraneClickTraker.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_ObjectPicker.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_RegionGrowing.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_SmartWatershed.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_segmentation_Spot.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_sizeExclusionFilter.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_transposeDataset.m</file>
-      <file>${PROJECT_ROOT}/Tools/ib_updatePixSizeAndResolution.m</file>
-      <file>${PROJECT_ROOT}/Tools/mark2selection.m</file>
-      <file>${PROJECT_ROOT}/Tools/mib_compile_c_files.m</file>
-      <file>${PROJECT_ROOT}/im_browser.fig</file>
-      <file>${PROJECT_ROOT}/im_browser.m</file>
-      <file>${PROJECT_ROOT}/im_browser_deploy.m</file>
-      <file>${PROJECT_ROOT}/im_browser_getDefaultParameters.m</file>
-      <file>${PROJECT_ROOT}/java_path.txt</file>
-      <file>${PROJECT_ROOT}/license.txt</file>
-      <file>${PROJECT_ROOT}/license_beta.txt</file>
-    </fileset.resources>
-    <fileset.package />
+    </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB_Mac.sh" optional="false">/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac/for_testing/run_MIB_Mac.sh</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac/for_testing/splash.png</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB_Mac.app" optional="false">/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac/for_testing/MIB_Mac.app</file>
-      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/KINGSTON/Matlab/MIB/im_browser_distrib_R2014b/MIB_Mac/for_testing/readme.txt</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="splash.png" optional="false">/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_testing/splash.png</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="run_MIB_Mac.sh" optional="false">/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_testing/run_MIB_Mac.sh</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="MIB_Mac.app" optional="false">/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_testing/MIB_Mac.app</file>
+      <file location="${PROJECT_ROOT}/MIB_Mac/for_testing" name="readme.txt" optional="true">/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_testing/readme.txt</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2014b.app</root>
+      <root>/Applications/MATLAB_R2016a.app</root>
       <toolboxes>
         <toolbox name="fixedpoint" />
-        <toolbox name="embeddedcoder" />
         <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
       </toolboxes>
       <toolbox>
         <fixedpoint>
@@ -1047,14 +161,14 @@ MIB is a freely available, user-friendly software for effective image processing
         </fixedpoint>
       </toolbox>
       <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
-      <toolbox>
         <matlabcoder>
           <enabled>true</enabled>
         </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
       </toolbox>
     </matlab>
     <platform>

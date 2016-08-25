@@ -438,10 +438,12 @@ func_dir = fullfile(handles.pathMIB, 'Plugins');
 
 addpath(func_dir);
 customContents1 = dir(func_dir);
+
 if numel(customContents1) > 2
     for customDirIdx = 3:numel(customContents1)
         if customContents1(customDirIdx).isdir
             hSubmenu = uimenu(handles.menuPlugins,'Label', customContents1(customDirIdx).name);
+            
             custom_dir = fullfile(func_dir, customContents1(customDirIdx).name);
             customContents2 = dir(custom_dir);
             
@@ -449,10 +451,12 @@ if numel(customContents1) > 2
                 for customDirIdx2 = 3:numel(customContents2)
                     if customContents2(customDirIdx2).isdir
                         custom_dir2 = fullfile(custom_dir, customContents2(customDirIdx2).name);
+                        
                         if ~isdeployed
                             addpath(custom_dir2);
                         end
                         uimenu(hSubmenu,'Label', customContents2(customDirIdx2).name,'Callback', {customContents2(customDirIdx2).name, handles.im_browser});
+                        
                     end
                 end
             end

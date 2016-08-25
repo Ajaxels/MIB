@@ -4,6 +4,11 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%% 1.22 22.08.2016 
+% * Added extra options for exporting models and masks from the Statistics
+% window
+% * Mostly bug fixes
+%
 %% 1.21 29.06.2016 
 % * Fixed horizontal/vertical flipping for 2D datasets
 % * Fix of several small bugs
@@ -13,9 +18,9 @@
 % * Added the Crop To mode to the Crop tool (Menu->Dataset->Crop dataset...)
 % * Added split color channels mode for the snapshots
 % * Added possibility to copy ROI areas to the Selection layer (ROI
-% Panel->the ROI to Selection button) (ADD VIDEO)
+% Panel->the ROI to Selection button) 
 % * Added rotation of a single color channel for square-shaped images
-% (Menu->Image->Color channels->Rotate channel...) (ADD VIDEO)
+% (Menu->Image->Color channels->Rotate channel...) 
 % * Updated Image Description dialog: Path Panel->Info
 % * Updated the Chop/Rechop modes
 % * Updated Bio-Formats library to 5.1.10

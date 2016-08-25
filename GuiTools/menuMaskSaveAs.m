@@ -84,7 +84,7 @@ else
             pixStr.minx = bb(1);
             pixStr.miny = bb(3);
             pixStr.minz = bb(5);
-            bitmap2amiraLabels([path fnOut], maskImg, amiraType, pixStr, handles.preferences.maskcolor,cellstr('Mask'), 1);    
+            bitmap2amiraLabels([path fnOut], maskImg, amiraType, pixStr, handles.preferences.maskcolor, cellstr('Mask'), 1);    
         elseif FilterIndex == 4   % as tif
             ImageDescription = {handles.Img{handles.Id}.I.img_info('ImageDescription')};
             resolution(1) = handles.Img{handles.Id}.I.img_info('XResolution');

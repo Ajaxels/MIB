@@ -14,6 +14,7 @@ function [Model, selection] = exportModelToImodModel(O, Options)
 %  - .xyScaleFactor - a number to indicate a step when picking voxels from the contours of materials, when 5 - take each 5th point
 %  - .zScaleFactor - a number to indicate a Z step when picking voxels from the contours of materials, when 1 - take each z-section
 %  - .colorList -  a matrix with colors for the materials as [materialId][Red, Green, Blue], (0-1)
+%  - .ModelMaterialNames - a cell array with names of materials
 %  - .generateSelectionSw - when @b 1 generate the 'Selection layer' with the used for the model points
 %  - .showWaitbar - if @b 1 - show the wait bar, if @b 0 - do not show
 %
@@ -45,7 +46,7 @@ selection = zeros(size(O),'uint8');
 
 Model = ImodModel();
 Model = setFilename(Model, modelFilename);
-Model = setMax(Model,[width, height, thickness]);
+Model = setMax(Model, [width, height, thickness]);
 Model = setPixelSize(Model, Options.pixSize.x);
 Model = setYScale(Model, Options.pixSize.y/Options.pixSize.x);
 Model = setZScale(Model, Options.pixSize.z/Options.pixSize.x);
@@ -68,6 +69,7 @@ for objectLoop=1:noObjects  % first loop for number of objects in the model
     imodObject = ImodObject;
     imodObject = setColor(imodObject, Options.colorList(objectLoop,:));
     imodObject = setType(imodObject, 'closed');
+    imodObject = setName(imodObject, Options.ModelMaterialNames{objectLoop});
     
     BW = zeros(size(O),'uint8');
     BW(O==object) = 1;

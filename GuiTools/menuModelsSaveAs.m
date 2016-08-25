@@ -109,9 +109,9 @@ else
         if strcmp(button, 'Cancel'); return; end;
         if strcmp(button, 'Proceed, set as 255')
             if FilterIndex ~= 9; multCoefficient = 255; end;    % do not do that for the STL model type
-            color_list = handles.Img{handles.Id}.I.modelMaterialColors(selMaterial,:);
-            modelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames(selMaterial);
         end
+        color_list = handles.Img{handles.Id}.I.modelMaterialColors(selMaterial,:);
+        modelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames(selMaterial);
     else
         selMaterial = NaN;  % reassign materials to take them all
     end
@@ -203,7 +203,7 @@ else
             options.t = t;
             switch options.Format
                 case 'bdv.hdf5'
-                    options.pixSize.units = 'µm';
+                    options.pixSize.units = sprintf('\xB5m'); % 'µm';
                     saveBigDataViewerFormat(options.filename, model, options);
                 case 'matlab.hdf5'
                     options.order = 'yxczt';
@@ -220,7 +220,13 @@ else
                 savingOptions.xyScaleFactor = str2double(answer{1});
                 savingOptions.zScaleFactor = 1;
                 savingOptions.generateSelectionSw = str2double(answer{2});
-                savingOptions.colorList = color_list;
+                if selMaterial == 0 || isnan(selMaterial)
+                    savingOptions.colorList = color_list;
+                    savingOptions.ModelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames; % names for materials;
+                else
+                    savingOptions.colorList = color_list(selMaterial,:);
+                    savingOptions.ModelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames(selMaterial); % names for materials;
+                end
                 savingOptions.showWaitbar = ~showLocalWaitbar;  % show or not waitbar in exportModelToImodModel
             end
             savingOptions.modelFilename = [path fnOut];

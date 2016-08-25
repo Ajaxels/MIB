@@ -1045,8 +1045,8 @@ else        % do it for 3D
 %     BK_Delete(h);
     
     waitbar(.55, wb, sprintf('Doing maxflow/mincut\nPlease wait...'));
-    [~, labels] = maxflow(graphcut.Graph{1}, T);
-    %[~, labels] = maxflow_v222(graphcut.Graph{1}, T);
+    %[~, labels] = maxflow(graphcut.Graph{1}, T);
+    [~, labels] = maxflow_v222(graphcut.Graph{1}, T);
         
     waitbar(.75, wb, sprintf('Generating the mask\nPlease wait...'));
     

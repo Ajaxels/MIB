@@ -50,6 +50,7 @@ if iscell(handles.Img{handles.Id}.I.brush_selection)  % return after movement of
     end
 end
 handles.Img{handles.Id}.I.brush_selection = NaN;    % remove all brush_selection data
+handles.Img{handles.Id}.I.brush_prev_xy = NaN;
 
 % update ROI of the Measure tool
 if ~isempty(handles.Img{handles.Id}.I.hMeasure.roi.type)
