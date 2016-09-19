@@ -35,6 +35,7 @@ function p = ib_renderModel(Volume, Index, pixSize, boundingBox, color_list, Ima
 % 09.09.2015, IB, added show of orthoslices
 % 08.01.2016, IB, updated the call, added recalculation of vertices to the datasets units and export of the triangulated patch
 % 02.02.2016, IB, updated for 4D data, changed syntax of the call, added the Options structure, fixed situations with more than 1
+% 16.09.2016, IB, fix wrong X/Y dimensions in the reducevolume function
 
 if nargin < 7
     prompt = {'Reduce the volume down to, width pixels [no volume reduction when 0]?',...
@@ -115,7 +116,7 @@ for contIndex=minIndex:maxIndex
         subVolume = uint8(smooth3(subVolume,'box',[kernelX kernelY kernelZ]));
     end
     waitbar(0.4*contIndex/maxIndex, wb,  sprintf('Material %d: Reducing the volume...', contIndex));
-    [~,~,~,subVolume] = reducevolume(subVolume,[factorY,factorX,factorZ]);
+    [~,~,~,subVolume] = reducevolume(subVolume,[factorX,factorY,factorZ]);
     waitbar(0.6*contIndex/maxIndex, wb,  sprintf('Material %d: Generating isosurface...', contIndex));
     [faces, verts] = isosurface(subVolume,0.5);
     if isempty(verts); continue; end;

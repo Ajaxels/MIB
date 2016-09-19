@@ -32,6 +32,7 @@ if nargin < 4   % model and options are not provided
         {'*.mat;',  'Matlab format (*.mat)'; ...
         '*.am;',  'Amira mesh format (*.am)'; ...
         '*.h5',   'Hierarchical Data Format (*.h5)'; ...
+        '*.mrc',   'Medical Research Council format (*.mrc)'; ...
         '*.nrrd;',  'NRRD format (*.nrrd)'; ...
         '*.tif;',  'TIF format (*.tif)'; ...
         '*.xml',   'Hierarchical Data Format with XML header (*.xml)'; ...
@@ -99,11 +100,17 @@ if nargin < 4   % model and options are not provided
                 options.color_list = img_info('color_list');
             end
             delete(img_info);
-        elseif strcmp(filename{fnId}(end-3:end),'nrrd') % loading model in tif format
+        elseif strcmp(filename{fnId}(end-3:end),'nrrd') % loading model in nrrd format
             model = nrrdLoadWithMetadata(fullfile([path filename{fnId}]));
             model =  uint8(permute(model.data, [2 1 3]));
             options.model_fn = fullfile([path filename{fnId}(1:end-2) 'mat']);
             options.model_var = 'nrrd_model';
+        elseif strcmp(filename{fnId}(end-3:end),'mrc') % loading model in mrc format            
+            options.bioformatsCheck = 0;
+            options.progressDlg = 0;
+            for i=1:numel(filename)
+                [model, ~, ~] = ib_loadImages({fullfile(path, filename{fnId})}, options, handles);
+            end
         else        % loading model in tif format and other standard formats
             options.bioformatsCheck = 0;
             options.progressDlg = 0;
@@ -125,7 +132,21 @@ if nargin < 4   % model and options are not provided
             handles.Img{handles.Id}.I.setData4D('model', model, 4, NaN, setDataOptions);
         elseif size(model, 4) == 1 && size(model,3) == handles.Img{handles.Id}.I.no_stacks  % update complete 3D dataset
             if numel(filename) > 1
-                handles.Img{handles.Id}.I.setData3D('model', model, fnId, 4, NaN, setDataOptions);
+                if strcmp(filename{fnId}(end-2:end),'mrc') % loading model in the MRC format
+                    if fnId == 1
+                        % get current model
+                        cModel = handles.Img{handles.Id}.I.getData3D('model', NaN, 4, NaN, setDataOptions);
+                        options.material_list = cell([numel(filename), 1]);
+                    end
+                    cModel(model ~= 0) = model(model ~= 0);
+                    options.material_list{fnId} = filename{fnId}(1:end-4);
+                    if fnId == numel(filename)
+                        % update the model
+                        handles.Img{handles.Id}.I.setData3D('model', cModel, NaN, 4, NaN, setDataOptions);
+                    end
+                else
+                    handles.Img{handles.Id}.I.setData3D('model', model, fnId, 4, NaN, setDataOptions);
+                end
             else
                 handles.Img{handles.Id}.I.setData3D('model', model, NaN, 4, NaN, setDataOptions);
             end

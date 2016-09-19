@@ -41,7 +41,13 @@ if handles.showBrushCursor
     else
         se_size = round(radius/handles.Img{handles.Id}.I.magFactor);
     end
+    
     se_size(2) = se_size(1);
+%     if handles.Img{handles.Id}.I.orientation == 4
+%         se_size(2) = se_size(1);
+%     else
+%         se_size(2) = se_size(1)/(handles.Img{handles.Id}.I.pixSize.x/handles.Img{handles.Id}.I.pixSize.z);
+%     end
     
     if strcmp(mode, 'dashed')
         lineStyle = ':';

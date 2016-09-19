@@ -6,35 +6,11 @@
 %
 %% Alignment tool...
 % Can be used to align the slices of the opened dataset or to align two
-% separate datasets. *Note the limitation!* -  area selected for the alignment should be present on
-% both images completely. See more in the Alignment of datasets tutorial pages
-% (<http://www.biocenter.helsinki.fi/~ibelev/projects/im_browser/tutorials/AlignmentTool.html
-% html>, <http://www.biocenter.helsinki.fi/~ibelev/projects/im_browser/tutorials/pdf/AlignmentTool.pdf pdf>).
-%
+% separate datasets. See details <ug_gui_menu_dataset_alignment.html *here*>.
 % 
 % <<images/menuDatasetAlignTool.jpg>>
 % 
 %
-% *Description of the panels:*
-% 
-% * *Current dataset* - shows details of the opened dataset.
-% * *Mode* - allows to select alignment mode to align either slices within
-% the opened dataset or two separate datasets.
-% * *Method* - selection of method to be used for the alignment: either normalized cross-correlation or normalized sum of squared differences.
-% * *Second stack* - available only in the |Align two stacks| mode allows
-% to select the second dataset as a stack of images in a single file, in a
-% series of files in one directory, or import a variable with the dataset
-% from the main Matlab workspace. When the |automatic| mode is selected the
-% script will calculate the shifts. The shifts however can be provided
-% manually, when the |automatic| check box is unchecked. In this case it is required to find the reference point on two
-% images, take its X and Y coordinates and calculate the shifts as: |shiftX = X1 - X2| and |shiftY = Y1 - Y2|.
-% * *Parameters* - mainly parameters of the search window that will be used
-% for alignment. This window can be defined manually or uploaded from the
-% |Selection| layer with the |Get from Selection| button. The shifts of
-% images results in empty areas that can be filled with black, white or
-% mean color of the image. In addition, if the |Align the current dataset|
-% mode is used, it is possible to import and export the list of shifts 
-% between the images. 
 %
 %% Crop dataset...
 % Crop the image and corresponding Selection, Mask, and Model layers.

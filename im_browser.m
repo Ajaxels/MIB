@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.22 / 22.08.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.23 / 19.09.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -1977,6 +1977,12 @@ brushSuperpixelsCheck(hObject, eventdata, handles);
 end
 
 function devTest_ClickedCallback(hObject, eventdata, handles)
+
+% % Update handles structure
+% %guidata(hObject, handles);
+% guidata(handles.I.im_browser, handles.I);
+
+
 % mib_Classifier(handles);
 
 %guidata(handles.im_browser, handles);

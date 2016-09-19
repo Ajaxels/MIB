@@ -1679,14 +1679,18 @@ switch handles.mode
         end
         
         % convert to 8bit
+        currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
         if isa(img, 'uint16')
             if get(handles.h.liveStretchCheck, 'value')   % on fly mode
                 img = imadjust(img ,stretchlim(img,[0 1]),[]);
             else
-                currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
                 img = imadjust(img, [currViewPort.min(col_channel)/65535 currViewPort.max(col_channel)/65535],[0 1],currViewPort.gamma(col_channel));
             end
             img = uint8(img/255);
+        else
+            if currViewPort.min(col_channel) > 1 || currViewPort.max(col_channel) < 255
+                img = imadjust(img, [currViewPort.min(col_channel)/255 currViewPort.max(col_channel)/255],[0 1],currViewPort.gamma(col_channel));
+            end
         end
         
         dims = size(img);
@@ -1761,19 +1765,25 @@ switch handles.mode
         end
         img = squeeze(img);
         
-        % convert to 8bit
+        % convert to 8bit and adjust contrast
+        currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
         if isa(img, 'uint16')
             if get(handles.h.liveStretchCheck, 'value')   % on fly mode
                 for sliceId=1:size(img, 3)
                     img(:,:,sliceId) = imadjust(img(:,:,sliceId) ,stretchlim(img(:,:,sliceId),[0 1]),[]);
                 end
             else
-                currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
                 for sliceId=1:size(img, 3)
                     img(:,:,sliceId) = imadjust(img(:,:,sliceId), [currViewPort.min(col_channel)/65535 currViewPort.max(col_channel)/65535],[0 1],currViewPort.gamma(col_channel));
                 end
             end
             img = uint8(img/255);
+        else
+            if currViewPort.min(col_channel) > 1 || currViewPort.max(col_channel) < 255
+                for sliceId=1:size(img, 3)
+                    img(:,:,sliceId) = imadjust(img(:,:,sliceId), [currViewPort.min(col_channel)/255 currViewPort.max(col_channel)/255],[0 1],currViewPort.gamma(col_channel));
+                end   
+            end
         end
         
         % calculate number of superpixels
@@ -1856,18 +1866,24 @@ switch handles.mode
         end
         
         % convert to 8bit
+        currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
         if isa(img, 'uint16')
             if get(handles.h.liveStretchCheck, 'value')   % on fly mode
                 for sliceId=1:size(img, 3)
                     img(:,:,sliceId) = imadjust(img(:,:,sliceId) ,stretchlim(img(:,:,sliceId),[0 1]),[]);
                 end
             else
-                currViewPort = handles.h.Img{handles.h.Id}.I.viewPort;
                 for sliceId=1:size(img, 3)
                     img(:,:,sliceId) = imadjust(img(:,:,sliceId), [currViewPort.min(col_channel)/65535 currViewPort.max(col_channel)/65535],[0 1],currViewPort.gamma(col_channel));
                 end
             end
             img = uint8(img/255);
+        else
+            if currViewPort.min(col_channel) > 1 || currViewPort.max(col_channel) < 255
+                for sliceId=1:size(img, 3)
+                    img(:,:,sliceId) = imadjust(img(:,:,sliceId), [currViewPort.min(col_channel)/255 currViewPort.max(col_channel)/255],[0 1],currViewPort.gamma(col_channel));
+                end
+            end
         end
         
         % calculate number of supervoxels

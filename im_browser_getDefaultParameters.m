@@ -103,7 +103,8 @@ if ~isdeployed
     if all(cellfun(@isempty, strfind(javapath, 'bioformats_package.jar')))
         % if isempty(cell2mat(strfind(javapath, 'bioformats_package.jar'))); % this call is a bit slower
         lociPath = fullfile(fileparts(mfilename('fullpath')),'ImportExportTools','BioFormats','bioformats_package.jar');
-        javaaddpath(lociPath, '-end');
+        %javaaddpath(lociPath, '-end');
+        javaaddpath(lociPath);
         disp(['MIB: adding "' lociPath '" to Matlab java path']);
     end
     

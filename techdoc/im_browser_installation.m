@@ -33,22 +33,10 @@
 %% Run Microscopy Image Browser as standalone (MacOS, x64 bit)
 % _Tested with Mac OS X (Yosemite), version 10.10.3 and Matlab version 8.4 (R2014b)._
 % 
-% # Download standalone distribution of the program for Mac OS (<http://mib.helsinki.fi/web-update/im_browser_distrib_mac.zip im_browser_distrib_mac.zip>). 
-% Please note the version of Matlab (*Matlab 8.4 (R2014b)* for MIB version 0.998 and newer) for which it was compiled
-% # Download and install <http://www.mathworks.com/products/compiler/mcr/
-% MATLAB Compiler Runtime (MCR)> *that is compatible* with the downloaded release of |MIB|
-% # Unzip |im_browser_distrib_mac.zip| to
-% *|./Users/[YourUserName]/Documents/MIB|*. *Note!* MIB will only work
-% from this directory!
-% # Start |im_browser| by double click on |./Users/[YourUserName]/Documents/MIB/MIB_Mac.app| using the Finder
-% application
-% # It may take a while for program to start in this mode
-% # Access help and tutorials from the menu of |MIB|: |im_browser->Menu->Help->Help|
+% # Download standalone distribution of the program for Mac OS (<http://mib.helsinki.fi/web-update/MIB_Mac.dmg MIB_Mac.dmg>). 
+% # Follow the datailed instructions from MIB website
+% <http://mib.helsinki.fi/downloads_installation_macos.html MIB Mac OS Version> 
 % 
-%
-% *Note!* If you want to use Fiji or Omero with the deployed version of |im_browser| you need to check _mib_java_path.txt_ file
-% in the directory of _im_browser.exe_. Please modify this file and set correct path to your Fiji application and Omero Java libraries.
-% See more about Fiji in the <im_browser_system_requirements.html Fiji: Volume rendering and connection section>
 %
 %% Additional info
 % |im_browser| stores its configuration parameters:

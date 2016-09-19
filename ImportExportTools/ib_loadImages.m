@@ -64,7 +64,9 @@ for i=1:no_files
     files(i).filename = cell2mat(filenames(i));
 end
 options.waitbar = 1;
-[img_info, files, pixSize] = getImageMetadata(filenames, options, handles);
+options.matlabVersion = handles.matlabVersion;
+options.Font = handles.preferences.Font;
+[img_info, files, pixSize] = getImageMetadata(filenames, options);
 if isempty(keys(img_info))
     img = NaN;
     return;

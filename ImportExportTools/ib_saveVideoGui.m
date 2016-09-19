@@ -326,6 +326,11 @@ for frame = framePnts
         img = imresize(img, [newHeight newWidth], methodList{methodVal});
     end
     
+    % convert to uint8
+    if isa(img, 'uint16')
+        img = uint8(img/255);
+    end
+    
     if index == 1
         if scalebarSwitch  % add scale bar
             img2 = addScaleBar(img, handles.h.Img{handles.h.Id}.I.pixSize, scale, handles.h.Img{handles.h.Id}.I.orientation);

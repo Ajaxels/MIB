@@ -117,7 +117,7 @@ if isempty(img_info)   % when no img_info, populate it from the HDF5 file
             img_info('imgClass') = 'uint8';
         otherwise
             if options.waitbar==1; delete(wb); end;
-            errordlg(sprintf('Ops!\ngetImageMetadata: check image class (%s) and implement!', dataType));
+            errordlg(sprintf('Ops!\nloadBigDataViewerFormat: check image class (%s) and implement!', dataType));
             return;
     end
 end

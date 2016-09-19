@@ -19,11 +19,6 @@ function menuFileMakeMovie(hObject, eventdata, handles)
 % 
 
 
-if intmax(class(handles.Img{handles.Id}.I.img)) > 255
-    errordlg(sprintf('Please convert dataset to the 8bit format!\n\nThe image can be converted using:\nMenu->Image->Mode->8 bit'),'Wrong image type')
-    return;
-end
-
 if isfield(handles, 'video_fn')
     fn_out = handles.video_fn;
 else

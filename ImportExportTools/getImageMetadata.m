@@ -1,4 +1,4 @@
-function [img_info, files, pixSize] = getImageMetadata(filenames, options, handles)
+function [img_info, files, pixSize] = getImageMetadata(filenames, options)
 % function [img_info, files, pixSize] = getImageMetadata(filenames, options, handles)
 % Get metadata for images
 % 
@@ -8,7 +8,11 @@ function [img_info, files, pixSize] = getImageMetadata(filenames, options, handl
 % .bioformatsCheck -> @b 0 or @b 1; when @b 1 use the BioFormats library
 % .waitbar -> @b 0 or @b 1; when @b 1 shows the progress bar
 % .customSections -> @b 0 or @b 1; when @b 1 obtain part of the dataset
-% handles: handles structure of im_browser
+% .matlabVersion -> [optional] current version of Matlab
+% .Font -> [optional] a structure with the font settings from im_browser
+%    .FontName 
+%    .FontUnits
+%    .FontSize 
 %
 % Return values:
 % img_info: in the format compatible with imageData.img_info containers.Map
@@ -41,6 +45,13 @@ if isempty(options); options = struct(); end;
 if ~isfield(options, 'bioformatsCheck');    options.bioformatsCheck = 0; end
 if ~isfield(options, 'waitbar');    options.waitbar = 0; end
 if ~isfield(options, 'customSections');    options.customSections = 0; end
+if ~isfield(options, 'matlabVersion');    
+    v = ver('matlab');
+    options.matlabVersion = str2double(v(1).Version);
+end
+if ~isfield(options, 'Font');    
+    options.Font = [];
+end
 
 pixSize.x = 0.087;
 pixSize.y = 0.087;
@@ -50,7 +61,7 @@ pixSize.t = 1;
 pixSize.tunits = 's';
 
 img_info = containers.Map;
-if handles.matlabVersion < 8.0
+if options.matlabVersion < 8.0
     video_formats = mmreader.getFileFormats(); %#ok<DMMR>
 else
     video_formats = VideoReader.getFileFormats();
@@ -86,7 +97,7 @@ for fn_index = 1:no_files
     % get image information
     if strfind([video_formats.Extension], ext(2:end)) > 0 & options.bioformatsCheck == 0      %#ok<AND2> % movie object
         files(fn_index).filename = cell2mat(filenames(fn_index));
-        if handles.matlabVersion < 8.0
+        if options.matlabVersion < 8.0
             xyloObj = mmreader(files(fn_index).filename); %#ok<DMMR>
         else
             xyloObj = VideoReader(files(fn_index).filename); 
@@ -148,7 +159,7 @@ for fn_index = 1:no_files
             
             if noLevels > 1
                 prompt = sprintf('The dataset contains %d image(s)\nPlease choose the one to take (enter "1" to get image in the original size):', noLevels);
-                answer = mib_inputdlg(handles, prompt, 'Select image', '1');
+                answer = mib_inputdlg(NaN, prompt, 'Select image', '1');
                 if isempty(answer); if options.waitbar==1; delete(wb); end; img_info = containers.Map; return; end;
                 level = str2double(answer);
                 if level < 1 || level > noLevels
@@ -197,7 +208,7 @@ for fn_index = 1:no_files
     elseif strfind('h5hdf', ext(2:end)) > 0 & options.bioformatsCheck == 0         %#ok<AND2> % HDF5 format
         files(fn_index).filename = cell2mat(filenames(fn_index));
         files(fn_index).object_type = 'hdf5_image';
-        [files(fn_index).seriesName, metadata_sw, dim_yxczt, transMatrix] = selectHDFSeries(cellstr(files(fn_index).filename), handles.preferences.Font);
+        [files(fn_index).seriesName, metadata_sw, dim_yxczt, transMatrix] = selectHDFSeries(cellstr(files(fn_index).filename), options.Font);
         pause(.1);
         if strcmp(files(fn_index).seriesName,'Cancel')
             img_info = containers.Map;
@@ -432,7 +443,7 @@ for fn_index = 1:no_files
                         resText = sprintf('%s%dx%d; ', resText, info(ii).Width, info(ii).Height);
                     end
                     prompt = sprintf('This is pyramidal TIF that has %d sub-images [%s]\nPlease choose the one to take (enter "1" to get image in the original size):', numel(info),resText);
-                    answer = mib_inputdlg(handles, prompt, 'Select image', '1');
+                    answer = mib_inputdlg(NaN, prompt, 'Select image', '1');
                     if isempty(answer); if options.waitbar==1; delete(wb); end; return; end;
                     files(fn_index).level = str2double(answer);
                 end
@@ -607,7 +618,7 @@ for fn_index = 1:no_files
             numSeries = r.getSeriesCount();
             if numSeries > 1
                 [filesTemp.seriesIndex, filesTemp.hDataset, metaSwitch, filesTemp.dim_xyczt, filesTemp.seriesRealName] = ...
-                    selectLociSeries(filenames(fn_index), handles.preferences.Font);  % select series with BioFormats
+                    selectLociSeries(filenames(fn_index), options.Font);  % select series with BioFormats
             else    % do not show the series selection dialog
                 filesTemp.seriesIndex = 1;
                 r.setSeries(0);
@@ -831,7 +842,12 @@ for fn_index = 1:no_files
         end
         
         pixSize.units = 'um';
-        pixSize.t = omeMeta.getPixelsSizeT(0).getValue();
+        dt = omeMeta.getPlaneDeltaT(0,0);
+        if ~isempty(dt)
+            pixSize.t = double(dt.value);
+        else
+            pixSize.t = 1;
+        end
         pixSize.tunits = 's';
         
         % get colors for the color channels

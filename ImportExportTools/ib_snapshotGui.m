@@ -257,6 +257,8 @@ end
 width = size(I,2);
 height = size(I,1);
 
+resizeFactor = ceil(min([width height])/1200);
+
 %scaleBarText = sprintf('%.3f %s',width*pixelSize/10, pixSize.units);
 %scaleBarLength = round(width/10);
 
@@ -286,10 +288,12 @@ coord(1,:) = m*20+1;
 coord(2,:) = (coord(2,:)-m*26)*13+1;
 
 model = zeros(22,size(I,2),size(I,3), class(I));
+%model = zeros(22*resizeFactor,size(I,2),size(I,3), class(I));
 total_index = 1;
 max_int = double(intmax(class(I)));
 shiftX = 5;     % shift of the scale bar from the left corner
-if scaleBarLength+shiftX*2+(numel(text_str)*12) > width
+%if scaleBarLength+shiftX*2+(numel(text_str)*12) > width
+if scaleBarLength+shiftX*2+(numel(text_str)*12*resizeFactor) > width
     msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'),'Scale bar','warn');
     return;
 end
@@ -297,11 +301,28 @@ for index = 1:numel(text_str)
     model(1:20, scaleBarLength+shiftX*2+(12*index-11):scaleBarLength+shiftX*2+(index*12), :) = repmat(double(imcrop(base,[coord(2,total_index) coord(1,total_index) 11 19]))*max_int, [1, 1, ColorsNumber]);
     total_index = total_index + 1;
 end
+
 % add scale
 model(10:12, shiftX:shiftX+scaleBarLength-1,:) = repmat(max_int, [3, scaleBarLength, ColorsNumber]);
 model(8:14, shiftX,:) = repmat(max_int, [7, 1, ColorsNumber]);
 model(8:14, shiftX+scaleBarLength-1,:) = repmat(max_int, [7, 1, ColorsNumber]);
 
+% resize the scale bar
+if resizeFactor > 1
+    model1 = model(:, 1:scaleBarLength+shiftX*2, :);    % crop the scale bar
+    model1 = imresize(model1, [size(model1,1)*resizeFactor size(model1,2)], 'nearest');
+    model2 = model(:,scaleBarLength+shiftX*2+1:scaleBarLength+shiftX*2+(index*12)+1,:);    % crop the label
+    model2 = imresize(model2, resizeFactor, 'bicubic');
+    
+    if size(model1,2)+shiftX*resizeFactor+size(model2,2) > width
+        msgbox(sprintf('Image is too small to put the scale bar!\nSaving image without the scale bar...'),'Scale bar','warn');
+        return;
+    end
+    
+    model = zeros(22*resizeFactor,size(I,2),size(I,3), class(I));
+    model(:,shiftX*resizeFactor:shiftX*resizeFactor+size(model1,2)-1,:) = model1;
+    model(:,size(model1,2)+shiftX*resizeFactor:size(model1,2)+shiftX*resizeFactor+size(model2,2)-1,:) = model2;
+end
 I = cat(1, I, model);
 end
 
@@ -428,7 +449,6 @@ end
 function helpButton_Callback(hObject, eventdata, handles)
 web(fullfile(handles.h.pathMIB, 'techdoc/html/ug_gui_menu_file_makesnapshot.html'), '-helpbrowser');
 end
-
 
 % --- Executes on key press with focus on ib_snapshotGui and none of its controls.
 function ib_snapshotGui_KeyPressFcn(hObject, eventdata, handles)

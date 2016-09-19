@@ -11,14 +11,23 @@
 % Alternatively it is possible to use the |Create| button in the <ug_panel_segm.html Segmentation Panel>.
 %% Load model
 % Load model from the disk. By default |im_browser| tries to read the models in the Matlab .mat format, but it is also
-% possible to specify other formats as well namely:
+% possible to specify other formats as well:
 %%
 % 
 % * *.AM, Amira Mesh* - as Amira Mesh label field for models saved in <http://www.vsg3d.com/amira/overview Amira> format
 % * *.NRRD, Nearly Raw Raster Data* - a data format compatible with <www.slicer.org 3D slicer>.
+% * *.MRC, Medical Research Council format* - a data format compatible with
+% IMOD <http://bio3d.colorado.edu/imod>. When using this mode, it is
+% possible to provide a list of MRC files, where each object is encoded
+% using its number in a separate MRC-file; after that MIB will assemble and merge all these
+% individual objects together into a single model.
 % * *.TIF, TIF format*
 % 
+% *Note!* almost any standard image format can be loaded as a model, please
+% choose _All files (_*.*)_ filter in the Open model dialog.
+%
 % Alternatively it is possible to use the |Load| button in the <ug_panel_segm.html Segmentation Panel>.
+%
 %% Import model from Matlab
 % Imports model from the main Matlab workspace. Please provide a variable name from the main Matlab workspace with the model.
 % The variable could be either a matrix with dimensions similar to those of

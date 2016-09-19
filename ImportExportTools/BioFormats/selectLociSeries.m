@@ -140,13 +140,19 @@ if numSeries > 0
 end
 
 % update font and size
-if get(handles.parametersCheckbox, 'fontsize') ~= Font.FontSize ...
-        || ~strcmp(get(handles.parametersCheckbox, 'fontname'), Font.FontName)
-    ib_updateFontSize(handles.selectLociSeries, Font);
+if isstruct(Font)
+    if get(handles.parametersCheckbox, 'fontsize') ~= Font.FontSize ...
+            || ~strcmp(get(handles.parametersCheckbox, 'fontname'), Font.FontName)
+        ib_updateFontSize(handles.selectLociSeries, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux
 mib_rescaleWidgets(handles.selectLociSeries);
+
+% increase size for text2 and selectedSeriesText
+set(handles.text2, 'fontsize', get(handles.text2, 'fontsize')+2);
+set(handles.selectedSeriesText, 'fontsize', get(handles.text2, 'fontsize')+2);
 
 % Update handles structure
 guidata(hObject, handles);

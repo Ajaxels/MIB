@@ -93,6 +93,13 @@
 %   <td>MIT,<br> 2013</td>
 % </tr>
 % <tr style="">
+%   <td style="font-weight: bold">drifty_shifty_deluxe</td>
+%   <td>Joshua D. Sugar<br>
+%   Sandia National Laboratories, Livermore, CA</td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m">via Matlab Exchange</a></td>
+%   <td><a href="https://se.mathworks.com/matlabcentral/fileexchange/view_license?file_info_id=45453">Custom</a>,<br> 2014</td>
+% </tr>
+% <tr style="">
 %   <td style="font-weight: bold">Export_fig</td>
 %   <td>Oliver Woodford and Yair Altman</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig">via Matlab Exchange</a></td>
@@ -111,7 +118,9 @@
 %   <td>ModifiedBSD,<br> 2013-2015</td>
 % </tr>
 % <tr style="">
-%   <td style="font-weight: bold">Fast/Robust Template Matching</td>
+%   <td style="font-weight: bold">Fast/Robust Template Matching
+%              <div style="font-weight: normal;">used in MIB 1.22 and earlier</div>
+%   </td>
 %   <td>Dirk-Jan Kroon, University of Twente</td>
 %   <td><a href="http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching">via Matlab Exchange</a></td>
 %   <td>FreeBSD,<br> 2009-2011</td>

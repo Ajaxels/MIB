@@ -253,7 +253,7 @@ for i=1:numel(windowList)
     if strcmp(get(windowList(i),'tag'),'imAdjustments') % update imAdjustment window
         %imAdjustments(handles, windowList(i));
         hGui = guidata(windowList(i));
-        cb = get(hGui.updateBtn,'callback');
+        cb = get(hGui.updateBtn, 'callback');
         feval(cb, hGui.updateBtn, []);
     end
     if strcmp(get(windowList(i),'tag'),'logWindow') % update the Log List window

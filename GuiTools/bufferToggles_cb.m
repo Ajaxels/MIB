@@ -132,7 +132,7 @@ switch parameter
         end
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
     case 'clear'    % clear dataset
-        
+        delete(handles.Img{buttonID}.I);
         if handles.preferences.uint8
             handles.Img{buttonID}.I = imageData(handles, 'uint8');    % create instanse for keeping images;
         else
@@ -141,7 +141,8 @@ switch parameter
         handles = handles.Img{buttonID}.I.updateAxesLimits(handles, 'resize');
         
         %handles = guidata(handles.im_browser);
-        % guidata(handles.im_browser, handles); 
+        
+        guidata(handles.im_browser, handles); 
         if ismac()
             eval(sprintf('set(handles.bufferToggle%d,''ForegroundColor'',[ 0.8314    0.8157    0.7843]);', buttonID));
         else
@@ -164,6 +165,7 @@ switch parameter
         % initializa image buffer with dummy images
         handles.Id = 1;   % number of the selected buffer
         for button=1:8
+            delete(handles.Img{button}.I);
             if handles.preferences.uint8
                 handles.Img{button}.I = imageData(handles, 'uint8');    % create instanse for keeping images;
             else

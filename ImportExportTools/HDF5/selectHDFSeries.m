@@ -131,17 +131,19 @@ end
 set(handles.seriesTable,'Data',data);
 
 % update font and size
-if get(handles.text2, 'fontsize') ~= Font.FontSize ...
-        || ~strcmp(get(handles.text2, 'fontname'), Font.FontName)
-    ib_updateFontSize(handles.selectHDFSeries, Font);
+if isstruct(Font)
+    if get(handles.text2, 'fontsize') ~= Font.FontSize ...
+            || ~strcmp(get(handles.text2, 'fontname'), Font.FontName)
+        ib_updateFontSize(handles.selectHDFSeries, Font);
+    end
 end
 
 % rescale widgets for Mac and Linux
 mib_rescaleWidgets(handles.selectHDFSeries);
 
 % increase size for text2 and selectedSeriesText
-set(handles.text2, 'fontsize', Font.FontSize+2);
-set(handles.selectedSeriesText, 'fontsize', Font.FontSize+2);
+set(handles.text2, 'fontsize', get(handles.text2, 'fontsize')+2);
+set(handles.selectedSeriesText, 'fontsize', get(handles.text2, 'fontsize')+2);
 
 if size(data,1) > 0
     eventdata.Indices = 1;

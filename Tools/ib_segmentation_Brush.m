@@ -56,10 +56,19 @@ handles.Img{handles.Id}.I.brush_selection{1} = logical(zeros([size(handles.Img{h
 radius = radius - 1;
 if radius < 1; radius = 0.5; end;
 se_size = round(radius/handles.Img{handles.Id}.I.magFactor);
-structElement = zeros(se_size*2+1,se_size*2+1);
-[xx,yy] = meshgrid(-se_size:se_size,-se_size:se_size);
-ball = sqrt((xx/se_size).^2+(yy/se_size).^2);
+
+% if handles.Img{handles.Id}.I.orientation == 4
+%     se_size(2) = se_size(1);
+% else
+%     se_size(2) = round(se_size(1)/(handles.Img{handles.Id}.I.pixSize.x/handles.Img{handles.Id}.I.pixSize.z));
+% end
+
+structElement = zeros(se_size*2+1, se_size*2+1);
+[xx,yy] = meshgrid(-se_size:se_size, -se_size:se_size);
+
+ball = sqrt(((xx/se_size).^2) + (yy/se_size).^2);
 structElement(ball<=1) = 1;
+
 handles.Img{handles.Id}.I.brush_selection{1}(y,x) = 1;
 handles.Img{handles.Id}.I.brush_selection{1} = imdilate(handles.Img{handles.Id}.I.brush_selection{1}, structElement);
 

@@ -167,7 +167,7 @@ if get(handles.interactiveRadio, 'value')    % interactive
     selarea = h.createMask;
     delete(h);
     set(handles.h.im_browser, 'windowbuttondownfcn', {@im_browser_WindowButtonDownFcn, handles.h});
-    handles.h.Img{handles.h.Id}.I.clearSelection();
+    handles.h.Img{handles.h.Id}.I.clearSelection(NaN, NaN, handles.h.Img{handles.h.Id}.I.getCurrentSliceNumber, handles.h.Img{handles.h.Id}.I.getCurrentTimePoint);
     options.blockModeSwitch = 1;
     [height, width, ~, ~] = handles.h.Img{handles.h.Id}.I.getDatasetDimensions('selection', NaN, 0, options);
     handles.h.Img{handles.h.Id}.I.setSliceToShow('selection', imresize(uint8(selarea),[height width],'method','nearest'));

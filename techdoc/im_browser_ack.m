@@ -56,6 +56,9 @@
 % a function to draw boundaries of labeled regions in an image, written by Peter Kovesi
 % Centre for Exploration Targeting, School of Earth and Environment, The
 % University of Western Australia, 2013.
+% * <https://se.mathworks.com/matlabcentral/fileexchange/45453-drifty-shifty-deluxe-m
+% *DRIFTY_SHIFTY_DELUXE*>, written by Joshua D. Sugar, Sandia National
+% Laboratories, Livermore, CA (2014); part of code from this function was adopted in mib_calcShifts.m
 % * <http://www.mathworks.com/matlabcentral/fileexchange/23629-export-fig
 % *EXPORT_FIG*> function to add measurements to snapshots is written by Oliver Woodford and Yair Altman 
 % * <http://www.mathworks.com/matlabcentral/fileexchange/12275-extrema-m-extrema2-m *EXTREMA functions*>
@@ -63,8 +66,6 @@
 % * <http://www.mathworks.com/matlabcentral/fileexchange/41666-fast-3d-2d-region-growing--mex-
 % *Fast 3D/2D Region Growing (MEX)*> by Christian Wuerslin, Stanford
 % University, 2013-2015.
-% * <http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching *Fast/Robust Template Matching*>
-% by Dirk-Jan Kroon, University of Twente was used for alignment of datasets, 2009-2011
 % * *Fiji Connect* is using <http://bigwww.epfl.ch/sage/soft/mij/ *MIJ*>, a Java package for bi-directional communication and data exchange from Matlab to ImageJ/Fiji,
 % developed by Daniel Sage, Dimiter Prodanov, Jean-Yves Tinevez and Johannes Schindelin, 2012. MIJ is not supplied with
 % Microscopy Image Browser and should be installed using Fiji
@@ -137,6 +138,10 @@
 % easily distinguishahle colors for all color vision types. Proc Spie 6807 (2008)> 
 % * <http://colorbrewer2.org/ Cynthia Brewer, Mark Harrower, Ben Sheesley,
 % Andy Woodruff, David Heyman. ColorBrewer 2.0>
+%
+%
+% * <http://www.mathworks.com/matlabcentral/fileexchange/24925-fastrobust-template-matching *Fast/Robust Template Matching*>
+% (2009-2011) by Dirk-Jan Kroon, University of Twente was used for alignment of datasets in MIB version 1.22 and earlier
 %
 % *Back to* <im_browser_product_page.html *Index*>
 

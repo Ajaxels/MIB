@@ -4,6 +4,17 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%% 1.23 19.09.2016 
+% * Completely rewritten alignement tool, now it is much faster and more reliable
+% * Added loading and combining MRC models from IMOD
+% * Added automatic scaling of scale bars for large snapshots
+% * Added adjustment of the image contrast during supervoxel calculation in the graphcut tool
+% * Update movie rendering, now it will also render movies from 16-bit images
+% * Fix of uncleared memory after closing of datesets, introduced in MIB 1.20
+% * The 'handles' handle has been removed from getImageMetadata(filenames,
+% options); the required fields handles.matlabVersion and
+% handles.preferences.Font were included into the options structure
+%
 %% 1.22 22.08.2016 
 % * Added extra options for exporting models and masks from the Statistics
 % window

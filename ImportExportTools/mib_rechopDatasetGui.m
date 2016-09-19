@@ -265,9 +265,6 @@ end
 % .noLayers -> number of image frames in the file
 % .imgClass -> class of the image
 
-%[img_info, files, pixSize] = getImageMetadata(handles.filenames, options, handles);
-% if isempty(keys(img_info)); return; end;
-
 if get(handles.newRadio, 'Value')   % generate new stack mode
     % detect grid
     Zno = zeros([no_files 1]);
@@ -283,7 +280,9 @@ if get(handles.newRadio, 'Value')   % generate new stack mode
         Yno(fnId) = str2double(fn(Yind(end)+1:Yind(end)+2));
         Xno(fnId) = str2double(fn(Xind(end)+1:Xind(end)+2));
         if imgSw
-            [img_info{fnId}, files{fnId}, pixSize{fnId}] = getImageMetadata(handles.filenames(fnId), options, handles.h);
+            options.matlabVersion = handles.h.matlabVersion;
+            options.Font = handles.h.preferences.Font;
+            [img_info{fnId}, files{fnId}, pixSize{fnId}] = getImageMetadata(handles.filenames(fnId), options);
         end
     end
     tilesZ = max(Zno);
@@ -455,7 +454,9 @@ else                                % fuse to existing
     wb = waitbar(0, 'Please wait...', 'Name', 'Fusing the datasets');
     for fnId=1:no_files
         if imgSw == 1
-            [img_info{fnId}, files{fnId}, pixSize{fnId}] = getImageMetadata(handles.filenames(fnId), options, handles.h);
+            options.matlabVersion = handles.h.matlabVersion;
+            options.Font = handles.h.preferences.Font;
+            [img_info{fnId}, files{fnId}, pixSize{fnId}] = getImageMetadata(handles.filenames(fnId), options);
             if isKey(img_info{fnId}, 'ImageDescription') == 0
                 errordlg('In order to fuse the images the Bounding Box information should be present in the ImageDescription field!','Missing the ImageDescription');
                 return;
@@ -646,12 +647,14 @@ if exist(fn, 'file') == 0
 end
 [~, ~, modelExt] = fileparts(fn);
 
+getMetaOpt.matlabVersion = handles.h.matlabVersion;
+getMetaOpt.Font = handles.h.preferences.Font;
 switch modelExt
     case '.mat'
         R = load(fn);
     case '.am'
         getMetaOpt.waitbar = 0;
-        img_info = getImageMetadata({fn}, getMetaOpt, handles.h);
+        img_info = getImageMetadata({fn}, getMetaOpt);
         keysList = keys(img_info);
         for keyId=1:numel(keysList)
             strfindResult = strfind(keysList{keyId}, 'Materials_');
@@ -668,7 +671,7 @@ switch modelExt
         R.imOut = amiraLabels2bitmap(fn);
     case '.nrrd'
         getMetaOpt.waitbar = 0;
-        img_info = getImageMetadata({fn}, getMetaOpt, handles.h);
+        img_info = getImageMetadata({fn}, getMetaOpt);
         R.imOut = nrrdLoadWithMetadata(fn);
         R.imOut =  uint8(permute(R.imOut.data, [2 1 3]));
     case '.tif'
