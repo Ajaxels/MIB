@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.23 / 19.09.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.232 / 26.09.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 

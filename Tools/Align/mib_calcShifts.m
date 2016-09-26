@@ -12,6 +12,7 @@ function [shiftX, shiftY] = mib_calcShifts(I, options)
 % - .step, step for comparison of images, default=1
 % - .refFrame, a number with the reference slice: when @b 0 - use the previous
 % - .mask, an optional mask image to select subareas to use for alignment,
+% - .waitbar, [optional] a handle to an existing waitbar
 % should  as I
 % slice, when 1 - use the first slice
 % 
@@ -42,6 +43,12 @@ if nargin < 2; options = struct(); end;
 if ~isfield(options, 'method'); options.method = 'xcMatlab'; end;    
 if ~isfield(options, 'refFrame'); options.refFrame = 0; end;    % use the previous slice for the reference
 
+if isfield(options, 'waitbar')
+    wb = options.waitbar;
+else
+    wb = waitbar(0, '', 'Name', 'Align and drift correction', 'WindowStyle','modal');
+end
+
 % get image dimensions
 [Height, Width, Depth] = size(I);
 
@@ -55,7 +62,7 @@ Iref=fft2(I(:,:,1));
 imgCenterX=floor((Width/2)+1);
 imgCenterY=floor((Height/2)+1);
 
-wb = waitbar(0,sprintf('Calculating drifts\nPlease wait...'), 'Name', 'Align and drift correction');
+waitbar(0,wb, sprintf('Calculating drifts\nPlease wait...'));
 
 %assignin('base', 'I', I);
 
@@ -90,7 +97,7 @@ switch options.method
             end
             
             if mod(i,10)==0;
-                waitbar(i/Depth,wb);
+                waitbar(i/Depth, wb);
             end
         end 
         
@@ -130,7 +137,9 @@ switch options.method
             shiftY = shiftY2;
         end
 end
-close(wb);
+if ~isfield(options, 'waitbar')
+    delete(wb);
+end
 
 end
 

@@ -10,7 +10,7 @@ function [imgOut, bbShiftXY] = mib_crossShiftStacks(I1, I2, shiftX, shiftY, opti
 % shiftY: a value for the Y-shift
 % options: an optional structure with options
 %  - .backgroundColor -> background color: 'black', 'white', 'mean', or a number
-%  - .waitbar -> [optional] a handle to the opened waitbar
+%  - .waitbar -> [optional] a handle to existing waitbar
 %  - .modelSwitch -> 1-defines that dataset has 3 dimensions
 %       [H,W,Z], or when 0 - 4 dimensions [H,W,C,Z]
 %

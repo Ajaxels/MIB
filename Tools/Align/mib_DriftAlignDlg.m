@@ -233,24 +233,57 @@ parameters.method = algorithmText{get(handles.methodPopup,'value')};
 if get(handles.singleStacksModeRadio,'value')   % align the currently opened dataset
     if strcmp(parameters.method, 'Single landmark point')
         optionsGetData.blockModeSwitch = 0;
-        selection = handles.I.getData3D('selection', NaN, 4, NaN, optionsGetData);
-        handles.shiftsX = zeros(1, size(selection, 3));
-        handles.shiftsY = zeros(1, size(selection, 3));
+        handles.shiftsX = zeros(1, size(handles.I.img, 4));
+        handles.shiftsY = zeros(1, size(handles.I.img, 4));
         
         shiftX = 0;     % shift vs 1st slice in X
         shiftY = 0;     % shift vs 1st slice in Y
-        for layer=1:size(selection, 3)-1
-            if sum(sum(selection(:,:,layer))) > 0   % landmark is found
-                STATS1 = regionprops(selection(:,:,layer), 'Centroid');
-                STATS2 = regionprops(selection(:,:,layer+1), 'Centroid');
-                if ~isempty(STATS2)  % no second landmark found
-                    shiftX = shiftX - round(STATS2.Centroid(1) - STATS1.Centroid(1));
-                    shiftY = shiftY - round(STATS2.Centroid(2) - STATS1.Centroid(2));
-                end
+        STATS1 = struct([]);
+        for layer=2:size(handles.I.img, 4)
+            if isempty(STATS1)
+                prevLayer = handles.I.getData2D('selection', layer-1, NaN, 4, NaN, optionsGetData);
+                STATS1 = regionprops(prevLayer, 'Centroid');
             end
-            handles.shiftsX(layer+1) = shiftX;
-            handles.shiftsY(layer+1) = shiftY;
+            if ~isempty(STATS1)
+                currLayer = handles.I.getData2D('selection', layer, NaN, 4, NaN, optionsGetData);
+                STATS2 = regionprops(currLayer, 'Centroid');
+                if ~isempty(STATS2)  % no second landmark found
+                    shiftX = shiftX + round(STATS1.Centroid(1) - STATS2.Centroid(1));
+                    shiftY = shiftY + round(STATS1.Centroid(2) - STATS2.Centroid(2));
+                    handles.shiftsX(layer:end) = shiftX;
+                    handles.shiftsY(layer:end) = shiftY;
+                    STATS1 = STATS2;
+                else
+                    STATS1 = struct([]);
+                end
+            else
+                STATS1 = struct([]);
+            end
         end
+        
+        toc
+        
+        figure(155);
+        plot(1:length(handles.shiftsX),handles.shiftsX,1:length(handles.shiftsY),handles.shiftsY);
+        legend('Shift X', 'Shift Y');
+        grid;
+        xlabel('Frame number');
+        ylabel('Displacement');
+        title('Detected drifts');
+       
+        if isdeployed == 0
+            assignin('base', 'shiftX', handles.shiftsX);
+            assignin('base', 'shiftY', handles.shiftsY);
+            fprintf('Shifts between images were exported to the Matlab workspace (shiftX, shiftY)\nThese variables can be modified and saved to a disk using the following command:\nsave ''myfile.mat'' shiftX shiftY;\n');
+        end
+        
+        fixDrifts = questdlg('Align the stack using detected displacements?','Fix drifts','Yes','No','Yes');
+        if strcmp(fixDrifts, 'No')
+            delete(parameters.waitbar);
+            return;
+        end
+        delete(155);
+        
         % do alignment
         handles.I.clearSelection();
         handles.I.img = mib_crossShiftStack(handles.I.img, handles.shiftsX, handles.shiftsY, parameters);
@@ -355,8 +388,8 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
                 waitbar(0, parameters.waitbar, sprintf('Extracting masked areas\nPlease wait...'));
                 
                 getDataOptions.blockModeSwitch = 0;
-                intensityShift =  mean(I(:));   % needed for better correlation of images of different size
-                img = zeros(size(I), class(I)) + intensityShift;
+                %intensityShift =  mean(I(:));   % needed for better correlation of images of different size
+                img = zeros(size(I), class(I));% + intensityShift;
                 bb = nan([size(I, 3), 4]);
                 
                 for slice = 1:size(I, 3)
@@ -367,7 +400,9 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
                     currBB = floor(stats.BoundingBox);
                     mask = mask(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1);
                     currImg = I(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1, slice);
+                    intensityShift = mean(mean(currImg));  % needed for better correlation of images of different size
                     currImg(~mask) = intensityShift;
+                    img(:, :, slice) = intensityShift;
                     img(1:currBB(4), 1:currBB(3), slice) = currImg;
                     
                     bb(slice, :) = currBB;

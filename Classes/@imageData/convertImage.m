@@ -284,7 +284,28 @@ elseif strcmp(format,'uint8')   % -> uint8
             return;
         case 'uint16'       % uint16->uint8 
             from = class(obj.img);
-            obj.img = uint8(obj.img / (double(intmax('uint16'))/double(intmax('uint8'))));
+            if max(obj.viewPort.min) > 0 || max(obj.viewPort.max)<65535 || mean(obj.viewPort.gamma) ~= 1
+                img = zeros(size(obj.img), 'uint8');
+                maxIndex = size(obj.img,5)*size(obj.img,3)*size(obj.img,4);
+                index = 1;
+                
+                for t=1:size(obj.img,5)
+                    for c=1:size(obj.img,3)
+                        for z=1:size(obj.img,4)
+                            img(:,:,c,z,t) = uint8(imadjust(obj.img(:,:,c,z,t), [obj.viewPort.min(c)/65535 obj.viewPort.max(c)/65535],[0 1],obj.viewPort.gamma(c))/255);
+                            if mod(index,10)==0; waitbar(index/maxIndex, wb); end
+                            index = index + 1;
+                        end
+                    end
+                end
+                obj.img = img;
+                log_text = ['ContrastGamma: Min:' num2str(obj.viewPort.min) ', Max: ' num2str(obj.viewPort.max) ,...
+                    ', Gamma: ' num2str(obj.viewPort.gamma)];
+                log_text = regexprep(log_text,' +',' ');
+                obj.updateImgInfo(log_text);
+            else
+                obj.img = uint8(obj.img / (double(intmax('uint16'))/double(intmax('uint8'))));
+            end
         case 'uint32'       % uint32->uint8
             from = class(obj.img);
             obj.img = uint8(obj.img / (double(intmax('uint32'))/double(intmax('uint8'))));

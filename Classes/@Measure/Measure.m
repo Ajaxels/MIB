@@ -559,8 +559,12 @@ classdef Measure < matlab.mixin.Copyable
             %disableSelectionSwitch = handles.preferences.disableSelection;    % get current settings
             %handles.preferences.disableSelection = 'yes'; % disable selection
             %guidata(handles.im_browser, handles);   % store handles
-            brushSize = get(handles.segmSpotSizeEdit,'string');
-            set(handles.segmSpotSizeEdit,'string', '0');
+            
+            %brushSize = get(handles.segmSpotSizeEdit,'string');
+            %set(handles.segmSpotSizeEdit,'string', '0');
+            
+            currentSegmentationTool = get(handles.seltypePopup,'value');
+            set(handles.seltypePopup,'value', 4);   % set segmentation tool to black and white theresholding
             
             switch type
                 case 'imline'
@@ -636,7 +640,9 @@ classdef Measure < matlab.mixin.Copyable
             obj.roi.cb = [];
             
             % restore the brush size
-            set(handles.segmSpotSizeEdit,'string', brushSize);
+            %set(handles.segmSpotSizeEdit,'string', brushSize);
+
+            set(handles.seltypePopup, 'value', currentSegmentationTool);   % restore segmentation tool
             
             % restore selected state for the selection
             %handles.preferences.disableSelection = disableSelectionSwitch;

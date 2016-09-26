@@ -72,6 +72,9 @@ else
 end
 handles.h = varargin{1};    % handles of im_browser
 
+% turn off the fine tune check
+set(handles.finetuneCheck, 'value', 0);
+
 updateWidgets(handles);     % update widgets of the mib_measureTool window
 
 handles.measureTable_cm = uicontextmenu('Parent',handles.mib_measureTool);

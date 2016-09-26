@@ -1,5 +1,5 @@
-function img = ib_interpolateShapes(img, max_pnts)
-% function img = ib_interpolateShapes(img, max_pnts)
+function [img, boundingBox] = ib_interpolateShapes(img, max_pnts)
+% function [img, boundingBox] = ib_interpolateShapes(img, max_pnts)
 % Interpolate the shapes between the slices
 %
 % One of two interpolation methods. The interpolation method can be
@@ -12,6 +12,7 @@ function img = ib_interpolateShapes(img, max_pnts)
 %
 % Return values:
 % img: -> binary image dataset, for example the 'Selection' layer [1:height, 1:width, 1:z]
+% boundingBox: -> a bounding box of the area that was used to calculate interpolation, [xMin, xMax, yMin, yMax, zMin, zMax]
 % @see ib_interpolateLines
 
 % Copyright (C) 21.11.2012 Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
@@ -22,35 +23,53 @@ function img = ib_interpolateShapes(img, max_pnts)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% v1.01 06.03.2014, fixed the interpolation for the last slice in sequence
-% and added removal of consecutive slices from interpolation
+% 06.03.2014, fixed the interpolation for the last slice in sequence and added removal of consecutive slices from interpolation
+% 26.09.2016, improved performance
 
 %O = load('interp_test.mat');
 %img = O.Amira_SemImage_cell_labels_pure_mat;  % frames 1 & 8
 
 width = size(img,2);
 height = size(img,1);
-if nargin < 2;     max_pnts = 140; end;
 
-slices = []; % find slices with selection
+if nargin < 2;     max_pnts = 140; end;
+boundingBox = [];
+
+bb = nan([size(img,3), 4]);     % allocate space for slices
+cent = nan([size(img,3), 2]);     % allocate space for slices
+slices = [];    % indices of slices that have shapes
+
 for i=1:size(img,3);
-    if find(img(:,:,i),1,'first')>0; % find slices with selection
+    STATS = regionprops(img(:,:,i),'Centroid', 'BoundingBox');
+    if ~isempty(STATS)
+        bb(i, :) = STATS.BoundingBox;
+        cent(i, :) = STATS.Centroid;
         slices = [slices i];
-    end;
+    end
 end;
+
+if isempty(slices) || numel(slices) == 1; return; end;
+
+% find borders for the bounding box
+minX = ceil(min(bb(slices, 1)));
+minY = ceil(min(bb(slices, 2)));
+maxX = floor(max(bb(slices, 3)+bb(slices, 1)));
+maxY = floor(max(bb(slices, 4)+bb(slices, 2)));
+% shift centroids
+cent(:,1) = cent(:,1)-minX;
+cent(:,2) = cent(:,2)-minY;
 
 for ind = 2:numel(slices)
     sl_id1 = slices(ind-1);     % number of the 1st slice with shape
     sl_id2 = slices(ind);       % number of the 2nd slice with shape
     if sl_id1 == sl_id2 - 1; continue; end;     % do not consider consecutive slices
-    bw1 = bwperim(img(:,:,sl_id1));  % get first shape
-    bw2 = bwperim(img(:,:,sl_id2));    % get second shape
+    bw1 = bwperim(img(minY:maxY, minX:maxX, sl_id1));  % get first shape
+    bw2 = bwperim(img(minY:maxY, minX:maxX, sl_id2));    % get second shape
+    
     
     % get centroids to estimate starting point for perimeter trace
-    Cent1 = regionprops(img(:,:,sl_id1),'Centroid');
-    Cent2 = regionprops(img(:,:,sl_id2),'Centroid');
-    Cent1 = round(Cent1.Centroid);
-    Cent2 = round(Cent2.Centroid);
+    Cent1 = round(cent(sl_id1, :));
+    Cent2 = round(cent(sl_id2, :));
 
     if ~isempty(find(bw1(1:Cent1(2),Cent1(1))==1,1)) && ~isempty(find(bw2(1:Cent2(2),Cent2(1))==1,1)) % take northern points from centroids on both shapes
         start_pnt1 = [find(bw1(1:Cent1(2),Cent1(1))==1,1), Cent1(1)];
@@ -119,10 +138,10 @@ for ind = 2:numel(slices)
     contour = interp_points(contour1, contour2, sl_id1, sl_id2);
     % connect points in the intermediate slices
     for interm_slice = sl_id1+1:sl_id2-1
-        img(:,:,interm_slice) = draw_2d_lines(img(:,:,interm_slice), contour(:,:,interm_slice-sl_id1+1));
+        img(minY:maxY, minX:maxX, interm_slice) = draw_2d_lines(img(minY:maxY, minX:maxX, interm_slice), contour(:, :, interm_slice-sl_id1+1));
     end
 end
-
+boundingBox = [minX, maxX, minY, maxY, min(slices), max(slices)];
 end
 
 function contour = interp_points(contour1, contour2, slice_id1, slice_id2)
