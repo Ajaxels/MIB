@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Tutorials</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-26"><meta name="DC.source" content="im_browser_tutorials.m"><style type="text/css">
+      --><title>Microscopy Image Browser Tutorials</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-07"><meta name="DC.source" content="im_browser_tutorials.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -69,28 +69,31 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
   </style></head><body><div class="content"><h1>Microscopy Image Browser Tutorials</h1><p>The tutorials are grouped into a following subsections. Tutorials home page: <a href="http://mib.helsinki.fi/tutorials.html">&lt;http://mib.helsinki.fi/tutorials.html</a>&gt;.</p><p><a href="im_browser_product_page.html">Back to Index</a></p><p>
 <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr>
-  <td style="width=150px;"><a href='tutor_intro.html'><img src="images\mib_userinterface.jpg"></a></td>
-  <td><a href='tutor_intro.html'>Introduction</a></td>
+  <td style="width=150px;"><a href='http://mib.helsinki.fi/tutorials.html'><img src="images\mib_userinterface.jpg"></a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials.html'>Introduction</a></td>
 </tr>
 <tr>
-  <td><a href='tutor_segm.html'><img src="images\alignmenttool.jpg"></a></td>
-  <td><a href='tutor_segm.html'>Image processing and segmentation</a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_segmentation.html'><img src="images\3d_modelling.jpg"></a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_segmentation.html'>Image segmentation</a></td>
 </tr>
 <tr>
-  <td><a href='tutor_visualization.html'><img src="images\visualizationoverview.jpg"></a></td>
-  <td><a href='tutor_visualization.html'>Visualization</a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_visualization.html'><img src="images\visualizationoverview.jpg"></a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_visualization.html'>Visualization</a></td>
 </tr>
 <tr>
-  <td><a href='tutor_programming.html'><img src="images\simpleCustomScript_otsuThresholding.jpg"></a></td>
-  <td><a href='tutor_programming.html'>Programming</a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_tools.html'><img src="images\alignmenttool.jpg"></a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_tools.html'>Image processing and segmentation</a></td>
+</tr>
+<tr>
+  <td><a href='http://mib.helsinki.fi/tutorials_programming.html'><img src="images\simpleCustomScript_otsuThresholding.jpg"></a></td>
+  <td><a href='http://mib.helsinki.fi/tutorials_programming.html'>Programming</a></td>
 </tr>
 </table>
 </p><p><a href="im_browser_product_page.html">Back to Index</a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Microscopy Image Browser Tutorials
 % The tutorials are grouped into a following subsections. Tutorials home
-% page: <http://mib.helsinki.fi/tutorials.html
-% http://mib.helsinki.fi/tutorials.html>.
+% page: <http://mib.helsinki.fi/tutorials.html  http://mib.helsinki.fi/tutorials.html>.
 %
 % <im_browser_product_page.html Back to Index>
 %
@@ -98,20 +101,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % <html>
 % <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
 % <tr>
-%   <td style="width=150px;"><a href='tutor_intro.html'><img src="images\mib_userinterface.jpg"></a></td>
-%   <td><a href='tutor_intro.html'>Introduction</a></td>
+%   <td style="width=150px;"><a href='http://mib.helsinki.fi/tutorials.html'><img src="images\mib_userinterface.jpg"></a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials.html'>Introduction</a></td>
 % </tr>
 % <tr>
-%   <td><a href='tutor_segm.html'><img src="images\alignmenttool.jpg"></a></td>
-%   <td><a href='tutor_segm.html'>Image processing and segmentation</a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_segmentation.html'><img src="images\3d_modelling.jpg"></a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_segmentation.html'>Image segmentation</a></td>
 % </tr>
 % <tr>
-%   <td><a href='tutor_visualization.html'><img src="images\visualizationoverview.jpg"></a></td>
-%   <td><a href='tutor_visualization.html'>Visualization</a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_visualization.html'><img src="images\visualizationoverview.jpg"></a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_visualization.html'>Visualization</a></td>
 % </tr>
 % <tr>
-%   <td><a href='tutor_programming.html'><img src="images\simpleCustomScript_otsuThresholding.jpg"></a></td>
-%   <td><a href='tutor_programming.html'>Programming</a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_tools.html'><img src="images\alignmenttool.jpg"></a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_tools.html'>Image processing and segmentation</a></td>
+% </tr>
+% <tr>
+%   <td><a href='http://mib.helsinki.fi/tutorials_programming.html'><img src="images\simpleCustomScript_otsuThresholding.jpg"></a></td>
+%   <td><a href='http://mib.helsinki.fi/tutorials_programming.html'>Programming</a></td>
 % </tr>
 % </table>
 % </html>

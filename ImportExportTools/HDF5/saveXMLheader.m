@@ -12,8 +12,7 @@ function result  = saveXMLheader(filename, options)
 % .depth - number of z-stacks of the dataset
 % .time - number of time points
 % .pixSize - a structure with pixel size of the dataset (.x .y .z .units)
-% .lutColor - [@em optional], a matrix with definition of color channels
-% [1:colorChannel, R G B], (0-1); or colors for materials of the model
+% .lutColor - [@em optional], a matrix with definition of color channels [1:colorChannel, R G B], (0-1); or colors for materials of the model
 % .ImageDescription - [@em optional], a string with description of the dataset
 % .DatasetName - [@em optional], name of the dataset in the H5 file (not used with Big Data Viewer)
 % .ModelMaterialNames [@em optional], a cell array with names of materials

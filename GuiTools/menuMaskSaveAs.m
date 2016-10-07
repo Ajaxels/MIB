@@ -18,12 +18,13 @@ function menuMaskSaveAs(hObject, eventdata, handles)
 % Updates
 % 07.09.2015, IB updated to use imageData.getData3D methods
 % 17.02.2016, IB updated for 4D datasets
+% 29.09.2016, IB added Mask_ prefix for the filename
 
 % Save mask layer to a file in Matlab format
 if handles.Img{handles.Id}.I.maskExist == 0; disp('Cancelled: No mask information found!'); return; end;
 if isnan(handles.Img{handles.Id}.I.maskImgFilename)
     [pathstr, name] = fileparts(handles.Img{handles.Id}.I.img_info('Filename'));
-    fn_out = fullfile(pathstr, [name '.mask']);
+    fn_out = fullfile(pathstr, ['Mask_' name '.mask']);
     if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
         fn_out = fullfile(handles.mypath, fn_out);
     end

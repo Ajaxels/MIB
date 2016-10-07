@@ -4,8 +4,7 @@ function clearSelection(obj, height, width, z, t)
 % the area where the 'Selection' layer should be cleared.
 %
 % Parameters:
-% height: [@em optional], can be @b NaN, a vector of heights(for example
-% [1:imageData.height]) or a string with the mode ('2D', '3D', '4D') 
+% height: [@em optional], can be @b NaN, a vector of heights(for example [1:imageData.height]) or a string with the mode ('2D', '3D', '4D') 
 % width: [@em optional], can be @b NaN, a vector of width, for example [1:imageData.width]
 % z: [@em optional] a vector of z-values, for example [1:imageData.no_stacks]
 % t: [@em optional] a vector of t-values, for example [1:imageData.time]

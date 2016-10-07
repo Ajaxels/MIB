@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-26"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style type="text/css">
+      --><title>Dataset Menu</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-07"><meta name="DC.source" content="ug_gui_menu_dataset.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,24 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Dataset Menu</h1><!--introduction--><p>Modify parameters such as voxel sizes and the bounding box for the dataset, start the Alignment tool, or do some other dataset related actions.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Alignment tool...</a></li><li><a href="#2">Crop dataset...</a></li><li><a href="#3">Resample...</a></li><li><a href="#5">Transform</a></li><li><a href="#6">Slice</a></li><li><a href="#7">Scale bar</a></li><li><a href="#8">Bounding Box...</a></li><li><a href="#9">Parameters</a></li></ul></div><h2>Alignment tool...<a name="1"></a></h2><p>Can be used to align the slices of the opened dataset or to align two separate datasets. See details <a href="ug_gui_menu_dataset_alignment.html"><b>here</b></a>.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool.jpg" alt=""> </p><h2>Crop dataset...<a name="2"></a></h2><p>Crop the image and corresponding Selection, Mask, and Model layers. Cropping can be done in the Interactive, Manual or using ROI mode.</p><p><img vspace="5" hspace="5" src="images/menuImageCropDlg2.jpg" alt=""> </p><p>When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle area a top of the image. This area can then be used for cropping.</p><p>The values for cropping may also be provided directly by enabling the <tt>Manual</tt> mode. It is also possible to do cropping based on the selected ROI. Use the <a href="ug_panel_roi.html">ROI panel</a> to make them.</p><p>The dataset can be just cropped (the <tt>Crop</tt> button) or copied to another buffer and cropped (the <tt>Crop to</tt> button). The multiple buffer buttons buttons located at the top of the <a href="ug_panel_dir.html">Directory Contents panel</a>.</p><p>The cropped datasets can be placed back to the original dataset using the <i>Fuse into existing</i> mode of the <i>Chop image tool</i> available at <tt>Menu-&gt;File-&gt;Chop images...-&gt;Import...</tt>. <a href="ug_gui_menu_file_chop.html">See more here.</a></p><h2>Resample...<a name="3"></a></h2><p>Resample image in any possible direction.</p><p><img vspace="5" hspace="5" src="images/menuImageResampleDlg.jpg" alt=""> </p><h2>Transform<a name="5"></a></h2><p>Transformation of dataset: image and all other layers. The following modes are possible</p><div><ul><li><b>Flip horizontally</b> - flips dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis</li><li><b>Flip vertically</b> - flips dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis</li><li><b>Flip Z</b> - flips dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset</li><li><b>Flip Y</b> - flips dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset</li><li><b>Rotate 90 degrees</b> - rotates dataset 90 degrees clockwise diirection</li><li><b>Rotate -90 degrees</b> - rotates dataset 90 degrees anti-clockwise diirection</li><li><b>Transpose XY -&gt; ZX</b> - physically transposes the dataset, so that the XY orienation, becomes ZX</li><li><b>Transpose XY -&gt; ZY</b> - physically transposes the dataset, so that the XY orienation, becomes ZY</li><li><b>Transpose ZX -&gt; ZY</b> - physically transposes the dataset, so that the ZX orienation, becomes ZY</li><li><b>Transpose Z <a href="-">-</a> T</b> - physically transposes the dataset, so that the Z orienation, becomes T</li></ul></div><h2>Slice<a name="6"></a></h2><p>Manipulations with individual slices of the dataset. The following actions are possible</p><div><ul><li><b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the dataset. <i>For example, type " <tt>5:10</tt> " to delete all slices from slice 5 to slice 10.</i></li><li><b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li></ul></div><h2>Scale bar<a name="7"></a></h2><p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p><p>How to use:</p><p><img vspace="5" hspace="5" src="images/menuDatasetScalebar.jpg" alt=""> </p><h2>Bounding Box...<a name="8"></a></h2><p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p><p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p><p><img vspace="5" hspace="5" src="images/menuDatasetBoundingBox.jpg" alt=""> </p><div><ul><li><b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li><li><b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <tt>X, min</tt> and <tt>Y, min</tt> coordinates are going to be recalculated.</li><li><b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li><li><b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li><li><b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li></ul></div><p>
+  </style></head><body><div class="content"><h1>Dataset Menu</h1><!--introduction--><p>Modify parameters such as voxel sizes and the bounding box for the dataset, start the Alignment tool, or do some other dataset related actions.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Alignment tool...</a></li><li><a href="#2">Crop dataset...</a></li><li><a href="#3">Resample...</a></li><li><a href="#5">Transform</a></li><li><a href="#6">Slice</a></li><li><a href="#7">Scale bar</a></li><li><a href="#8">Bounding Box...</a></li><li><a href="#9">Parameters</a></li></ul></div><h2>Alignment tool...<a name="1"></a></h2><p>Can be used to align the slices of the opened dataset or to align two separate datasets. See details <a href="ug_gui_menu_dataset_alignment.html"><b>here</b></a>.</p><p><img vspace="5" hspace="5" src="images/menuDatasetAlignTool.jpg" alt=""> </p><h2>Crop dataset...<a name="2"></a></h2><p>Crop the image and corresponding Selection, Mask, and Model layers. Cropping can be done in the Interactive, Manual or using ROI mode.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+</p><p><img vspace="5" hspace="5" src="images/menuImageCropDlg2.jpg" alt=""> </p><p>When the interactive mode is selected it is possible to draw (by pressing and holding left mouse button) a rectangle area a top of the image. This area can then be used for cropping.</p><p>The values for cropping may also be provided directly by enabling the <tt>Manual</tt> mode. It is also possible to do cropping based on the selected ROI. Use the <a href="ug_panel_roi.html">ROI panel</a> to make them.</p><p>The dataset can be just cropped (the <tt>Crop</tt> button) or copied to another buffer and cropped (the <tt>Crop to</tt> button). The multiple buffer buttons buttons located at the top of the <a href="ug_panel_dir.html">Directory Contents panel</a>.</p><p>The cropped datasets can be placed back to the original dataset using the <i>Fuse into existing</i> mode of the <i>Chop image tool</i> available at <tt>Menu-&gt;File-&gt;Chop images...-&gt;Import...</tt>. <a href="ug_gui_menu_file_chop.html">See more here.</a></p><h2>Resample...<a name="3"></a></h2><p>Resample image in any possible direction.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+</p><p><img vspace="5" hspace="5" src="images/menuImageResampleDlg.jpg" alt=""> </p><h2>Transform<a name="5"></a></h2><p>Transformation of dataset: image and all other layers. The following modes are possible</p><div><ul><li><b>Flip horizontally</b> - flips dataset left to right, returns the dataset with columns flipped in the left-right direction, that is, about a vertical axis</li><li><b>Flip vertically</b> - flips dataset up to down, returns the dataset with rows flipped in the up-down direction, that is, about a horizontal axis</li><li><b>Flip Z</b> - flips dataset in the Z dimension, returns the dataset with slices flipped in the first-last direction, that is, about a middle slice of the dataset</li><li><b>Flip Y</b> - flips dataset in the T dimension, returns the dataset with time frames flipped in the first-last direction, that is, about a middle frame of the dataset</li><li><b>Rotate 90 degrees</b> - rotates dataset 90 degrees clockwise diirection</li><li><b>Rotate -90 degrees</b> - rotates dataset 90 degrees anti-clockwise diirection</li><li><b>Transpose XY -&gt; ZX</b> - physically transposes the dataset, so that the XY orienation, becomes ZX</li><li><b>Transpose XY -&gt; ZY</b> - physically transposes the dataset, so that the XY orienation, becomes ZY</li><li><b>Transpose ZX -&gt; ZY</b> - physically transposes the dataset, so that the ZX orienation, becomes ZY</li><li><b>Transpose Z <a href="-">-</a> T</b> - physically transposes the dataset, so that the Z orienation, becomes T</li></ul></div><p>
+A brief demonstration is available in the following videos:<br>
+Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+</p><h2>Slice<a name="6"></a></h2><p>Manipulations with individual slices of the dataset. The following actions are possible</p><div><ul><li><b>Delete slice(s)...</b> - removes desired slice(s) from a Z-stack of the dataset. <i>For example, type " <tt>5:10</tt> " to delete all slices from slice 5 to slice 10.</i></li><li><b>Delete frame(s)...</b> - removes desired frame(s) from a time series of the dataset.</li></ul></div><h2>Scale bar<a name="7"></a></h2><p>Scale bar is a tool that allows to use a scale bar printed on the image to calibrate physical size (X and Y) for pixels in MIB.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+</p><p>How to use:</p><p><img vspace="5" hspace="5" src="images/menuDatasetScalebar.jpg" alt=""> </p><h2>Bounding Box...<a name="8"></a></h2><p>Bounding Box defines position of the dataset in the 3D space; the bounding box information is important for positioning of datasets in the visualization software, such as Amira. The bounding box can be shifted based on its minimal or centeral coordinates. The current coordinates of the bounding box are shown under the <i>Current Bounding Box</i> text.</p><p><b>Attention!</b> For 3D images the bounding box is calculated as the smallest box containing all voxel centers, but not all voxels as is! <i>I.e.</i> it's defined by the voxel centers, which means that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+</p><p><img vspace="5" hspace="5" src="images/menuDatasetBoundingBox.jpg" alt=""> </p><div><ul><li><b>X, Y, Z, min</b> - defines minimal coordinates of the bounding box</li><li><b>X, Y, center</b> - defines central coordinates of the dataset. When the central coordinates are used the <tt>X, min</tt> and <tt>Y, min</tt> coordinates are going to be recalculated.</li><li><b>*X, Y, Z max</b> - maximal values of the bounding box. When entered together with the <b>X, Y, Z min</b> coordinates - MIB recalculates the voxel sizes.</li><li><b>Stage rotation bias, degrees</b> - implemented only when entering X, Y center coordinates. Allows recalculation of the coordinates for the cases when the stage has some rotation bias, for example, Gatan 3View has 45 degrees stage bias.</li><li><b>Import from Clipboard</b>, parses text in the system clipboard and automatically extracts the following parameters (syntax: <i>[ParameterName] = [ParameterValue]</i>):</li></ul></div><p>
 <table style="width: 550px; text-align: center;" cellspacing=2px cellpadding=2px >
 <tr>
   <td style="width=150px;"><b>Parameter Name</b></td><td><b>Description</b></td>
@@ -112,6 +129,11 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %% Crop dataset...
 % Crop the image and corresponding Selection, Mask, and Model layers.
 % Cropping can be done in the Interactive, Manual or using ROI mode. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+% </html>
 % 
 % <<images/menuImageCropDlg2.jpg>>
 % 
@@ -133,6 +155,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % 
 %% Resample...
 % Resample image in any possible direction. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+% </html>
+%
 %%
 % 
 % <<images/menuImageResampleDlg.jpg>>
@@ -153,6 +181,13 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % * *Transpose ZX -> ZY* - physically transposes the dataset, so that the ZX orienation, becomes ZY
 % * *Transpose Z <-> T* - physically transposes the dataset, so that the Z orienation, becomes T
 % 
+% <html>
+% A brief demonstration is available in the following videos:<br>
+% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+% </html>
+%
 %% Slice
 % Manipulations with individual slices of the dataset. The following actions are possible
 %
@@ -166,6 +201,11 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 %% Scale bar
 % Scale bar is a tool that allows to use a scale bar printed on the 
 % image to calibrate physical size (X and Y) for pixels in MIB.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+% </html>
 % 
 % How to use:
 %
@@ -184,6 +224,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 % box containing all voxel centers, but not all voxels as is! _I.e._ it's defined by the voxel centers, which means 
 % that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+% </html>
 %
 % <<images/menuDatasetBoundingBox.jpg>>
 % 

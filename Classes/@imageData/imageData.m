@@ -52,7 +52,6 @@ classdef imageData < matlab.mixin.Copyable
         % @note The 'Image' layer dimensions: @code [1:height, 1:width, 1:colors 1:no_stacks] @endcode.
         img_info
         % information about the dataset, an instance of the 'containers'.'Map' class
-        %
         % Default keys:
         % @li @b ColorType - ''grayscale''
         % @li @b ImageDescription - ''''
@@ -136,7 +135,7 @@ classdef imageData < matlab.mixin.Copyable
         % @note dimensions are @code ([height, width, color, z],[min max]) @endcode
         % @li (1,[min max]) - height
         % @li (2,[min max]) - width
-        % @li (3,[min max]) - colors , array of color channels to show, for example [1, 3, 4];
+        % @li (3,[min max]) - colors , array of color channels to show, for example [1, 3, 4]
         % @li (4,[min max]) - z - value
         % @li (5,[min max]) - t - time point
         storedSelection

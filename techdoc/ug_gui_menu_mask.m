@@ -40,6 +40,11 @@
 %% Replace masked area in the image.
 % Replaces image intensity in the masked areas with new values. A new dialog
 % would ask to provide new intensities, slices, and the color channels.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/fNz1vGq7Hb0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/fNz1vGq7Hb0</a>
+% </html>
 %%
 % 
 % <<images/menuMaskReplaceColor.jpg>>

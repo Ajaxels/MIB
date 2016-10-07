@@ -92,8 +92,12 @@ if strcmp(modifier, 'control') | strcmp(cell2mat(modifier), 'shiftcontrol') | st
         text_str = '99';
     end
     
-    for i=1:numel(text_str)
-        coord(i) = (find(table == text_str(i))-1)*8 + 1; %#ok<AGROW>
+    try
+        for i=1:numel(text_str)
+            coord(i) = (find(table == text_str(i))-1)*8 + 1; %#ok<AGROW>
+        end
+    catch err
+        0
     end
     valuePointer = zeros([16 16]);
     for index = 1:numel(text_str)

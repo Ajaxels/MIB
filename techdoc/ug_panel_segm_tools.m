@@ -43,11 +43,16 @@
 % </td>
 % </tr>
 % </table>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1s</a>
 % </html>
 %
 %% 2. Annotations
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% <br>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -101,7 +106,11 @@
 % </td>
 % <td style="border: 0px">
 % Use brush to make selection. The brush size is regulated with
-% the <b>Radius, px</b> edit box. 
+% the <b>Radius, px</b> edit box
+% <br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
+% <br>
 % <br><br>Objects from different image slices may be connected
 % using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
 % see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
@@ -118,10 +127,11 @@
 % </td>
 % </tr>
 % </table>
+% <br>
 % <h3>Superpixels with the Brush tool</h3>
 % </html>
 %
-% *The Superpixels mode* can be initiated by selecting the *Watershed* or *SLIC* checkbox. In the 
+% *The Superpixels mode* can be initiated by selecting the <https://youtu.be/vVh1j3HBh-c *Watershed*> or <https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj *SLIC*> checkbox. In the 
 % Superpixels mode the brush tool selects not individual pixels but rather
 % groups of pixels (superpixels). While drawing the selection of the last superpixel can
 % be undone by pressiong the *|Ctrl+Z|* shortcut.
@@ -202,6 +212,8 @@
 % </td>
 % </tr>
 % </table>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
 %
 %% 5. The Lasso tool
@@ -214,7 +226,10 @@
 % </td>
 % <td style="border: 0px">
 % Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
-% <br><br>
+% <br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
+% <br>
 % <b>How to use:</b>
 % <ul>
 % <li>Press and release the selection mouse key (default: left mouse button) above the
@@ -243,6 +258,8 @@
 % selected pixel and two threshold values from the |Threshold| edit boxes.
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -272,6 +289,11 @@
 % This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
 %
 % <html>
+% A brief demonstration for 2D is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+% <br>
+% A brief demonstration for 3D is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -316,6 +338,9 @@
 % for selection.
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+% <br>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -432,8 +457,10 @@
 %   <img src = "images\07_panel_segm_tools_spot.jpg">
 % </td>
 % <td style="border: 0px">
-% Adds a spot - a circular object with a <em>mouse click</em>. 
-% <br><br>
+% Adds a spot - a circular object with a <em>mouse click</em><br><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
+% <br>
 % Use the <b>Radius, px</b> edit box to specify the radius of the spot. 
 % <br><br>
 % Works also in 3D.

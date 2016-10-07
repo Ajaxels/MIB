@@ -7,6 +7,16 @@
 %%
 % <<images\13_panel_image_filters.jpg>>
 % 
+%
+%% Brief video demonstration
+%
+% <html>
+% Use of filters in a brief video demonstration:<br>
+% <a
+% href="https://youtu.be/VwEPZxObA5U"><img
+% src="images\youtube2.png"></a>
+% </html>
+%
 %% Image Filter combo box.
 % Allows selection of a filter from a list of 2D and 3D image filters. Depending on the filter type some additional parameters
 % should be specified in the |HSize|, |Sigma|, |lambda|, |Type|, |Angle|, |Iter| edit boxes.

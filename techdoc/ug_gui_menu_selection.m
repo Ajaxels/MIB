@@ -19,6 +19,11 @@
 % for the currently shown slice or for the whole volume.
 %% Morphological 2D/3D operations
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/L-w8eGDfUkU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/L-w8eGDfUkU</a>
+% </html>
+%
 % <<images/ultimate_erosion.jpg>>
 %
 % Performs 2D morphological operations on the |Selection| layer. See more in the description of Matlab |bwmorph| function. The following operations are available:
@@ -49,11 +54,21 @@
 % 
 % <<images/interpolation_shape.jpg>>
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=4m3s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m3s</a>
+% </html>
+%
 % * *line* - good for interpolation of the *not closed* lines (such as membranes).
 %%
 % 
 % <<images/interpolation_line.jpg>>
 % 
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+% </html>
 % 
 % *_Please note!_* there should be only one object in the |Selection| layer on the starting and ending slices.
 %
@@ -69,6 +84,12 @@
 %% Replace selected area in the image
 % Replaces image intensities in the selected areas with new values. A new
 % dialog will ask to provide new intensities, slices, and the color channels.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/fNz1vGq7Hb0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/fNz1vGq7Hb0</a>
+% </html>
+%
 %% Smooth selection
 % Smoothes the |Selection| layer in 2D or 3D space.
 %% Invert selection

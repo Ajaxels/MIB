@@ -1,6 +1,11 @@
 %% Key & mouse shortcuts
 % List of key and mouse shortcuts; 
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/qrLyrP9f018"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/qrLyrP9f018</a>
+% </html>
+%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> 
 %
 %% General notes

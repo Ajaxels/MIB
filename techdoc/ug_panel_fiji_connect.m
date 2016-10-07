@@ -8,11 +8,21 @@
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*>
 %%
-%%
+%
 % 
 % 
 % <<images\20_fijiconnect_panel.jpg>>
 % 
+%% Video tutorial
+%
+% <html>
+% Detailed demonstration on data exchange between MIB and Fiji can be seen
+% in a video tutorial:<br>
+% <a
+% href="https://youtu.be/DZ1Tj3Fh2HM?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj">Visualization of datasets and models using Fiji <img
+% src="images\youtube2.png"></a>
+% </html>
+%
 %% 1. The Start Fiji button
 % Start an instance of Fiji by pressing this button. In order for communication between Matlab and Fiji to work, Fiji 
 % should be started from Matlab using this button. *_Press this button before doing anything else!_*

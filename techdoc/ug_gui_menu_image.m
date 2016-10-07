@@ -23,6 +23,11 @@
 %% Color Channels
 % Perform some actions with color channels of the image
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
+% </html>
+%
 % * *Insert empty channel...*, insert an empty channel (intensity of all
 % pixels is 0) to the specified position
 % * *Copy channel...*, copy one channel to another position 
@@ -34,7 +39,14 @@
 % It is also possible to do color channel operations from the |Colors| table in the <ug_panel_view_settings.html View settings panel>.
 %
 %% Contrast
-% Adjust contrast of the dataset
+% Adjust contrast of the dataset. For the linear contrast stretching it is
+% recommended to use Image Adjustment dialog available via the <ug_panel_adjustments.html Display
+% button> in the <ug_panel_view_settings.html View Settings panel>.
+%
+% <html>
+% A tutorial on image normalization is available in the following video:<br>
+% <a href="https://youtu.be/MmBmdGtuUdM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/MmBmdGtuUdM</a>
+% </html>
 %%
 % 
 % * *Linear contrast*, linear contrast adjustment for current or all
@@ -62,6 +74,11 @@
 %% Invert image
 % Invert image intensities, shortcut |Ctrl+i|.
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/1DG2w5XYA18"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1DG2w5XYA18</a>
+% </html>
+%
 % * *Shown slice (2D)*, invert only the currently shown slice of the
 % dataset
 % * *Current stack (3D)*, invert the current stack of the dataset
@@ -72,6 +89,11 @@
 % applied to images. The processed image may be also added or subtracted
 % from the existing image (see the settings in the |Additional action to
 % the result| panel).
+% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/itbVLFm0FKQ"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/itbVLFm0FKQ</a>
+% </html>
 % 
 % <<images\menuImageMorphOps.jpg>>
 % 
@@ -94,6 +116,8 @@
 %
 % * *Line* 
 % * *Arbitrary* 
+% 
+% For intensity profiles it is recommended to use the <ug_gui_menu_tools_measure.html Measure length tool>.
 %
 %% Histogram
 % Show histogram of image intensities, see details in |imcontrast| function

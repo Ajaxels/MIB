@@ -12,6 +12,13 @@
 % 
 %
 %% General example
+%
+%
+% <html>
+% A demonstration of the Graphcut segmentation is available in the following video:<br>
+% <a href="https://youtu.be/dMeoIZPaDS4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4</a>
+% </html>
+%
 % <<images\menuToolsWatershed_Overview.jpg>>
 % 
 %

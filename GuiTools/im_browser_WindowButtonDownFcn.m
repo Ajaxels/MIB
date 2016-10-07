@@ -156,7 +156,11 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
             return;
         case 'Lasso'
             % Lasso mode
-            handles = ib_segmentation_Lasso(modifier, handles);
+            try
+                handles = ib_segmentation_Lasso(modifier, handles);
+            catch err
+            
+            end
         case {'MagicWand-RegionGrowing'}
             % Magic Wand mode
             magicWandRadius = str2double(get(handles.magicWandRadius, 'String'));
@@ -203,7 +207,10 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
                 end
             end
             yxzCoordinate = [h,w,z];
-            handles = ib_segmentation_ObjectPicker(ceil(yxzCoordinate), modifier, handles);
+            try
+                handles = ib_segmentation_ObjectPicker(ceil(yxzCoordinate), modifier, handles);
+            catch err
+            end
             if get(handles.filterSelectionPopup,'Value') == 6; return; end;     % return when using the Brush tool
         case 'Membrane ClickTracker'
             % Trace membranes

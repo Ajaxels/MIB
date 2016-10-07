@@ -42,10 +42,11 @@
 %   <td>
 %       <a href="http://mib.helsinki.fi/tutorials.html">Tutorials main web-page</a><br><br>
 %       <ul style="line-height:90%">  
-%           <li><a href='tutor_intro.html'>Introduction</a></li>
-%           <li><a href='tutor_segm.html'>Image processing and segmentation</a></li>
-%           <li><a href='tutor_visualization.html'>Visualization</a></li>
-%           <li><a href='tutor_programming.html'>Programming</a></li>
+%           <li><a href='http://mib.helsinki.fi/tutorials_tools.html'>Introduction</a></li>
+%           <li><a href='http://mib.helsinki.fi/tutorials_segmentation.html'>Image segmentation</a></li>
+%           <li><a href='http://mib.helsinki.fi/tutorials_visualization.html'>Visualization</a></li>
+%           <li><a href='http://mib.helsinki.fi/tutorials_tools.html'>Tools</a></li>
+%           <li><a href='http://mib.helsinki.fi/tutorials_programming.html'>Programming</a></li>
 %       </ul>
 %   </td>
 % </tr>

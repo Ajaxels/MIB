@@ -116,6 +116,10 @@
 % <tr>
 % <td colspan=2><img src="images\render_in_matlab.jpg"</img>
 % </tr>
+% <tr>
+% <td colspan=2>A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/dMeoIZPaDS4?t=16m56s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4?t=16m56s</a>
+% </tr>
 % </table>
 % </html>
 % 
@@ -123,13 +127,24 @@
 % a volume (<http://mib.helsinki.fi/tutorials/VisualizationOverview.html click here for details>. (requires Fiji to be installed,
 % <im_browser_system_requirements.html see here>).
 %
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% </html>
+%
 %%
 % 
 % <<images\render_in_fiji.jpg>>
 % 
 %%
-% * *Imaris surface*, render the model in Imaris ( <http://mib.helsinki.fi/tutorials_visualization.html see tutorial>); (requires Imaris and ImarisXT to be installed,
-% <im_browser_system_requirements.html see here>)
+% * *Imaris surface*, render the model in Imaris; requires Imaris and ImarisXT to be installed,
+% <im_browser_system_requirements.html see here>
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% Without ImarisXT <a href="https://youtu.be/MbK2JcTrZFw"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/MbK2JcTrZFw</a><br>
+% With ImarisXT <a href="https://youtu.be/yODGYJUzTr0"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/yODGYJUzTr0</a><br>
+% </html>
 %
 %%
 % 
@@ -146,6 +161,11 @@
 %
 %% Annotations...
 % Use this menu to modify the |Annotations| layer
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% </html>
 %%
 % 
 % * *List of annotations...* - starts an auxiliary window with a list of

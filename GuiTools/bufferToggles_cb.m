@@ -132,6 +132,7 @@ switch parameter
         end
         handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
     case 'clear'    % clear dataset
+        set(handles.im_browser, 'windowbuttonmotionfcn' , []);  % have to turn off windowbuttonmotionfcn, otherwise give error after delete(handles.Img{button}.I); during mouse movement
         delete(handles.Img{buttonID}.I);
         if handles.preferences.uint8
             handles.Img{buttonID}.I = imageData(handles, 'uint8');    % create instanse for keeping images;
@@ -139,9 +140,7 @@ switch parameter
             handles.Img{buttonID}.I = imageData(handles, 'uint6');    % create instanse for keeping images;
         end
         handles = handles.Img{buttonID}.I.updateAxesLimits(handles, 'resize');
-        
-        %handles = guidata(handles.im_browser);
-        
+        set(handles.im_browser, 'windowbuttonmotionfcn' , {@im_browser_winMouseMotionFcn, handles});
         guidata(handles.im_browser, handles); 
         if ismac()
             eval(sprintf('set(handles.bufferToggle%d,''ForegroundColor'',[ 0.8314    0.8157    0.7843]);', buttonID));
@@ -164,6 +163,7 @@ switch parameter
         
         % initializa image buffer with dummy images
         handles.Id = 1;   % number of the selected buffer
+        set(handles.im_browser, 'windowbuttonmotionfcn' , []);  % have to turn off windowbuttonmotionfcn, otherwise give error after delete(handles.Img{button}.I); during mouse movement
         for button=1:8
             delete(handles.Img{button}.I);
             if handles.preferences.uint8
@@ -181,6 +181,7 @@ switch parameter
             eval(sprintf('set(handles.bufferToggle%d,''ToolTipString'',''Use the left mouse button to select the dataset and the right mouse button for additional menu'');', button));
             eval(sprintf('set(handles.bufferToggle%d, ''value'', 0);',button));
         end;
+        set(handles.im_browser, 'windowbuttonmotionfcn' , {@im_browser_winMouseMotionFcn, handles});
         set(handles.bufferToggle1, 'value', 1);
         handles.U.clearContents();  % clear undo history
         handles = updateGuiWidgets(handles);

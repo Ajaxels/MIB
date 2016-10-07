@@ -30,8 +30,9 @@ selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
 list = get(handles.filterSelectionPopup, 'string');
 type = list{get(handles.filterSelectionPopup, 'value')};    % Lasso or Rectangle
 
-%set(handles.im_browser,'Pointer','cross');
+set(handles.im_browser,'Pointer','cross');
 set(handles.im_browser, 'windowbuttondownfcn', '');
+
 switch type
     case 'Lasso'
         h = imfreehand(handles.imageAxes);
@@ -50,6 +51,7 @@ catch err
 end
 delete(h);
 set(handles.im_browser, 'windowbuttondownfcn', {@im_browser_WindowButtonDownFcn, handles});
+
 set(handles.im_browser,'Pointer','crosshair');
 currSelection = handles.Img{handles.Id}.I.getSliceToShow('selection');
 selected_mask = imresize(selected_mask, [size(currSelection,1) size(currSelection,2)],'method','nearest');

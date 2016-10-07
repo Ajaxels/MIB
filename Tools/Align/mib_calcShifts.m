@@ -9,7 +9,6 @@ function [shiftX, shiftY] = mib_calcShifts(I, options)
 %                   'cc' - the normalized cross correlation
 %                   'sq' - the normalized sum of squared difference
 %                   'xcMatlab' - matlab fft correlation
-% - .step, step for comparison of images, default=1
 % - .refFrame, a number with the reference slice: when @b 0 - use the previous
 % - .mask, an optional mask image to select subareas to use for alignment,
 % - .waitbar, [optional] a handle to an existing waitbar

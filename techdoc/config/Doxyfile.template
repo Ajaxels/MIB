@@ -688,8 +688,7 @@ RECURSIVE              = YES
 EXCLUDE                =  im_browser\techdoc \
 						  im_browser\Plugins \
 						  im_browser\Development \
-						  im_browser\ImageFilters\Supervoxels\maxflow-v2.22 \
-						  im_browser\+helpUtils
+						  im_browser\ImageFilters\Supervoxels\maxflow-v2.22
                             
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
@@ -711,7 +710,6 @@ EXCLUDE_PATTERNS       = MatlabDocMaker* \
                          BioFormats* \
 						 Plugins* \
 						 Development* \
-						 +helpUtils* \
                          FastMarching*       
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
@@ -1439,7 +1437,7 @@ SEARCH_INCLUDES        = YES
 # contain include files that are not input files but should be processed by
 # the preprocessor.
 
-INCLUDE_PATH           =
+INCLUDE_PATH           =  
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
 # patterns (like *.h and *.hpp) to filter out the header-files in the

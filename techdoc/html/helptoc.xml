@@ -76,10 +76,11 @@
      <!-- Tutorials comes next -->		
 		<tocitem target="im_browser_tutorials.html" 
             image="HelpIcon.EXAMPLES">Tutorials
-            <tocitem target="tutor_intro.html">Introduction</tocitem>
-            <tocitem target="tutor_segm.html">Image processing and segmentation</tocitem>
-            <tocitem target="tutor_visualization.html">Visualization</tocitem>
-			<tocitem target="tutor_programming.html">Programming</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials.html">Introduction</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_segmentation.html">Image segmentation</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_visualization.html">Visualization</tocitem>
+            <tocitem target="http://mib.helsinki.fi/tutorials_tools.html">Tools</tocitem>
+			<tocitem target="http://mib.helsinki.fi/tutorials_programming.html">Programming</tocitem>
         </tocitem>		
      <!-- Function reference next -->
      <!-- Optional Release Notes file -->

@@ -17,22 +17,29 @@
 % * Load/Import multiple image and video formats using standard and custom-made readers, <http://www.mathworks.com Bio-Formats (LOCI) reader>, 
 % <http://www.openmicroscopy.org/site OMERO server>, and direct import from
 % <http://fiji.sc/Fiji Fiji>
-% * Generation of multidimentional image stacks
+% * Generation of multidimentional image stacks (3D/4D, width:height:color:depth:time)
+% * Alignment of multi-dimensional stacks and images within these stacks;
 % * Brightness, contrast, gamma, image mode adjustments, resize, crop functions, rotate, etc
+% * Semi-automatic/manual image segmentation with help of filters and interpolation in XY, XZ, or YZ planes
+% * Quantification and statistics for 2D/3D objects
+% * Export of images or models to Matlab, <http://www.vsg3d.com/amira/overview Amira> , <http://bio3d.colorado.edu/imod/ IMOD>, <https://youtu.be/G6z0pM3xOIk STL>, TIF, <http://www.slicer.org/ NRRD for 3D Slicer>, <http://imagej.net/BigDataViewer Fiji BigDataViewer> formats
+% * Direct 3D visualization using Matlab isosurfaces and volume rendering, <http://fiji.sc/3D_Viewer Fiji 3D viewer>, and <http://www.bitplane.com/ Imaris>
 % * Filtering of images with core Matlab and custom functions
-% * Tools for semi-automatic image segmentation (watershed, graphcut, classifiers)
-% * More than 8 different tools for manual segmentation in XY, XZ, and YZ planes
-% * Two types of interpolators: shape and line
-% * Quantification and statistical filtering in 2D and 3D of segmentation results
-% * Export models to <http://www.vsg3d.com/amira/overview Amira>, Matlab, <http://fiji.sc/Fiji Fiji>, <http://bio3d.colorado.edu/imod/ IMOD>, <http://www.slicer.org/ NRRD for 3D Slicer>, STL and TIF formats
-% * Direct 3D visualization using Matlab isosurfaces, <http://fiji.sc/3D_Viewer Fiji 3D viewer> , and <http://www.bitplane.com Imaris>
 % * Log of performed actions 
 % * Customizable Undo option
+% * Customizable Keyboard shortcuts
 % * Colorblind friendly default color modeling scheme
 %
+%% List of all features
+%
+% Please check <http://mib.helsinki.fi/features_all.html the list of all features page> for more detailed description and video examples
+%
+%
 %% Scheme of Microscopy Image Browser
+%
 % Connection diagram of available tools and layers. The opened images may be filtered and adjusted with number of standard/custom 
 % functions and further segmented either via the |Mask| route or directly with for example the brush tool and interpolation technique.
+%
 %%
 % 
 % <<images/im_browser_scheme.jpg>>

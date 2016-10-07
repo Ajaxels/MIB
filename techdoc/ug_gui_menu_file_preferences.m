@@ -37,6 +37,11 @@
 %
 % Modification of Undo parameters.
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/PrY3Eo02gU8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
+% </html>
+%
 % # *Enable* - enable/disable undo. When the memory is limited it may be recommended to set the |Enable| undo setting to the |no| state.
 % # *History Steps* - maximal number of history steps to keep in memory. *Note!* requires restart of Microscopy Image Browser
 % to apply this modification.
@@ -46,6 +51,13 @@
 %% Interpolation Settings
 %
 % Defines type and parameters of the interpolation for the |Selection| layer to use (|i| - shortcut, or |Menu->Selection->Interpolate|). 
+%
+% <html>
+% A brief demonstration is available in the following videos:<br>
+% Shape interpolation: <a href="https://youtu.be/ZcJQb59YzUA?t=4m3s"><img
+% style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=4m3s</a><br>
+% Line interpolation: <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
+% </html>
 %
 % # *Type* - two types are available: |shape| or |line|. The |line| method is the best for interpolation of a non-closed
 % lines between the slices.
@@ -68,10 +80,20 @@
 % * The *Color* button, allows to select a color for annotations.
 % * The *Font size* combo box allows to tweak the font size for the annotations.
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% </html>
+%
 %% The Shortcuts button
 % Shortcuts for keys may be customized using the *Define shortcuts for keys* dialog that
 % is started with this the *Shortcuts* button. The list of default shortcuts is available
 % from <ug_gui_shortcuts.html *the Key & mouse shortcuts page*>.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/qrLyrP9f018"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/qrLyrP9f018</a>
+% </html>
 % 
 % <<images\menu_file_preferences_shortcuts.jpg>>
 % 
@@ -80,6 +102,11 @@
 % Modification of default colors of the |Selection|, |Mask|, |Model| layers and defining color look-up table (LUT). 
 % The upper table shows the list of predefined colors for Materials of the |Model| layer. The lower table shows LUT for
 % colors of the color channels to use with the LUT mode (<ug_panel_view_settings.html View Settings Panel->LUT checkbox>)
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/A5HHVd5bfJ0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/A5HHVd5bfJ0</a>
+% </html>
 %
 % # *Modification of the |Model| and |LUT| colors*. The rows in tables represent color in Red:Green:Blue format in range from 0 to 255.
 % The colors may be modified either by updating the numbers in the tables or by clicking on a color bar (fourth column) representing the defined color.

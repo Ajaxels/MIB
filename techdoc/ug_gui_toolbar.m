@@ -71,7 +71,13 @@
 % 
 % <<images/toolbar_undo.jpg>>
 %
-% Does Undo operation (Ctrl+Z shortcut): restore the previous state of the dataset. The length of the Undo history can be set in the <ug_gui_menu_file_preferences.html Menu->File->Preferences> .
+% Does Undo operation (Ctrl+Z shortcut): restore the previous state of the dataset. The length of the Undo history can be set in the <ug_gui_menu_file_preferences.html Menu->File->Preferences>.
+%
+% <html>
+% Demonstration of the undo/redo system is available in the following video:<br>
+% <a href="https://youtu.be/PrY3Eo02gU8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PrY3Eo02gU8</a>
+% </html>
+%
 %% Redo
 %%
 % 
@@ -108,6 +114,11 @@
 % * *Alt+'1'*, switches the view to the XY plane using the image coordinates under the mouse cursor
 % * *Alt+'2'*, switches the view to the ZX plane using the image coordinates under the mouse cursor
 % * *Alt+'3'*, switches the view to the ZY plane using the image coordinates under the mouse cursor
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/4NXSEkrhnts"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/4NXSEkrhnts</a>
+% </html>
 % 
 % <<images/planeChangeButtons.jpg>>
 % 
@@ -133,6 +144,11 @@
 % unmodified pixels and 'bicubic' for smooth appearance. *Note!* the |nearest| option gives the fastest and |bicubic| the
 % slowest performance.
 %
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/N7jFSUOrVCg"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/N7jFSUOrVCg</a>
+% </html>
+%
 %% Block-mode switch
 %%
 % 
@@ -156,6 +172,11 @@
 % Render the dataset using the shear-warp transform. Applicable to fairly
 % small datasets. The electron microscopy datasets should be inverted for
 % proper visualization.
+%
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/rCYSTKF0TsM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/rCYSTKF0TsM</a>
+% </html>
 %
 %% Turn on parallel processing
 %%

@@ -22,6 +22,10 @@ if handles.Img{handles.Id}.I.time > 1
     msgbox(sprintf('Unfortunately the alignment tool is not compatible with 5D datasets!\nLet us know if you need it!\nhttp:\\mib.helsinki.fi'),'Error!','error','modal');
     return;
 end
+if handles.Img{handles.Id}.I.blockModeSwitch == 1
+    handles.Img{handles.Id}.I.blockModeSwitch = 0;
+    set(handles.toolbarBlockModeSwitch,'State','off');
+end
 
 imgOut = mib_DriftAlignDlg(handles.Img{handles.Id}.I, handles.preferences.Font);
 if isempty(imgOut); return; end;

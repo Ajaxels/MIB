@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-26"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
+      --><title>Segmentation Tools</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-07"><meta name="DC.source" content="ug_panel_segm_tools.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -87,7 +87,12 @@ pixel dimensions, see <em>Dataset Parameters</em> in <a href="ug_gui_menu_datase
 </td>
 </tr>
 </table>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1s</a>
 </p><h2>2. Annotations<a name="3"></a></h2><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+<br>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -135,7 +140,11 @@ delete or jump</em> to the highlighted annotation</li>
 </td>
 <td style="border: 0px">
 Use brush to make selection. The brush size is regulated with
-the <b>Radius, px</b> edit box.
+the <b>Radius, px</b> edit box
+<br>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
+<br>
 <br><br>Objects from different image slices may be connected
 using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
 see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
@@ -152,8 +161,9 @@ eraser mode could be amplifier using the <b>Eraser, x</b> edit box.
 </td>
 </tr>
 </table>
+<br>
 <h3>Superpixels with the Brush tool</h3>
-</p><p><b>The Superpixels mode</b> can be initiated by selecting the <b>Watershed</b> or <b>SLIC</b> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <b><tt>Ctrl+Z</tt></b> shortcut.</p><p>The superpixels are calculated using the</p><div><ul><li><b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li><li><b>Watershed</b> (good for objects with distinct boundaries).</li></ul></div><p>The two additional edit boxed (<tt>N</tt>, <tt>Compact/Invert</tt>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <tt>N</tt> edit box can be changed using the <b><i>Ctrl+Alt + mouse wheel</i></b> or <b><i>Ctrl+Alt+Shift + mouse wheel</i></b> shortcuts.</p><p>References:</p><div><ul><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li></ul></div><p><img vspace="5" hspace="5" src="images\07_panel_segm_tools_brush_supervoxels.jpg" alt=""> </p><p>The set of superpixels is individual for each magnification (especially in the <i>SLIC</i> mode). It is possible to define size of superpixels (the <tt>N</tt> edit box, default value 220 for SLIC, for Watershed use lower numbers) and compactness (the <tt>Compact</tt> edit box; higher compactness gives more rectangularly shaped superpixels). In the <i>Watershed</i> mode the <tt>Compact</tt> edit box is called <tt>Invert</tt>; when objects have dark boundaries over bright backround number in the <tt>Invert</tt> edit box should be 1 (or higher), if the objects have bright boundaries over dark background this number should be 0.</p><p>During drawing the boundaries of the superpixels for the SLIC mode are shown using the <i>drawregionboundaries.m</i> function written by <a href="http://www.peterkovesi.com/projects/segmentation/">Peter Kovesi</a> Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia.</p><p><b>Note 1!</b> The Superpixels mode is sensitive to the <tt>Adapt.</tt> checkbox in the <tt>Selection panel</tt>. When the <tt>Adapt.</tt> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <tt>Adapt.</tt> editbox of the <tt>Selection</tt> panel.</p><p><b>Note 2!</b> While drawing the value in the <tt>Adapt.</tt> editbox may be changed using the mouse wheel.</p><p><b>Note 3!</b> The function relies on <i>slicmex.c</i> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p><h2>4. The Black and White Thresholding tool<a name="7"></a></h2><p>
+</p><p><b>The Superpixels mode</b> can be initiated by selecting the <a href="https://youtu.be/vVh1j3HBh-c"><b>Watershed</b></a> or <a href="https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj"><b>SLIC</b></a> checkbox. In the Superpixels mode the brush tool selects not individual pixels but rather groups of pixels (superpixels). While drawing the selection of the last superpixel can be undone by pressiong the <b><tt>Ctrl+Z</tt></b> shortcut.</p><p>The superpixels are calculated using the</p><div><ul><li><b>SLIC</b> (Simple Linear Iterative Clustering, good for objects with distinct intensities) algorithm written by <a href="http://ivrl.epfl.ch/supplementary_material/RK_SLICSuperpixels/index.html">Radhakrishna Achanta et al., 2015</a> , Ecole Polytechnique Federale de Lausanne (EPFL), Switzerland.</li><li><b>Watershed</b> (good for objects with distinct boundaries).</li></ul></div><p>The two additional edit boxed (<tt>N</tt>, <tt>Compact/Invert</tt>) offer possibility to modify the size of generated superpixels (<i>see below</i>). The values in the <tt>N</tt> edit box can be changed using the <b><i>Ctrl+Alt + mouse wheel</i></b> or <b><i>Ctrl+Alt+Shift + mouse wheel</i></b> shortcuts.</p><p>References:</p><div><ul><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, SLIC Superpixels Compared to State-of-the-art Superpixel Methods, IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 34, num. 11, p. 2274 - 2282, May 2012.</li><li>Radhakrishna Achanta, Appu Shaji, Kevin Smith, Aurelien Lucchi, Pascal Fua, and Sabine S&uuml;sstrunk, SLIC Superpixels, EPFL Technical Report no. 149300, June 2010.</li></ul></div><p><img vspace="5" hspace="5" src="images\07_panel_segm_tools_brush_supervoxels.jpg" alt=""> </p><p>The set of superpixels is individual for each magnification (especially in the <i>SLIC</i> mode). It is possible to define size of superpixels (the <tt>N</tt> edit box, default value 220 for SLIC, for Watershed use lower numbers) and compactness (the <tt>Compact</tt> edit box; higher compactness gives more rectangularly shaped superpixels). In the <i>Watershed</i> mode the <tt>Compact</tt> edit box is called <tt>Invert</tt>; when objects have dark boundaries over bright backround number in the <tt>Invert</tt> edit box should be 1 (or higher), if the objects have bright boundaries over dark background this number should be 0.</p><p>During drawing the boundaries of the superpixels for the SLIC mode are shown using the <i>drawregionboundaries.m</i> function written by <a href="http://www.peterkovesi.com/projects/segmentation/">Peter Kovesi</a> Centre for Exploration Targeting, School of Earth and Environment, The University of Western Australia.</p><p><b>Note 1!</b> The Superpixels mode is sensitive to the <tt>Adapt.</tt> checkbox in the <tt>Selection panel</tt>. When the <tt>Adapt.</tt> checkbox is selected the superpixels are selected based on the <i>mean value</i> of the initial selection <i>plus/minus</i> standard deviation within the same area multiplied by the factor specified in the <tt>Adapt.</tt> editbox of the <tt>Selection</tt> panel.</p><p><b>Note 2!</b> While drawing the value in the <tt>Adapt.</tt> editbox may be changed using the mouse wheel.</p><p><b>Note 3!</b> The function relies on <i>slicmex.c</i> that should be compiled for your operating system. Please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements</a> section for details.</p><h2>4. The Black and White Thresholding tool<a name="7"></a></h2><p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -175,6 +185,8 @@ allows to set the step for slider movement.
 </td>
 </tr>
 </table>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 </p><h2>5. The Lasso tool<a name="8"></a></h2><p>
 <table style="width: 800px; border: 0px">
 <tr>
@@ -183,7 +195,10 @@ allows to set the step for slider movement.
 </td>
 <td style="border: 0px">
 Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
-<br><br>
+<br>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
+<br>
 <b>How to use:</b>
 <ul>
 <li>Press and release the selection mouse key (default: left mouse button) above the
@@ -198,6 +213,8 @@ When the <em>Ctrl</em> key is pressed during step 1, the selected area is subtra
 </tr>
 </table>
 </p><p>The Lasso tool works also in 3D.</p><p><b>Selection modifiers</b>:</p><div><ul><li><b>None / Shift + left mouse click</b>, will add selection with the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove selection from the current.</li></ul></div><h2>6. The Magic Wand tool<a name="9"></a></h2><p>Selection of pixels with the <i>mouse button</i> based on their intensities. The intensity variation is calculated from the intensity of the selected pixel and two threshold values from the <tt>Threshold</tt> edit boxes.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -213,6 +230,11 @@ When the <em>Ctrl</em> key is pressed during step 1, the selected area is subtra
 </tr>
 </table>
 </p><p>The Magic Wand works also in the 3D mode (the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection panel</tt></a>).</p><p><b>Selection modifiers for the Magic wand tool:</b></p><div><ul><li><b>None + left mouse click</b>, will replace the existing selection with the new one.</li><li><b>Shift + left mouse click</b>, will add new selection to the existing one.</li><li><b>Ctrl + left mouse click</b>, will remove new selection from the current.</li></ul></div><h2>7. The Membrane Click Tracker tool<a name="10"></a></h2><p>This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain.</p><p>
+A brief demonstration for 2D is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+<br>
+A brief demonstration for 3D is available in the following video:<br>
+<a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -228,6 +250,9 @@ When the <em>Ctrl</em> key is pressed during step 1, the selected area is subtra
 </tr>
 </table>
 </p><p>The membrane is traced with help of Accurate Fast Marching function <a href="http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching">http://www.mathworks.se/matlabcentral/fileexchange/24531-accurate-fast-marching</a> by Dirk-Jan Kroon, 2011, University of Twente.</p><p><b><i>Note!</i></b> It is highly recommended to compile the corresponding function (see details in the Membrane Click Tracker section of <a href="im_browser_system_requirements.html">the System Requirements page</a> ), otherwise the function is very slow!</p><p><b>Extra parameters:</b></p><div><ul><li>The <b>Scale</b> edit box - during the tracing the image gets enhanced by taking into account intensities of the starting and ending points <tt>img(img&gt;min([val1 val2])-diff([val1 val2])*options.scaleFactor) = maxIntensity;</tt></li><li>The <b>Width</b> edit box - defines a width of the resulting trace</li><li>The <b>BlackSignal</b> checkbox defines whether the signal is Black on White, or White on Black</li><li>The <b>Straight line</b> checkbox - when checked, the points are connected with a straight line</li></ul></div><p><b><i>Note!</i></b> When the 3D switch in the <a href="ug_panel_selection.html"><tt>Selection</tt> panel</a> is enabled the <b>Membrane Click Tracker</b> tool connects points (<i>linearly</i>) in the 3D space (this may be very usefull for tracing microtubules).</p><h2>8. Object Picker<a name="11"></a></h2><p>This mode allows fast selection of objects from the <tt>Mask</tt> or <tt>Model</tt> layers. When the <tt>Mask</tt> and <tt>Model</tt> radio buttons define the target layer for selection.</p><p>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+<br>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -324,8 +349,10 @@ panel</em>.
   <img src = "images\07_panel_segm_tools_spot.jpg">
 </td>
 <td style="border: 0px">
-Adds a spot - a circular object with a <em>mouse click</em>.
-<br><br>
+Adds a spot - a circular object with a <em>mouse click</em><br><br>
+A brief demonstration is available in the following video:<br>
+<a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
+<br>
 Use the <b>Radius, px</b> edit box to specify the radius of the spot.
 <br><br>
 Works also in 3D.
@@ -385,11 +412,16 @@ Works also in 3D.
 % </td>
 % </tr>
 % </table>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1s</a>
 % </html>
 %
 %% 2. Annotations
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/3lARjx9dPi0"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/3lARjx9dPi0</a>
+% <br>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -443,7 +475,11 @@ Works also in 3D.
 % </td>
 % <td style="border: 0px">
 % Use brush to make selection. The brush size is regulated with
-% the <b>Radius, px</b> edit box. 
+% the <b>Radius, px</b> edit box
+% <br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=37s</a>
+% <br>
 % <br><br>Objects from different image slices may be connected
 % using the <em>Interpolation</em> function (shortcut <b>i</b> or via <em>Menu->Selection->Interpolate</em>),
 % see more in the <a href="ug_gui_menu_selection.html">Selection menu</a> section.
@@ -460,10 +496,11 @@ Works also in 3D.
 % </td>
 % </tr>
 % </table>
+% <br>
 % <h3>Superpixels with the Brush tool</h3>
 % </html>
 %
-% *The Superpixels mode* can be initiated by selecting the *Watershed* or *SLIC* checkbox. In the 
+% *The Superpixels mode* can be initiated by selecting the <https://youtu.be/vVh1j3HBh-c *Watershed*> or <https://youtu.be/6bZb_Mr_nS0?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj *SLIC*> checkbox. In the 
 % Superpixels mode the brush tool selects not individual pixels but rather
 % groups of pixels (superpixels). While drawing the selection of the last superpixel can
 % be undone by pressiong the *|Ctrl+Z|* shortcut.
@@ -544,6 +581,8 @@ Works also in 3D.
 % </td>
 % </tr>
 % </table>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=4m37s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=4m37s</a>
 % </html>
 %
 %% 5. The Lasso tool
@@ -556,7 +595,10 @@ Works also in 3D.
 % </td>
 % <td style="border: 0px">
 % Selection with a <em>lasso, rectangle, ellipse or polyline</em> tools.
-% <br><br>
+% <br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/OHFdGj9uBro"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/OHFdGj9uBro</a>
+% <br>
 % <b>How to use:</b>
 % <ul>
 % <li>Press and release the selection mouse key (default: left mouse button) above the
@@ -585,6 +627,8 @@ Works also in 3D.
 % selected pixel and two threshold values from the |Threshold| edit boxes.
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=1m50s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=1m50s</a>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -614,6 +658,11 @@ Works also in 3D.
 % This tool tracks membrane-type objects by using 2 mouse clicks that define start and end point of the membrane domain. 
 %
 % <html>
+% A brief demonstration for 2D is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=3m14s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=3m14s</a>
+% <br>
+% A brief demonstration for 3D is available in the following video:<br>
+% <a href="https://youtu.be/ZcJQb59YzUA?t=2m22s"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/ZcJQb59YzUA?t=2m22s</a>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -658,6 +707,9 @@ Works also in 3D.
 % for selection.
 %
 % <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/mzILHpbg89E"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/mzILHpbg89E</a>
+% <br>
 % <table style="width: 800px; border: 0px">
 % <tr>
 % <td style="border: 0px">
@@ -774,8 +826,10 @@ Works also in 3D.
 %   <img src = "images\07_panel_segm_tools_spot.jpg">
 % </td>
 % <td style="border: 0px">
-% Adds a spot - a circular object with a <em>mouse click</em>. 
-% <br><br>
+% Adds a spot - a circular object with a <em>mouse click</em><br><br>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/AlCzjKuyJww"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/AlCzjKuyJww</a>
+% <br>
 % Use the <b>Radius, px</b> edit box to specify the radius of the spot. 
 % <br><br>
 % Works also in 3D.

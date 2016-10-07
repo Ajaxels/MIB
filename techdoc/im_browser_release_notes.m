@@ -4,14 +4,16 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
-%% 1.232 26.09.2016 
+%% 1.233 07.10.2016 
 % * Added convertion from uint16 to uint8 using the currently selected display adjustments settings (ver. 1.232)
 % * Completely rewritten alignment tool, now it is much faster and more reliable
 % * Added loading and combining MRC models from IMOD
 % * Added automatic scaling of scale bars for large snapshots
 % * Added adjustment of the image contrast during supervoxel calculation in the graphcut tool
+% * Added links to many short demo clips to the Help (ver. 1.233)
 % * Improved performance of the shape interpolation tool (ver. 1.232)
 % * Update movie rendering, now it will also render movies from 16-bit images
+% * Update of the alignment tool for the YZ and XZ dimensions (ver. 1.233)
 % * Fix of uncleared memory after closing of datesets, introduced in MIB 1.20
 % * Few small fixes in the mib_measureTool and in the alignment tool (ver. 1.231)
 % * The 'handles' handle has been removed from getImageMetadata(filenames,

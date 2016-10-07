@@ -652,6 +652,11 @@ getMetaOpt.Font = handles.h.preferences.Font;
 switch modelExt
     case '.mat'
         R = load(fn);
+        if isfield(R, 'model_var') && ~isfield(R, 'imOut')
+            R.imOut = R.(R.model_var);
+            R = rmfield(R, R.model_var);
+            R.model_var = 'imOut';
+        end
     case '.am'
         getMetaOpt.waitbar = 0;
         img_info = getImageMetadata({fn}, getMetaOpt);

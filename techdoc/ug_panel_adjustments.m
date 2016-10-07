@@ -2,6 +2,11 @@
 % This window allows to adjust the contrast of the dataset individually for each color channel. The intensity values for the 
 % currently shown slice can be checked in the histogram at the bottom of the window.
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/WhpzGMyslZU"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/WhpzGMyslZU</a>
+% </html>
+%
 % <<images\12_panel_adj_disp.jpg>>
 %
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_panels.html *Panels*> |*-->*| <ug_panel_view_settings.html *View settings*>

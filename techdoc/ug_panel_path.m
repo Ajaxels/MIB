@@ -25,8 +25,13 @@
 % to any point of the dataset.
 %
 %% 5. Log button
-% Shows the log of actions that were performed with the currently opened dataset. The
+% Shows the log of actions that were performed for the current dataset. The
 % action log is stored in the |ImageDescription| field in the TIF files. Each entry in the log list has a date/time stamp.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/1ql4cRxZ334"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1ql4cRxZ334</a>
+% </html>
 %
 % <<images\04a_actions_log.jpg>>
 %

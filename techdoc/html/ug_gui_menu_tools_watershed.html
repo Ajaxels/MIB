@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Microscopy Image Browser Watershed/Graphcut segmentation</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-26"><meta name="DC.source" content="ug_gui_menu_tools_watershed.m"><style type="text/css">
+      --><title>Microscopy Image Browser Watershed/Graphcut segmentation</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-07"><meta name="DC.source" content="ug_gui_menu_tools_watershed.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Microscopy Image Browser Watershed/Graphcut segmentation</h1><!--introduction--><p>This window give access to semi-automated image segmentation and object separation modes. The image segmentation can be done either using a standard watershed algorithm (<b>Watershed workflow</b>) or using the Graphcut segmentation (<b>Graph Cut workflow</b>). We recommend to use the <b>Graphcut workflow</b> due to its high interactive efficiency. The <b>Object separation workflow</b> allows to separate fused objects in both 2D and 3D. See below details of each mode.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">General example</a></li><li><a href="#2">Mode panel</a></li><li><a href="#4">Subarea panel</a></li><li><a href="#6">Image segmentation settings (<i>for the Watershed and Graphcut workflows</i>)</a></li><li><a href="#7">Graph cut segmentation settings</a></li><li><a href="#8">Object separation settings</a></li><li><a href="#9">Image segmentation example</a></li><li><a href="#10">Object separation example</a></li><li><a href="#11">Algorithm for image segmentation with watershed</a></li><li><a href="#12">Algorithm for object separation with watershed</a></li><li><a href="#13">References</a></li></ul></div><h2>General example<a name="1"></a></h2><p><img vspace="5" hspace="5" src="images\menuToolsWatershed_Overview.jpg" alt=""> </p><h2>Mode panel<a name="2"></a></h2><p>The <tt>Mode panel</tt> offers possibility to select a desired working mode for the segmentation.</p><p>
+  </style></head><body><div class="content"><h1>Microscopy Image Browser Watershed/Graphcut segmentation</h1><!--introduction--><p>This window give access to semi-automated image segmentation and object separation modes. The image segmentation can be done either using a standard watershed algorithm (<b>Watershed workflow</b>) or using the Graphcut segmentation (<b>Graph Cut workflow</b>). We recommend to use the <b>Graphcut workflow</b> due to its high interactive efficiency. The <b>Object separation workflow</b> allows to separate fused objects in both 2D and 3D. See below details of each mode.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu.html"><b>Menu</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_menu_tools.html"><b>Tools Menu</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">General example</a></li><li><a href="#2">Mode panel</a></li><li><a href="#4">Subarea panel</a></li><li><a href="#6">Image segmentation settings (<i>for the Watershed and Graphcut workflows</i>)</a></li><li><a href="#7">Graph cut segmentation settings</a></li><li><a href="#8">Object separation settings</a></li><li><a href="#9">Image segmentation example</a></li><li><a href="#10">Object separation example</a></li><li><a href="#11">Algorithm for image segmentation with watershed</a></li><li><a href="#12">Algorithm for object separation with watershed</a></li><li><a href="#13">References</a></li></ul></div><h2>General example<a name="1"></a></h2><p>
+A demonstration of the Graphcut segmentation is available in the following video:<br>
+<a href="https://youtu.be/dMeoIZPaDS4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4</a>
+</p><p><img vspace="5" hspace="5" src="images\menuToolsWatershed_Overview.jpg" alt=""> </p><h2>Mode panel<a name="2"></a></h2><p>The <tt>Mode panel</tt> offers possibility to select a desired working mode for the segmentation.</p><p>
 <table style="width: 800px; border: 0px">
 <tr>
 <td style="border: 0px">
@@ -252,6 +255,13 @@ bright boundaries</li>
 % 
 %
 %% General example
+%
+%
+% <html>
+% A demonstration of the Graphcut segmentation is available in the following video:<br>
+% <a href="https://youtu.be/dMeoIZPaDS4"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/dMeoIZPaDS4</a>
+% </html>
+%
 % <<images\menuToolsWatershed_Overview.jpg>>
 % 
 %

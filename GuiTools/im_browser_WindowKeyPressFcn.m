@@ -81,11 +81,15 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Switch dataset to XY orientation'         % default 'Alt + 1'
             if handles.Img{handles.Id}.I.orientation == 4 || isnan(inImage) %|| x < 1 || x > handles.Img{handles.Id}.I.no_stacks;
                 return;
-            elseif handles.Img{handles.Id}.I.orientation == 1 || handles.Img{handles.Id}.I.orientation == 2;
+            elseif handles.Img{handles.Id}.I.orientation == 1
+                handles.Img{handles.Id}.I.current_yxz(2) = y;
                 handles.Img{handles.Id}.I.current_yxz(3) = x;
-                moveMouseSw = 1;   % move the mouse cursor to the point where the plane was changed
-                toolbarPlaneToggle(handles.xyPlaneToggle, NaN, handles, moveMouseSw);
+            elseif handles.Img{handles.Id}.I.orientation == 2;
+                handles.Img{handles.Id}.I.current_yxz(1) = y;
+                handles.Img{handles.Id}.I.current_yxz(3) = x;
             end
+            moveMouseSw = 1;   % move the mouse cursor to the point where the plane was changed
+            toolbarPlaneToggle(handles.xyPlaneToggle, NaN, handles, moveMouseSw);
         case 'Switch dataset to ZX orientation'         % default 'Alt + 2'
             if handles.Img{handles.Id}.I.orientation == 1 || isnan(inImage);
                 return;

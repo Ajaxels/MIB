@@ -3,6 +3,11 @@
 % separate datasets. This is a new version of the alignment and drift correction tool that was
 % released with MIB version 1.23.
 % 
+% <html>
+% A demonstration is available in the following video:<br>
+% <a href="https://youtu.be/-qwoO5z02aA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/-qwoO5z02aA</a>
+% </html>
+%
 % *Back to* <im_browser_product_page.html *Index*> |*-->*| <im_browser_user_guide.html *User Guide*> |*-->*| <ug_gui_menu.html *Menu*> |*-->*| <ug_gui_menu_dataset.html *Dataset*>
 %
 %% Current dataset panel

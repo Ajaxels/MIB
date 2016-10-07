@@ -81,8 +81,7 @@ end
 % radio button callbacks
 set(handles.alignRadio, 'SelectionChangeFcn', @modeRadioButton_Callback);
 
-height = size(handles.I.img,1);
-width = size(handles.I.img,2);
+[height, width, colors, depth, time] = handles.I.getDatasetDimensions();
 handles.varname = 'I';  % variable for import
 fn = handles.I.img_info('Filename');
 [pathstr, name, ext] = fileparts(fn);
@@ -102,7 +101,7 @@ set(handles.existingFnText1,'Tooltip',handles.I.img_info('Filename'));
 set(handles.existingFnText2,'String',[name '.' ext]);
 set(handles.existingFnText2,'String',[name '.' ext]);
 set(handles.existingFnText2,'Tooltip',handles.I.img_info('Filename'));
-str2 = sprintf('%d x %d x %d', width, height, size(handles.I.img,4));
+str2 = sprintf('%d x %d x %d', width, height, depth);
 set(handles.existingDimText,'String',str2);
 set(handles.existingPixText2,'String',sprintf('Pixel size, %s:', handles.I.pixSize.units));
 str2 = sprintf('%f x %f x %f', handles.I.pixSize.x, handles.I.pixSize.y, handles.I.pixSize.z);
@@ -119,7 +118,6 @@ set(handles.searchXmaxEdit, 'String', num2str(floor(width/2)+floor(width/4)));
 set(handles.searchYmaxEdit, 'String', num2str(floor(height/2)+floor(height/4)));
 
 % updating color channel popup
-colors = size(handles.I.img,3);
 colorList = cell([colors,1]);
 for i=1:colors
     colorList{i} = sprintf('Ch %d', i);
@@ -230,22 +228,24 @@ end
 algorithmText = get(handles.methodPopup,'String');
 parameters.method = algorithmText{get(handles.methodPopup,'value')};
 
+[Height, Width, Color, Depth, Time] = handles.I.getDatasetDimensions();
+
+optionsGetData.blockModeSwitch = 0;
 if get(handles.singleStacksModeRadio,'value')   % align the currently opened dataset
     if strcmp(parameters.method, 'Single landmark point')
-        optionsGetData.blockModeSwitch = 0;
-        handles.shiftsX = zeros(1, size(handles.I.img, 4));
-        handles.shiftsY = zeros(1, size(handles.I.img, 4));
+        handles.shiftsX = zeros(1, Depth);
+        handles.shiftsY = zeros(1, Depth);
         
         shiftX = 0;     % shift vs 1st slice in X
         shiftY = 0;     % shift vs 1st slice in Y
         STATS1 = struct([]);
-        for layer=2:size(handles.I.img, 4)
+        for layer=2:Depth
             if isempty(STATS1)
-                prevLayer = handles.I.getData2D('selection', layer-1, NaN, 4, NaN, optionsGetData);
+                prevLayer = handles.I.getData2D('selection', layer-1, NaN, NaN, NaN, optionsGetData);
                 STATS1 = regionprops(prevLayer, 'Centroid');
             end
             if ~isempty(STATS1)
-                currLayer = handles.I.getData2D('selection', layer, NaN, 4, NaN, optionsGetData);
+                currLayer = handles.I.getData2D('selection', layer, NaN, NaN, NaN, optionsGetData);
                 STATS2 = regionprops(currLayer, 'Centroid');
                 if ~isempty(STATS2)  % no second landmark found
                     shiftX = shiftX + round(STATS1.Centroid(1) - STATS2.Centroid(1));
@@ -286,23 +286,22 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
         
         % do alignment
         handles.I.clearSelection();
-        handles.I.img = mib_crossShiftStack(handles.I.img, handles.shiftsX, handles.shiftsY, parameters);
+        %handles.Img{handles.Id}.I.getData4D('mask', 4, NaN, options)
+        %handles.I.img = mib_crossShiftStack(handles.I.img, handles.shiftsX, handles.shiftsY, parameters);
+        img = mib_crossShiftStack(handles.I.getData4D('image', NaN, 0, optionsGetData), handles.shiftsX, handles.shiftsY, parameters);
+        handles.I.setData4D('image', img, NaN, 0, optionsGetData);
     elseif strcmp(parameters.method, 'Three landmark points')
-        optionsGetData.blockModeSwitch = 0;
-        selection = handles.I.getData3D('selection', NaN, 4, NaN, optionsGetData);
-        %handles.shiftsXY = zeros(2,size(selection, 3));
-        %shiftX = 0;     % shift vs 1st slice in X
-        %shiftY = 0;     % shift vs 1st slice in Y
-        
-        handles.shiftsX = zeros(1, size(selection, 3));
-        handles.shiftsY = zeros(1, size(selection, 3));
+        handles.shiftsX = zeros(1, Depth);
+        handles.shiftsY = zeros(1, Depth);
         
         layer = 1;
-        while layer <= size(selection, 3)-1
-            if sum(sum(selection(:,:,layer))) > 0   % landmark is found
-                CC1 = bwconncomp(selection(:,:,layer));
+        while layer <= Depth-1
+            currImg = handles.I.getData2D('selection', layer, NaN, NaN, NaN, optionsGetData);
+            if sum(sum(currImg)) > 0   % landmark is found
+                CC1 = bwconncomp(currImg);
+                
                 if CC1.NumObjects < 3; continue; end;  % require 3 points
-                CC2 = bwconncomp(selection(:,:,layer+1));
+                CC2 = bwconncomp(handles.I.getData2D('selection', layer+1, NaN, NaN, NaN, optionsGetData));
                 if CC2.NumObjects < 3; layer = layer + 1; continue; end;  % require 3 points
                 
                 STATS1 = regionprops(CC1, 'Centroid');
@@ -327,12 +326,21 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
                     elseif strcmp(parameters.backgroundColor,'white')
                         backgroundColor = intmax(class(handles.I.img));
                     else
-                        backgroundColor = mean(mean(mean(mean( handles.I.img(:,:,colorCh,layer)))));
+                        backgroundColor = mean(mean(handles.I.getData2D('image', layer, NaN, colorCh, NaN, optionsGetData)));
                     end
                 end
                 
                 tform2 = maketform('affine', input, output);
-                [T, xdata, ydata] = imtransform(handles.I.img(:,:,:,layer+1:end), tform2, 'bicubic', 'FillValues', double(backgroundColor));
+                % define boundaries for datasets to take, note that the .x, .y, .z are numbers after transpose of the dataset
+                optionsGetData.x = [1, Width]; 
+                optionsGetData.y = [1, Height];
+                optionsGetData.z = [layer+1, Depth];
+                optionsGetData2.blockModeSwitch = 0;
+                optionsGetData2.x = [1, Width];
+                optionsGetData2.y = [1, Height];
+                optionsGetData2.z = [1, layer];
+                
+                [T, xdata, ydata] = imtransform(handles.I.getData4D('image', NaN, 0, optionsGetData), tform2, 'bicubic', 'FillValues', double(backgroundColor));
                 if xdata(1) < 1
                     handles.shiftsX = floor(xdata(1));
                 else
@@ -360,44 +368,50 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
 %                     handles.shiftsY = ceil(RB.YWorldLimits(1))-1;
 %                 end
                 
-                [img, bbShiftXY] = mib_crossShiftStacks(handles.I.img(:,:,:,1:layer), T, handles.shiftsX, handles.shiftsY, parameters);
+                [img, bbShiftXY] = mib_crossShiftStacks(handles.I.getData4D('image', NaN, 0, optionsGetData2), T, handles.shiftsX, handles.shiftsY, parameters);
                 if isempty(img);   return; end;
-                handles.I.img = img;
+                optionsSetData.blockModeSwitch = 0;
+                handles.I.setData4D('image', img, NaN, 0, optionsSetData);
                 
                 layerId = layer;
-                layer = size(selection, 3);
+                layer = Depth;
             end
             layer = layer + 1;
         end
     else        % standard alignement
-        parameters.step = str2double(get(handles.stepEditbox,'string'));
+        %parameters.step = str2double(get(handles.stepEditbox,'string'));
         
         % calculate shifts
         if isempty(handles.shiftsX)
             if get(handles.subWindowCheck,'value') == 1
-                x1 = str2double(get(handles.searchXminEdit,'String'));
-                y1 = str2double(get(handles.searchYminEdit,'String'));
-                x2 = str2double(get(handles.searchXmaxEdit,'String'));
-                y2 = str2double(get(handles.searchYmaxEdit,'String'));
-                I = squeeze(handles.I.img(y1:y2, x1:x2, colorCh, :, handles.I.slices{5}(1)));
+                optionsGetData.x(1) = str2double(get(handles.searchXminEdit,'String'));
+                optionsGetData.x(2) = str2double(get(handles.searchXmaxEdit,'String'));
+                optionsGetData.y(1) = str2double(get(handles.searchYminEdit,'String'));
+                optionsGetData.y(2) = str2double(get(handles.searchYmaxEdit,'String'));
+                optionsGetData.z(1) = 1;
+                optionsGetData.z(2) = Depth;
+                I = squeeze(handles.I.getData4D('image', NaN, colorCh, optionsGetData));
+                optionsGetData = rmfield(optionsGetData, 'x');
+                optionsGetData = rmfield(optionsGetData, 'y');
+                optionsGetData = rmfield(optionsGetData, 'z');
+                %I = squeeze(handles.I.img(y1:y2, x1:x2, colorCh, :, handles.I.slices{5}(1)));
             else
-                I = squeeze(handles.I.img(:, :, colorCh, :, handles.I.slices{5}(1)));
+                %I = squeeze(handles.I.img(:, :, colorCh, :, handles.I.slices{5}(1)));
+                I = squeeze(handles.I.getData4D('image', NaN, colorCh, optionsGetData));
             end
             
             if get(handles.maskCheck,'value') == 1
                 waitbar(0, parameters.waitbar, sprintf('Extracting masked areas\nPlease wait...'));
-                
-                getDataOptions.blockModeSwitch = 0;
                 %intensityShift =  mean(I(:));   % needed for better correlation of images of different size
                 img = zeros(size(I), class(I));% + intensityShift;
                 bb = nan([size(I, 3), 4]);
                 
                 for slice = 1:size(I, 3)
-                    mask = handles.I.getData2D(handles.maskOrSelection, slice, NaN, 4, NaN, getDataOptions);
+                    mask = handles.I.getData2D(handles.maskOrSelection, slice, NaN, NaN, NaN, optionsGetData);
                     stats = regionprops(mask, 'BoundingBox');
                     if numel(stats) == 0; continue; end;
                     
-                    currBB = floor(stats.BoundingBox);
+                    currBB = ceil(stats.BoundingBox);
                     mask = mask(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1);
                     currImg = I(currBB(2):currBB(2)+currBB(4)-1, currBB(1):currBB(1)+currBB(3)-1, slice);
                     intensityShift = mean(mean(currImg));  % needed for better correlation of images of different size
@@ -442,13 +456,13 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
             
             if get(handles.maskCheck,'value') == 1
                 % check for missing mask slices
-                if length(sliceIndices) ~= size(handles.I.img, 4)
-                    shX = zeros([size(handles.I.img, 4), 1]);
-                    shY = zeros([size(handles.I.img, 4), 1]);
+                if length(sliceIndices) ~= Depth
+                    shX = zeros([Depth, 1]);
+                    shY = zeros([Depth, 1]);
                     
                     index = 1;
                     breakBegin = 0;
-                    for i=2:size(handles.I.img, 4)
+                    for i=2:Depth
                         if isnan(bb(i,1))
                             if breakBegin == 0;
                                 breakBegin = 1;
@@ -559,27 +573,14 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
             handles.shiftsX = shiftX;
             handles.shiftsY = shiftY;
         end
+        waitbar(0, parameters.waitbar, sprintf('Aligning the images\nPlease wait...'));
         
-        img = mib_crossShiftStack(handles.I.img, handles.shiftsX, handles.shiftsY, parameters);
+        %img = mib_crossShiftStack(handles.I.img, handles.shiftsX, handles.shiftsY, parameters);
+        img = mib_crossShiftStack(handles.I.getData4D('image', NaN, 0), handles.shiftsX, handles.shiftsY, parameters);
         if isempty(img); return; end;
-        handles.I.img = img;
+        handles.I.setData4D('image', img, NaN, 0);
+        %handles.I.img = img;
     end
-    
-    handles.I.height = size(handles.I.img, 1);
-    handles.I.width = size(handles.I.img, 2);
-    handles.I.slices{1} = [1, handles.I.height];
-    handles.I.slices{2} = [1, handles.I.width];
-    handles.I.slices{3} = 1:size(handles.I.img,3);
-    handles.I.slices{4} = [1, 1];
-    handles.I.slices{5} = [1, 1];
-    
-    % calculate shift of the bounding box
-    maxXshift =  min(handles.shiftsX);   % maximal X shift in pixels vs the first slice
-    maxYshift = min(handles.shiftsY);   % maximal Y shift in pixels vs the first slice
-    maxXshift = maxXshift*handles.I.pixSize.x;  % X shift in units vs the first slice
-    maxYshift = maxYshift*handles.I.pixSize.y;  % Y shift in units vs the first slice
-    handles.I.updateBoundingBox(NaN, [maxXshift, maxYshift, 0]);
-    handles.I.updateImgInfo(sprintf('Aligned using %s; relative to %d', algorithmText{get(handles.methodPopup,'value')}, parameters.refFrame));
     
     % aligning the service layers: mask, selection, model
     % force background color to be black for the service layers
@@ -591,41 +592,81 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
         if handles.I.modelExist
             waitbar(0, parameters.waitbar, sprintf('Aligning model\nPlease wait...'));
             if ~strcmp(parameters.method, 'Three landmark points')
-                handles.I.model = mib_crossShiftStack(handles.I.model, handles.shiftsX, handles.shiftsY, parameters);
+                img = mib_crossShiftStack(handles.I.getData4D('model', NaN, 0, optionsGetData), handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('model', img, NaN, 0, optionsGetData);
             else
-                T = imtransform(handles.I.model(:,:,layerId+1:end), tform2, 'nearest');
-                handles.I.model = mib_crossShiftStacks(handles.I.model(:,:,1:layerId), T, handles.shiftsX, handles.shiftsY, parameters);                
+                T = imtransform(handles.I.getData4D('model', NaN, 0, optionsGetData), tform2, 'nearest');
+                img = mib_crossShiftStacks(handles.I.getData4D('model', NaN, 0, optionsGetData2), T, handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('model', img, NaN, 0, optionsSetData);
             end
         end
         if handles.I.maskExist
             waitbar(0, parameters.waitbar, sprintf('Aligning mask...\nPlease wait...'));
             if ~strcmp(parameters.method, 'Three landmark points')
-                handles.I.maskImg = mib_crossShiftStack(handles.I.maskImg, handles.shiftsX, handles.shiftsY, parameters);
+                img = mib_crossShiftStack(handles.I.getData4D('mask', NaN, 0, optionsGetData), handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('mask', img, NaN, 0, optionsGetData);
             else
-                T = imtransform(handles.I.maskImg(:,:,layerId+1:end), tform2, 'nearest');
-                handles.I.maskImg = mib_crossShiftStacks(handles.I.maskImg(:,:,1:layerId), T, handles.shiftsX, handles.shiftsY, parameters);                
+                T = imtransform(handles.I.getData4D('mask', NaN, 0, optionsGetData), tform2, 'nearest');
+                img = mib_crossShiftStacks(handles.I.getData4D('mask', NaN, 0, optionsGetData2), T, handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('mask', img, NaN, 0, optionsSetData);
             end
         end
         if  ~isnan(handles.I.selection(1))
             waitbar(0, parameters.waitbar, sprintf('Aligning selection...\nPlease wait...'));
             if ~strcmp(parameters.method, 'Three landmark points')
-                handles.I.selection = mib_crossShiftStack(handles.I.selection, handles.shiftsX, handles.shiftsY, parameters);
+                img = mib_crossShiftStack(handles.I.getData4D('selection', NaN, 0, optionsGetData), handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('selection', img, NaN, 0, optionsGetData);
             else
-                T = imtransform(handles.I.selection(:,:,layerId+1:end), tform2, 'nearest');
-                handles.I.selection = mib_crossShiftStacks(handles.I.selection(:,:,1:layerId), T, handles.shiftsX, handles.shiftsY, parameters);                
+                T = imtransform(handles.I.getData4D('selection', NaN, 0, optionsGetData), tform2, 'nearest');
+                img = mib_crossShiftStacks(handles.I.getData4D('selection', NaN, 0, optionsGetData2), T, handles.shiftsX, handles.shiftsY, parameters);
+                handles.I.setData4D('selection', img, NaN, 0, optionsSetData);
             end
         end
     else
         waitbar(0, parameters.waitbar, sprintf('Aligning Selection, Mask, Model...\nPlease wait...'));
         if ~strcmp(parameters.method, 'Three landmark points')
-            handles.I.model = mib_crossShiftStack(handles.I.model, handles.shiftsX, handles.shiftsY, parameters);
+            img = mib_crossShiftStack(handles.I.getData4D('everything', NaN, 0, optionsGetData), handles.shiftsX, handles.shiftsY, parameters);
+            handles.I.setData4D('everything', img, NaN, 0, optionsGetData);
+            %handles.I.model = mib_crossShiftStack(handles.I.model, handles.shiftsX, handles.shiftsY, parameters);
         else
             %T = imwarp(handles.I.model(:,:,layerId+1:end), tform2, 'nearest', 'FillValues', parameters.backgroundColor);
             %handles.I.model = mib_crossShiftStacks(handles.I.model(:,:,1:layerId), T, handles.shiftsX, handles.shiftsY, parameters);
-            T = imtransform(handles.I.model(:,:,layerId+1:end), tform2, 'nearest');
-            handles.I.model = mib_crossShiftStacks(handles.I.model(:,:,1:layerId), T, handles.shiftsX, handles.shiftsY, parameters);
+            
+            T = imtransform(handles.I.getData4D('everything', NaN, 0, optionsGetData), tform2, 'nearest');
+            img = mib_crossShiftStacks(handles.I.getData4D('everything', NaN, 0, optionsGetData2), T, handles.shiftsX, handles.shiftsY, parameters);
+            handles.I.setData4D('everything', img, NaN, 0, optionsSetData);
         end
     end
+    
+    handles.I.height = size(handles.I.img, 1);
+    handles.I.width = size(handles.I.img, 2);
+    
+    oldSlices = handles.I.slices;
+    handles.I.slices{1} = [1, handles.I.height];
+    handles.I.slices{2} = [1, handles.I.width];
+    handles.I.slices{3} = 1:size(handles.I.img,3);
+    handles.I.slices{4} = [1, 1];
+    handles.I.slices{5} = [1, 1];
+    handles.I.slices{handles.I.orientation} = [oldSlices{handles.I.orientation}, oldSlices{handles.I.orientation}];
+    
+    % calculate shift of the bounding box
+    maxXshift =  min(handles.shiftsX);   % maximal X shift in pixels vs the first slice
+    maxYshift = min(handles.shiftsY);   % maximal Y shift in pixels vs the first slice
+    if handles.I.orientation == 4
+        maxXshift = maxXshift*handles.I.pixSize.x;  % X shift in units vs the first slice
+        maxYshift = maxYshift*handles.I.pixSize.y;  % Y shift in units vs the first slice
+        maxZshift = 0;
+    elseif handles.I.orientation == 2
+        maxYshift = maxYshift*handles.I.pixSize.y;  % Y shift in units vs the first slice
+        maxZshift = maxXshift*handles.I.pixSize.z;  % X shift in units vs the first slice;
+        maxXshift = 0;
+    elseif handles.I.orientation == 1
+        maxXshift = maxXshift*handles.I.pixSize.y;  % X shift in units vs the first slice
+        maxZshift = maxXshift*handles.I.pixSize.z;
+        maxYshift = 0;                              % Y shift in units vs the first slice
+    end
+    handles.I.updateBoundingBox(NaN, [maxXshift, maxYshift, maxZshift]);
+    handles.I.updateImgInfo(sprintf('Aligned using %s; relative to %d', algorithmText{get(handles.methodPopup,'value')}, parameters.refFrame));
     
     if get(handles.saveShiftsCheck,'Value')     % use preexisting parameters
         fn = get(handles.saveShiftsXYpath,'String');
@@ -634,6 +675,12 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
         save(fn, 'shiftsX', 'shiftsY');
     end
 else
+    if handles.I.orientation ~= 4
+        errordlg(sprintf('!!! Error !!!\n\nThe alignement of two separate datasets is only possible in the XY mode\nPlease turn your dataset into the XY mode using a dedicated button in the toolbar.'),'Wrong orientation');
+        delete(parameters.waitbar);
+        return;
+    end
+    
     if isempty(fields(handles.files)) && get(handles.importRadio,'Value') == 0
         handles = selectButton_Callback(hObject, eventdata, handles);
         %handles = guidata(handles.mib_DriftAlignDlg);
@@ -1003,7 +1050,7 @@ STATS = STATS(1);
 set(handles.searchXminEdit, 'String', num2str(ceil(STATS.BoundingBox(1))));
 set(handles.searchYminEdit, 'String', num2str(ceil(STATS.BoundingBox(2))));
 set(handles.searchXmaxEdit, 'String', num2str(ceil(STATS.BoundingBox(1)) + STATS.BoundingBox(3) - 1));
-set(handles.searchYmaxEdit, 'String', num2str(ceil(STATS.BoundingBox(1)) + STATS.BoundingBox(4) - 1));
+set(handles.searchYmaxEdit, 'String', num2str(ceil(STATS.BoundingBox(2)) + STATS.BoundingBox(4) - 1));
 end
 
 
@@ -1204,7 +1251,7 @@ end
 
 % --- Executes on selection change in correlateWithPopup.
 function correlateWithPopup_Callback(hObject, eventdata, handles)
-if get(handles.correlateWithPopup, 'value') == 3    % relative to mode
+if ismember(get(handles.correlateWithPopup, 'value'),[3,4])    % relative/relative hybrid to mode
     set(handles.stepEditbox, 'enable', 'on');
     set(handles.stepText, 'enable', 'on');
 else

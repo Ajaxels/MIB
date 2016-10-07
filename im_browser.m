@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.232 / 26.09.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.233 / 07.10.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -609,9 +609,9 @@ if val == 1     % use bioformats reader
     extentions = {'mov','pic','ics','ids','lei','stk','nd','nd2','sld','pict'...
         ,'lsm','mdb','psd','img','hdr','svs','dv','r3d','dcm','dicom','fits','liff'...
         ,'jp2','lif','l2d','mnc','mrc','oib','oif','pgm','zvi','gel','ims','dm3','naf'...
-        ,'seq','xdce','ipl','mrw','mng','nrrd','ome','am','amiramesh','labels','fli'...
+        ,'seq','xdce','ipl','mrw','mng','nrrd','ome','amiramesh','labels','fli'...
         ,'arf','al3d','sdt','czi','c01','flex','ipw','raw','ipm','xv','lim','nef','apl','mtb'...
-        ,'tnb','obsep','cxd','vws','xys','xml','dm4','tif'};
+        ,'tnb','obsep','cxd','vws','xys','xml','dm4'};
     extentions = ['all known',sort(extentions)];
     set(handles.im_filterPopup,'String',extentions);
     set(handles.im_filterPopup,'Value',position);

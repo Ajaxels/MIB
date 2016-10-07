@@ -38,6 +38,10 @@
 % in pixels or in the image units. The results of the stereology analysis
 % can be exported to Matlab or Microsoft Excel.
 %
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/5gOiyVNr2vY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/5gOiyVNr2vY</a>
+% </html>
 % 
 % <<images/menuToolsStereology.jpg>>
 % 

@@ -15,6 +15,11 @@
 %% Crop dataset...
 % Crop the image and corresponding Selection, Mask, and Model layers.
 % Cropping can be done in the Interactive, Manual or using ROI mode. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/PQtpYUuJwG8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/PQtpYUuJwG8</a>
+% </html>
 % 
 % <<images/menuImageCropDlg2.jpg>>
 % 
@@ -36,6 +41,12 @@
 % 
 %% Resample...
 % Resample image in any possible direction. 
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/26-HROwg_JM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/26-HROwg_JM</a>
+% </html>
+%
 %%
 % 
 % <<images/menuImageResampleDlg.jpg>>
@@ -56,6 +67,13 @@
 % * *Transpose ZX -> ZY* - physically transposes the dataset, so that the ZX orienation, becomes ZY
 % * *Transpose Z <-> T* - physically transposes the dataset, so that the Z orienation, becomes T
 % 
+% <html>
+% A brief demonstration is available in the following videos:<br>
+% Flip: <a href="https://youtu.be/lGjhB-NJZMk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/lGjhB-NJZMk</a><br>
+% Rotate: <a href="https://youtu.be/WFbZn0rfb5I"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/WFbZn0rfb5I</a><br>
+% Transpose: <a href="https://youtu.be/PyEXX7j6pnc"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/PyEXX7j6pnc</a><br>
+% </html>
+%
 %% Slice
 % Manipulations with individual slices of the dataset. The following actions are possible
 %
@@ -69,6 +87,11 @@
 %% Scale bar
 % Scale bar is a tool that allows to use a scale bar printed on the 
 % image to calibrate physical size (X and Y) for pixels in MIB.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/NZO0HG1d8ys"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/NZO0HG1d8ys</a>
+% </html>
 % 
 % How to use:
 %
@@ -87,6 +110,10 @@
 % box containing all voxel centers, but not all voxels as is! _I.e._ it's defined by the voxel centers, which means 
 % that a 1/2 voxel on both sides of the bounding box are subtracted, resulting in a bounding box that is 1 voxel smaller in all three directions.
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/lY0XjNy4Dr8"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/lY0XjNy4Dr8</a>
+% </html>
 %
 % <<images/menuDatasetBoundingBox.jpg>>
 % 

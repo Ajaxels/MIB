@@ -26,6 +26,11 @@
 % * *Delete channel*, to delete the selected color channel (available also from <ug_gui_menu_image.html Menu-Image-Color Channels>)
 % * *Set LUT color*, to set colors for use with the |LUT checkbox| (available also from <ug_gui_menu_file_preferences.html Menu-File-Preferences>)
 % 
+% <html>
+% A brief demonstration of work with color channels is available in the following video:<br>
+% <a href="https://youtu.be/gT-c8TiLcuY"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/gT-c8TiLcuY</a>
+% </html>
+%
 %% 2. The Show Model check box
 % Switch on/off the |Model| layer. This check box has a shortcut *'spacebar'*. 
 %% 3. The Show Mask check box
@@ -34,7 +39,7 @@
 % Switch on/off display of the |Image| layer.
 %
 %% 5. The Annotations check box
-% Switch on/off Annotation layer.
+% Switch on/off <ug_panel_segm_tools.html#3 Annotation layer>.
 %
 %% 6. Display
 % Press to start display adjustments GUI tool, <ug_panel_adjustments.html *see more here*>. 

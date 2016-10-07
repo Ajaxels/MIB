@@ -7,16 +7,21 @@
 % 
 % 
 % * *Matlab* imports image from the main Matlab workspace into |im_browser|. It is possible to
-% provide image description containers.Map together with the dataset, which allows to maintain parameters of the dataset when using the |Export image| command (see below)
+% provide image description containers.Map together with the dataset, which
+% allows to maintain parameters of the dataset when using the |Export
+% image| command (see below). <https://youtu.be/zUJ1RUuTLVs [*brief demo*]>
 % * *Clipboard* pastes image from the system clipboard. This functionality
 % is implemented using <http://www.mathworks.com/matlabcentral/fileexchange/28708-imclipboard *IMCLIPBOARD*> function
-% by  Jiro Doke, MathWorks, 2010
+% by  Jiro Doke, MathWorks, 2010. <https://youtu.be/kcN0Na_YC_U [*brief demo*]>
 % * *Imaris* imports dataset from Imaris; requires <http://www.bitplane.com/ Imaris and ImarisXT>.
 % This functionality is done with
 % <http://www.scs2.net/next/index.php?id=110 IceImarisConnector> written
 % by Aaron C. Ponti, ETH Zurich.
+% <https://youtu.be/MbK2JcTrZFw?list=PLGkFvW985wz8cj8CWmXOFkXpvoX_HwXzj
+% [*demo*]>
 % * *URL* opens image from provided URL address. The link should contain
-% the protocol type (_e.g._, http://)
+% the protocol type (_e.g._, http://). <https://youtu.be/FNEVgKzbGqQ
+% [*brief demo*]>
 % 
 % 
 %% OMERO Import
@@ -31,6 +36,11 @@
 %
 % <<images\omero_import.jpg>>
 % 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/iR7OL0eJGuw"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/iR7OL0eJGuw</a>
+% </html>
+%
 %% Chopped images...
 % This is a special mode that allows to chop and combine back the opened dataset to a
 % defined number of smaller volumes. 
@@ -43,6 +53,11 @@
 % automatically created. This containers.Map can be imported back to
 % |im_browser| later together with the modified dataset to restore parameters of the dataset.
 % 
+% <html>
+% A brief demonstration on Import/Export is available in the following video:<br>
+% <a href="https://youtu.be/zUJ1RUuTLVs"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/zUJ1RUuTLVs</a>
+% </html>
+%
 %% Save image as
 % Saves the dataset to a disk. The following image formats are implemented:
 % 
@@ -73,6 +88,12 @@
 %% Render volume (with Fiji)
 % Volume rendering of the opened dataset using Fiji 3D image viewer. Please refer to details in the 
 % <im_browser_system_requirements.html Microscopy Image Browser System Requirements Fiji> section for installation of Fiji.
+%
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/DZ1Tj3Fh2HM"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/DZ1Tj3Fh2HM</a>
+% </html>
+%
 % Additional dialog prompts for extra parameters for rendering:
 %%
 % 
