@@ -15,8 +15,7 @@ function createModelBtn_Callback(hObject, eventdata, handles)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
-
+% 26.10.2016, IB, updated for segmentation table
 
 % do nothing is selection is disabled
 if strcmp(handles.preferences.disableSelection, 'yes'); 
@@ -34,9 +33,14 @@ if handles.preferences.uint8
 else
     handles.Img{handles.Id}.I.createModel('uint6');
 end
+
 handles.lastSegmSelection = 1;
-updateSegmentationLists(handles);
+
+userData = get(handles.segmTable, 'userdata');
+userData.prevAddTo = 2;
+set(handles.segmTable, 'userdata', userData);
+
+updateSegmentationTable(handles);
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
 set(handles.modelShowCheck,'Value',1);
-set(handles.segmAddList,'Value',2);
 end

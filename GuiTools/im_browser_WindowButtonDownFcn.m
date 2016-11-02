@@ -127,11 +127,6 @@ elseif strcmp(seltype,'extend') || strcmp(seltype,'alt')   % shift+left mouse, o
     % x, y - x/y coordinates of a pixel that was clicked for the full dataset
     %x = xy(1,1)*handles.Img{handles.Id}.I.magFactor + max([0 floor(handles.Img{handles.Id}.I.axesX(1))]);
     %y = xy(1,2)*handles.Img{handles.Id}.I.magFactor + max([0 floor(handles.Img{handles.Id}.I.axesY(1))]);
-
-    if handles.Img{handles.Id}.I.modelExist == 0 && get(handles.segmSelectedOnlyCheck,'Value')  % case when 'selected only' choosen but no model present, remove Selected only switch
-        set(handles.segmSelectedOnlyCheck,'Value',0);
-        set(handles.segmSelList, 'BackgroundColor', [1, 1, 1]);
-    end
     
     switch tool
         case '3D ball'

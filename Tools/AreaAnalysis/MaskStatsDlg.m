@@ -14,6 +14,7 @@ function varargout = MaskStatsDlg(varargin)
 % Updates
 % 18.09.2016, IB, changed .slices to cells
 % 25.02.2016, IB, updated for 4D datasets
+% 25.10.2016, IB, updated for segmentation table
 
 % Last Modified by GUIDE v2.5 01-Jun-2015 15:23:24
 
@@ -62,17 +63,19 @@ end
 handles.h = varargin{1};    % handles of im_browser
 handles.type = varargin{2};     % type of the statistics: for Mask or Model
 
+userData = get(handles.h.segmTable, 'UserData');
+
 if strcmp(handles.type,'Model')
     if handles.h.Img{handles.h.Id}.I.modelExist == 0
         errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
         return;
     end
-    handles.sel_model = get(handles.h.segmList,'Value');    % selected model
+    handles.sel_model = userData.prevMaterial-2;    % selected material
     if handles.sel_model == 0
         errordlg(sprintf('Please select material of the model and try again!\n\nSegmentation panel->Materials'),'Select material');
         return;
     end
-    list = get(handles.h.segmList,'String');
+    list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;
     set(handles.maskStatsDlg,'Name',sprintf('Material "%s" statistics...', list{handles.sel_model}));
 else
     set(handles.maskStatsDlg,'Name','Mask statistics...');
@@ -242,18 +245,25 @@ colorChannel2 = get(handles.secondChannelCombo,'Value');    % for correlation
 
 handles.h = guidata(handles.h.im_browser);  % update handles
 
+userData = get(handles.h.segmTable, 'UserData');
+if userData.prevMaterial == 1
+    handles.type = 'Mask';
+else
+    handles.type = 'Model';
+end
+
 if strcmp(handles.type,'Model')
     if handles.h.Img{handles.h.Id}.I.modelExist == 0
         errordlg(sprintf('The model is not detected!\n\nPlease create a new model using:\nMenu->Models->New model'),'Missing model');
         return;
     end
-    handles.sel_model = get(handles.h.segmList,'Value');    % selected model
-    if handles.sel_model == 0
+    handles.sel_model = userData.prevMaterial-2;    % selected material
+    if handles.sel_model < 1
         errordlg(sprintf('Please select material of the model and try again!\n\nSegmentation panel->Materials'),'Select material');
         return;
     end
-    list = get(handles.h.segmList,'String');
-    set(handles.maskStatsDlg,'Name',sprintf('Material "%s" statistics...', list{handles.sel_model}));
+    list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;
+    set(handles.maskStatsDlg, 'Name', sprintf('Material "%s" statistics...', list{handles.sel_model}));
     if numel(property) == 1
         wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\nMaterial: "%s"\nPlease wait...',property{1}, mode, frame, list{handles.sel_model}),'Name','Shape statistics...','WindowStyle','modal');
     else
@@ -264,6 +274,7 @@ else
         errordlg(sprintf('The Mask is not detected!\n\nPlease create a new Mask using:\n1.Draw the mask with Brush\n2. Select Segmentation panel->Add to->Mask\n3. Press the "A" shortcut to add the drawn area to the Mask layer'),'Missing model');
         return;
     end
+    set(handles.maskStatsDlg,'Name','Mask statistics...');
     if numel(property) == 1
         wb = waitbar(0,sprintf('Calculating "%s" of %s for %s\n Material: Mask\nPlease wait...',property{1}, mode, frame),'Name','Shape statistics...','WindowStyle','modal');
     else
@@ -321,15 +332,15 @@ for t=t1:t2
         end;
         
         getDataOptions.blockModeSwitch = 0;
-        if strcmp(handles.type,'Mask')
+        if strcmp(handles.type, 'Mask')
             img = handles.h.Img{handles.h.Id}.I.getData3D('mask', t, 4, 0, getDataOptions);
-        elseif strcmp(handles.type,'Model')
+        elseif strcmp(handles.type, 'Model')
             img = handles.h.Img{handles.h.Id}.I.getData3D('model', t, 4, handles.sel_model, getDataOptions);
         end
         
         intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
         
-        if sum(ismember(property,'HolesArea')) > 0
+        if sum(ismember(property, 'HolesArea')) > 0
             img = imfill(img, conn, 'holes') - img;
         end
         CC = bwconncomp(img,conn);
@@ -352,7 +363,7 @@ for t=t1:t2
         end
         waitbar(0.1,wb);
         % calculate matlab standard shape properties
-        prop1 = property(ismember(property,'HolesArea'));
+        prop1 = property(ismember(property, 'HolesArea'));
         if ~isempty(prop1)
             STATS2 = regionprops(CC, 'Area');
             [STATS.HolesArea] = STATS2.Area;

@@ -59,8 +59,8 @@ end
 
 if nargin < 2  % extra things after clearing the whole Mask
         obj.maskExist = 0;
-        [pathstr, ~] = fileparts(obj.img_info('Filename'));
-        obj.maskImgFilename = fullfile(pathstr, 'newMask.mask');    
+        [pathstr, fileName] = fileparts(obj.img_info('Filename'));
+        obj.maskImgFilename = fullfile(pathstr, ['Mask_' fileName '.mask']);    
 end
 
 end

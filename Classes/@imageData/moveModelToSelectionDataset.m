@@ -22,8 +22,9 @@ function moveModelToSelectionDataset(obj, action_type, options)
 %| 
 % @b Examples:
 % @code 
-% options.contSelIndex = get(handles.segmSelList,'Value')-2; // index of the selected material
-% options.contAddIndex = get(handles.segmAddList,'Value')-2; // index of the target material
+% userData = get(handles.segmTable,'userdata');     // get user data structure
+% options.contSelIndex = userData.prevMaterial-2; // index of the selected material
+% options.contAddIndex = userData.prevAddTo-2; // index of the target material
 % options.selected_sw = get(handles.segmSelectedOnlyCheck,'value');   // when 1- limit selection to the selected material
 % options.maskedAreaSw = get(handles.maskedAreaCheck,'Value');
 % @endcode

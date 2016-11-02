@@ -4,10 +4,18 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
+%% 1.30 02.11.2016
+% * Improved and simplified the Segmentation panel
+% * Added list of recent directories
+% * Added "Mask_" prefix to filename when saving masks
+% * Fix of substructures in Dataset Info dialog
+% * Fix of fine-tune checkbox for the freehand mode of the measure tool
+% * Improved performance of black-and-white thresholding
+%
 %% 1.233 07.10.2016 
-% * Added convertion from uint16 to uint8 using the currently selected display adjustments settings (ver. 1.232)
 % * Completely rewritten alignment tool, now it is much faster and more reliable
 % * Added loading and combining MRC models from IMOD
+% * Added convertion from uint16 to uint8 using the currently selected display adjustments settings (ver. 1.232)
 % * Added automatic scaling of scale bars for large snapshots
 % * Added adjustment of the image contrast during supervoxel calculation in the graphcut tool
 % * Added links to many short demo clips to the Help (ver. 1.233)

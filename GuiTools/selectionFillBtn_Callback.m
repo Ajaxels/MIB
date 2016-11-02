@@ -20,12 +20,13 @@ function selectionFillBtn_Callback(hObject, eventdata, handles, sel_switch)
 %
 % Updates
 % 29.01.2016, IB, updated for 4D
-
+% 25.10.2016, IB, updated for segmentation table
 
 % do nothing is selection is disabled
 if strcmp(handles.preferences.disableSelection, 'yes'); return; end;
 tic;
-selContour = get(handles.segmSelList,'Value')-2;
+userData = get(handles.segmTable,'UserData');
+selContour = userData.prevMaterial-2;
 selectedOnly = get(handles.segmSelectedOnlyCheck,'Value');
 if nargin < 4
     modifier = get(handles.im_browser,'currentModifier');

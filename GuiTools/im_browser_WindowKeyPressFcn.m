@@ -20,8 +20,8 @@ function im_browser_WindowKeyPressFcn(hObject, eventdata, handles)
 %
 % Updates
 % 03.11.2015, IB, compatible with handles.preferences.KeyShortcuts structure
-% 18.09.2016, changed .slices to cells
-
+% 18.09.2016, IB, changed .slices to cells
+% 25.10.2016, IB, updated for segmentation table
 
 % return when editing the edit boxes
 if ~isempty(strfind(get(get(hObject,'CurrentObject'),'tag'), 'Edit'));
@@ -127,7 +127,8 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             % do nothing is selection is disabled
             if strcmp(handles.preferences.disableSelection, 'yes'); return; end;
             
-            if get(handles.segmAddList,'Value') == 1    % Selection to Model
+            userData = get(handles.segmTable,'UserData');
+            if userData.prevAddTo == 1    % Selection to Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
@@ -143,7 +144,8 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             % do nothing is selection is disabled
             if strcmp(handles.preferences.disableSelection, 'yes'); return; end;
             
-            if get(handles.segmAddList,'Value') == 1    % Selection to Model
+            userData = get(handles.segmTable,'UserData');
+            if userData.prevAddTo == 1   % Selection to Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
@@ -159,7 +161,8 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
             % do nothing is selection is disabled
             if strcmp(handles.preferences.disableSelection, 'yes'); return; end;
         
-            if get(handles.segmAddList,'Value') == 1    % Selection to Model
+            userData = get(handles.segmTable,'UserData');
+            if userData.prevAddTo == 1    % Selection to Model
                 selectionTo = 'mask';
             else    % Selection to Mask
                 selectionTo = 'model';
@@ -294,13 +297,13 @@ if ~isempty(ActionId) % find in the list of existing shortcuts
         case 'Paste buffered selection to the current slice'    % default 'Ctrl + v'
             menuSelectionBuffer(handles.menuSelectionBufferCopy, eventdata, handles, 'paste');
         case 'Toggle between the selected material and exterior' % default 'e'
-            val = get(handles.segmSelList,'Value');
-            if val == 2
-                set(handles.segmSelList,'Value',handles.lastSegmSelection);
+            userData = get(handles.segmTable,'UserData');
+            if userData.prevMaterial == 2
+                eventdata2.Indices = [handles.lastSegmSelection, 2];
             else
-                set(handles.segmSelList,'Value',2);
+                eventdata2.Indices = [2, 2];
             end
-            guidata(handles.im_browser, handles);
+            segmTable_CellSelectionCallback(handles.segmTable, eventdata2, handles);     % update Materials column
         case 'Loop through the list of favourite segmentation tools'    % default 'd'
             if numel(handles.preferences.lastSegmTool) == 0
                 errordlg(sprintf('The selection tools for the fast access with the "D" shortcut are not difined!\n\nPlease use the "D" button in the Segmentation panel to select them!'),'No tools defined!');

@@ -20,8 +20,11 @@ function selectionButton_Callback(hObject, eventdata, handles, action)
 %
 % Updates
 % 29.01.2016, IB, updated for 4D, taken away from im_browser.m to a separate file
+% 25.10.2016, IB, updated for segmentation table
 
-if get(handles.segmAddList,'Value') == 1    % Selection to Model
+userData = get(handles.segmTable, 'UserData');
+
+if userData.prevAddTo == 1    % Selection to Model
     layerTo = 'mask';
 else    % Selection to Mask
     layerTo = 'model';

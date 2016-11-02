@@ -24,9 +24,11 @@ function handles = ib_segmentation_Lasso(modifier, handles)
 % Updates
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 29.03.2016, IB, optimized backup
+% 25.10.2016, IB, updated for segmentation table
 
 switch3d = get(handles.actions3dCheck,'Value');     % use tool in 3d
-selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+userData = get(handles.segmTable,'UserData');
+selcontour = userData.prevMaterial - 2;  % get selected contour
 list = get(handles.filterSelectionPopup, 'string');
 type = list{get(handles.filterSelectionPopup, 'value')};    % Lasso or Rectangle
 

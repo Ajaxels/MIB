@@ -448,7 +448,7 @@ for z=1:tilesZ
             
             % crop and save mask
             if get(handles.chopMaskCheck, 'value')
-                fn = sprintf('%s_Z%.2d-X%.2d-Y%.2d.mask', fnTemplate, z, x, y);
+                fn = sprintf('Mask_%s_Z%.2d-X%.2d-Y%.2d.mask', fnTemplate, z, x, y);
                 fnModel = fullfile(outputDir, fn);
                 imOut = handles.h.Img{handles.h.Id}.I.getData3D('mask', timePnt, 4, 0, options); %#ok<NASGU>
                 save(fnModel, 'imOut','-mat', '-v7.3');

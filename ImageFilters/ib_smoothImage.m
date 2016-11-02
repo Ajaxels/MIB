@@ -21,6 +21,7 @@ function handles = ib_smoothImage(handles, type)
 %
 % Updates
 % 21.02.2016, IB, updated for 4D datasets
+% 26.10.2016, IB, updated for segmentation table
 
 
 title = [type 'Smoothing...'];
@@ -71,7 +72,9 @@ switch type
         end
     case 'model'
         options.dataType = '3D';
-        sel_model = get(handles.segmList,'Value');
+        userData = get(handles.segmTable,'UserData');
+        sel_model = userData.prevMaterial-2;
+        if sel_model < 1; return; end;
         if t1==t2
             ib_do_backup(handles, 'model', 1);
         end

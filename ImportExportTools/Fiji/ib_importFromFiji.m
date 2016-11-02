@@ -99,7 +99,7 @@ else
             for i=1:maxVal-minVal
                 handles.Img{handles.Id}.I.modelMaterialNames(i,1) = cellstr(num2str(i));
             end
-            updateSegmentationLists(handles);
+            updateSegmentationTable(handles);
         end
         modelShowCheck_Callback(handles.modelShowCheck,NaN,handles);
     elseif strcmp(datasetType, 'mask')

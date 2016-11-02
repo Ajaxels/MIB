@@ -188,9 +188,9 @@ handles.preferences.lutColors = [       % add colors for color channels
     1 .65 0]; % orange
 handles.preferences.eraserRadiusFactor = 1.4;   % magnifying factor for the eraser
 % define font structure
-handles.preferences.Font.FontName = get(handles.text6,'FontName');
-handles.preferences.Font.FontUnits = get(handles.text6,'Units');
-handles.preferences.Font.FontSize = get(handles.text6,'FontSize');
+handles.preferences.Font.FontName = get(handles.zoomText,'FontName');
+handles.preferences.Font.FontUnits = get(handles.zoomText,'Units');
+handles.preferences.Font.FontSize = get(handles.zoomText,'FontSize');
 
 % define keyboard shortcuts
 maxShortCutIndex = 27;  % total number of shortcuts
@@ -290,6 +290,8 @@ handles.preferences.KeyShortcuts.shift(26) = 1;
 handles.preferences.KeyShortcuts.Key{maxShortCutIndex} = 'z';
 handles.preferences.KeyShortcuts.Action{maxShortCutIndex} = 'Undo/Redo last action';
 handles.preferences.KeyShortcuts.control(maxShortCutIndex) = 1;
+
+handles.preferences.recentDirs = {};
 
 % update preferences
 if exist('im_browser_pars','var') && isfield(im_browser_pars,'preferences')
@@ -465,6 +467,21 @@ if numel(customContents1) > 2
         end
     end
 end
+%% define data for the segmTable
+tableData = cell([2, 3]);
+tableData{1, 1} = sprintf('<html><table border=0 width=25 bgcolor=rgb(%d,%d,%d)><TR><TD>&nbsp;</TD></TR></table></html>', round(handles.preferences.maskcolor(1)*255), round(handles.preferences.maskcolor(2)*255), round(handles.preferences.maskcolor(3)*255));
+tableData{1, 2} = '<html><table border=0 width=300 bgcolor=rgb(255,255,255)><TR><TD>Mask</TD></TR></table></html>';
+tableData{1, 3} = true;
+tableData{2, 1} = '<html><table border=0 width=25 bgcolor=rgb(255,255,255)><TR><TD>&nbsp;</TD></TR></table></html>';
+tableData{2, 2} = '<html><table border=0 width=300 bgcolor=rgb(255,255,255)><TR><TD>Exterior</TD></TR></table></html>';
+tableData{2, 3} = false;
+set(handles.segmTable,'Data', tableData);
+set(handles.segmTable, 'ColumnEditable', logical([0, 0, 0]));
+userData.prevMaterial = 2;  % index of selected material
+userData.prevAddTo = 1;     % index of material for add to
+userData.showAll = 1;       % switch to display all or only selected material
+userData.unlink = 0;       % switch to unlink selected material from the Add to
+set(handles.segmTable,'userData', userData);
 
 %% set background for last and first slice buttons of the image view panel
 bg = get(handles.lastSliceBtn, 'background');
@@ -516,8 +533,8 @@ set(tempList,'BackgroundColor',[.831 .816 .784]);
 tempList = findall(handles.im_browser,'Type','uibuttongroup');    % set color to uibuttongroup
 set(tempList,'BackgroundColor',[.831 .816 .784]);
 
-defaultFontSize = get(handles.text6, 'fontsize');
-defaultFontName = get(handles.text6, 'fontname');
+defaultFontSize = get(handles.zoomText, 'fontsize');
+defaultFontName = get(handles.zoomText, 'fontname');
 
 if defaultFontSize ~= handles.preferences.Font.FontSize || ...
         ~strcmp(defaultFontName, handles.preferences.Font.FontName)
@@ -536,6 +553,11 @@ end
 
 % Setting the font sizes
 set(handles.filesListbox, 'fontsize', handles.preferences.fontSizeDir);
+
+% Populate the recent directories popupmenu
+if ~isempty(handles.preferences.recentDirs)
+    set(handles.recentDirsPopup, 'String', handles.preferences.recentDirs);
+end
 
 %% Diplib check
 if ~isdeployed

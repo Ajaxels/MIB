@@ -23,6 +23,7 @@ function handles = ib_dilateSelection(handles, sel_switch)
 % 30.06.2014, IB, changed from rectangle to circle strel
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 29.01.2016, IB, updated for 4D; changed sel_switch parameters from 'current'->'2D', 'all'->'3D', , added '4D'
+% 25.10.2016, IB, updated for segmentation table
 
 % do nothing is selection is disabled
 if strcmp(handles.preferences.disableSelection, 'yes'); return; end;
@@ -62,7 +63,8 @@ if sel_col_ch == 0 && get(handles.AdaptiveDilateCheck,'Value') == 1
 end
 selected = NaN;
 if get(handles.segmSelectedOnlyCheck,'Value')  % area for dilation is taken only from selected contour
-    selected = get(handles.segmSelList,'Value') - 2;
+    userData = get(handles.segmTable,'UserData');
+    selected = userData.prevMaterial - 2;
 end;
 
 width = size(handles.Img{handles.Id}.I.img,2);
@@ -164,7 +166,7 @@ else                % do in 2d
             selection = handles.Img{handles.Id}.I.getData2D('selection', layer_id, handles.Img{handles.Id}.I.orientation, 0, NaN, options);
             if max(max(selection)) < 1; continue; end;
             if ~isnan(selected)
-                model = handles.Img{handles.Id}.I.getData2D('model', layer_id, handles.Img{handles.Id}.I.orientation, NaN, NaN, options);
+                model = handles.Img{handles.Id}.I.getData2D('model', layer_id, handles.Img{handles.Id}.I.orientation, selected, NaN, options);
             end
 
             if get(handles.AdaptiveDilateCheck,'Value')

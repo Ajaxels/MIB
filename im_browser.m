@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.233 / 07.10.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.30 / 02.11.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -243,6 +243,10 @@ handles.output = hObject;
 % get default or load last session parameters
 [handles, start_path] = im_browser_getDefaultParameters(handles);
 handles.U = imageUndo(handles.preferences.maxUndoHistory, handles.preferences.max3dUndoHistory);    % create instanse for keeping undo information
+
+% resize all elements x1.25 times for macOS
+mib_rescaleWidgets(handles.im_browser);
+
 % initializa image buffer with dummy images
 handles.Id = 1;   % number of the selected buffer
 for i=1:8
@@ -258,9 +262,6 @@ if strcmp(handles.preferences.undo, 'no')
 else
     handles.U.enableSwitch = 1;
 end
-
-% resize all elements x1.25 times for macOS
-mib_rescaleWidgets(handles.im_browser);
 
 % % adding menus to some widgets
 % adding context menu for filesListbox
@@ -328,28 +329,30 @@ uimenu(handles.mask_cm, 'Label', 'Do new mask', 'Callback', {@maskGenBtn_Callbac
 uimenu(handles.mask_cm, 'Label', 'Generate new mask and add it to the existing mask', 'Callback', {@maskGenBtn_Callback, NaN, 'add'});
 set(handles.maskGenBtn,'uicontextmenu',handles.mask_cm);
 
-% adding context menus for Materials list
-handles.model_cm = uicontextmenu('Parent',handles.im_browser);
-uimenu(handles.model_cm, 'Label', 'Rename...', 'Callback', {@model_cm_Callback, 'rename'});
-uimenu(handles.model_cm, 'Label', 'Set color...', 'Callback', {@model_cm_Callback, 'set color'});
-uimenu(handles.model_cm, 'Label', 'Smooth...', 'Callback', {@model_cm_Callback, 'smooth'});
-uimenu(handles.model_cm, 'Label', 'Get statistics...', 'Callback', {@model_cm_Callback, 'statistics'});
-uimenu(handles.model_cm, 'Label', 'Show isosurface (Matlab)...', 'Callback', {@model_cm_Callback, 'isosurface'});
-uimenu(handles.model_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@model_cm_Callback, 'volumeFiji'});
-uimenu(handles.model_cm, 'Label', 'Sync all lists', 'Callback', {@syncModelLists_Callback, 'material'}, 'Separator','on');
-set(handles.segmList,'uicontextmenu',handles.model_cm);
-
-% adding context menu for Select from list
-handles.modelSel_cm = uicontextmenu('Parent',handles.im_browser);
-uimenu(handles.modelSel_cm, 'Label', 'Set this material as Mask', 'Callback', {@ib_moveLayers, NaN, 'model','mask','3D','replace'});
-uimenu(handles.modelSel_cm, 'Label', 'NEW Selection (CURRENT)', 'Separator','on', 'Callback', {@ib_moveLayers, NaN,'model','selection','2D','replace'});
-uimenu(handles.modelSel_cm, 'Label', 'ADD to Selection (CURRENT)', 'Callback', {@ib_moveLayers, NaN, 'model','selection','2D','add'});
-uimenu(handles.modelSel_cm, 'Label', 'REMOVE Material from Selection (CURRENT)', 'Callback', {@ib_moveLayers, NaN,'model','selection','2D','remove'});
-uimenu(handles.modelSel_cm, 'Label', 'NEW Selection (ALL)','Separator','on', 'Callback', {@ib_moveLayers, NaN,'model','selection','3D','replace'});
-uimenu(handles.modelSel_cm, 'Label', 'ADD to Selection (ALL)', 'Callback', {@ib_moveLayers, NaN,'model','selection','3D','add'});
-uimenu(handles.modelSel_cm, 'Label', 'REMOVE Material from Selection (ALL)', 'Callback', {@ib_moveLayers, NaN,'model','selection','3D','remove'});
-uimenu(handles.modelSel_cm, 'Label', 'Sync all lists', 'Callback', {@syncModelLists_Callback, 'selectfrom'}, 'Separator','on');
-set(handles.segmSelList,'uicontextmenu',handles.modelSel_cm);
+% adding context menus for Materials table
+handles.segmTable_cm = uicontextmenu('Parent',handles.im_browser);
+uimenu(handles.segmTable_cm, 'Label', 'Show selected material only', 'Callback', {@model_cm_Callback, 'showselected'});
+uimenu(handles.segmTable_cm, 'Label', 'Rename...', 'Separator', 'on', 'Callback', {@model_cm_Callback, 'rename'});
+uimenu(handles.segmTable_cm, 'Label', 'Set color...', 'Callback', {@model_cm_Callback, 'set color'});
+uimenu(handles.segmTable_cm, 'Label', 'Get statistics...', 'Callback', {@model_cm_Callback, 'statistics'});
+h1=uimenu(handles.segmTable_cm,'label','Material to Selection...','Separator','on');
+uimenu(h1,'label','NEW (CURRENT)','callback', {@ib_moveLayers, NaN,'model','selection','2D','replace'});
+uimenu(h1,'label','ADD (CURRENT)','callback', {@ib_moveLayers, NaN, 'model','selection','2D','add'});
+uimenu(h1,'label','REMOVE (CURRENT)','callback', {@ib_moveLayers, NaN,'model','selection','2D','remove'});
+uimenu(h1,'label','NEW (ALL SLICES)','Separator','on','callback', {@ib_moveLayers, NaN,'model','selection','3D','replace'});
+uimenu(h1,'label','ADD (ALL SLICES)','callback', {@ib_moveLayers, NaN, 'model','selection','3D','add'});
+uimenu(h1,'label','REMOVE (ALL SLICES)','callback', {@ib_moveLayers, NaN,'model','selection','3D','remove'});
+h2=uimenu(handles.segmTable_cm,'label','Material to Mask...');
+uimenu(h2,'label','NEW (CURRENT)','callback', {@ib_moveLayers, NaN,'model','mask','2D','replace'});
+uimenu(h2,'label','ADD (CURRENT)','callback', {@ib_moveLayers, NaN, 'model','mask','2D','add'});
+uimenu(h2,'label','REMOVE (CURRENT)','callback', {@ib_moveLayers, NaN,'model','mask','2D','remove'});
+uimenu(h2,'label','NEW (ALL SLICES)','Separator','on','callback', {@ib_moveLayers, NaN,'model','mask','3D','replace'});
+uimenu(h2,'label','ADD (ALL SLICES)','callback', {@ib_moveLayers, NaN, 'model','mask','3D','add'});
+uimenu(h2,'label','REMOVE (ALL SLICES)','callback', {@ib_moveLayers, NaN,'model','mask','3D','remove'});
+uimenu(handles.segmTable_cm, 'Label', 'Show isosurface (Matlab)...', 'Separator', 'on', 'Callback', {@model_cm_Callback, 'isosurface'});
+uimenu(handles.segmTable_cm, 'Label', 'Show as volume (Fiji)...', 'Callback', {@model_cm_Callback, 'volumeFiji'});
+uimenu(handles.segmTable_cm, 'Label', 'Unlink material from Add to', 'Separator', 'on', 'Callback', {@model_cm_Callback, 'unlinkaddto'});
+set(handles.segmTable, 'uicontextmenu', handles.segmTable_cm);
 
 % adding context menu for Color channels table
 handles.channelMixerTable_cm = uicontextmenu('Parent',handles.im_browser);
@@ -362,12 +365,6 @@ uimenu(handles.channelMixerTable_cm, 'Label', 'Delete channel', 'Callback', {@ib
 uimenu(handles.channelMixerTable_cm, 'Label', 'Set LUT color', 'Callback', {@ib_channelMixerTable_Callback, NaN, 'set color'}, 'Separator','on');
 set(handles.channelMixerTable,'uicontextmenu',handles.channelMixerTable_cm);
 
-% adding context menu for Add to list
-handles.modelAdd_cm = uicontextmenu('Parent',handles.im_browser);
-uimenu(handles.modelAdd_cm, 'Label', 'Get statistics...', 'Callback', {@menuMaskStats_Callback, handles});
-uimenu(handles.modelAdd_cm, 'Label', 'Sync all lists', 'Callback', {@syncModelLists_Callback, 'addto'},'Separator','on');
-set(handles.segmAddList,'uicontextmenu',handles.modelAdd_cm);
-
 % set callback for the mode selection in the Mask Generator panel
 set(handles.maskGenPanelModeRadioPanel,'SelectionChangeFcn',@maskGenPanelModeRadioPanel_Callback);
 
@@ -375,23 +372,43 @@ set(0,'CurrentFigure',handles.im_browser);
 update_drives(handles,start_path,1);  % get available disk drives
 update_filelist(handles);
 
-handles = handles.Img{handles.Id}.I.updateAxesLimits(handles, 'resize');
+%handles = handles.Img{handles.Id}.I.updateAxesLimits(handles, 'resize');
 handles = updateGuiWidgets(handles);
 handles = handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
-%guidata(handles.im_browser, handles);
 
 %handles.changelayerSliderListener = addlistener(handles.changelayerSlider,'Value','PostSet', @(s,e) changelayerSlider_Callback(handles.changelayerSlider, [], handles));
 set(handles.im_browser,'Visible','on');
 % remove focus from the menu
 uicontrol(handles.updatefilelistBtn);    
 
+drawnow;
 if exist('frame','var')     % put again to the top
     frame.show;
     frame.toFront();
 end
-pause(0.1);
+uiwait(handles.im_browser, 1);
 
-% add double click callbacks for the sliders of the widgets,
+% find java object for the segmentation table
+userData = get(handles.segmTable,'userData');
+userData.jScroll = findjobj(handles.segmTable);
+try
+    userData.jTable = userData.jScroll.getViewport.getComponent(0);
+catch err
+    warndlg('Please wait for MIB to load completely before interacting with the main window!');
+end
+userData.jScroll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);  % add vertical scroll bar
+userData.jTable.setAutoResizeMode(userData.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+set(handles.segmTable, 'UserData', userData);
+
+% resize the column width
+set(handles.segmTable, 'Units', 'Pixels');
+tablePosition = get(handles.segmTable, 'position');
+currentColWidth =  {25, 'auto', 50};
+currentColWidth{2} = tablePosition(3)-currentColWidth{1}-currentColWidth{3}-6;
+set(handles.segmTable, 'ColumnWidth', currentColWidth);
+set(handles.segmTable, 'Units', 'Points');
+
+% add right mouse click callbacks for the sliders of the widgets,
 % see more http://undocumentedmatlab.com/blog/setting-listbox-mouse-actions
 try
     jFilesListbox = findjobj(handles.filesListbox); % jScrollPane
@@ -405,7 +422,6 @@ if exist('frame','var')     % close splash window
     frame.hide;
     clear frame;
 end
-
 % UIWAIT makes im_browser wait for user response (see UIRESUME)
 %uiwait(handles.im_browser);
 end
@@ -424,30 +440,6 @@ value = get(handles.drivePopup,'Value');
 handles.mypath = cell2mat(drives(value));
 set(handles.pathEdit,'String',drives(value));
 update_filelist(handles);
-end
-
-function pathEdit_Callback(hObject, eventdata, handles)
-% manual directory selection
-%switchShortcutsOn(hObject, eventdata, handles);
-path = get(handles.pathEdit,'String');
-if isdir(path)
-    handles.mypath = path;
-    set(handles.pathEdit,'String',path);
-    update_filelist(handles);
-    drives = get(handles.drivePopup,'String');
-    if ischar(class(drives(1))); drives = cellstr(drives); end;
-    if ispc()
-        for i = 1:numel(drives)
-            if strcmpi(cell2mat(drives(i)),path(1:2))
-                set(handles.drivePopup,'Value',i);
-                return;
-            end
-        end
-    end
-else
-    set(handles.pathEdit,'String',handles.mypath);
-end
-guidata(handles.im_browser, handles);
 end
 
 function folderselectBtn_Callback(~, ~, handles)
@@ -491,20 +483,6 @@ if strcmp(handles.Img{handles.Id}.I.model_type,'uint8') || strcmp(handles.Img{ha
 end
 end
 
-function segmSelList_Callback(hObject, ~, handles)
-% remembers the last selected object
-val = get(handles.segmSelList,'Value');
-if val == 1;
-    set(handles.segmSelectedOnlyCheck, 'value', 0);
-    segmSelectedOnlyCheck_Callback(handles.segmSelectedOnlyCheck, NaN, handles);
-end
-if val ~= 2
-    handles.lastSegmSelection = get(handles.segmSelList,'Value');
-    guidata(handles.im_browser, handles);
-end;
-unFocus(hObject);   % remove focus from hObject
-end
-
 
 % can't take to a separate file due to imageRedraw function
 function addMaterialBtn_Callback(hObject, eventdata, handles)
@@ -512,13 +490,13 @@ function addMaterialBtn_Callback(hObject, eventdata, handles)
 unFocus(hObject); % remove focus from hObject
 
 % do nothing is selection is disabled
-if strcmp(handles.preferences.disableSelection, 'yes');
+if strcmp(handles.preferences.disableSelection, 'yes')
     warndlg(sprintf('The models are switched off!\n\nPlease make sure that the "Disable selection" option in the Preferences dialog (Menu->File->Preferences) is set to "no" and try again...'),'The models are disabled');
     return;
 end;
 
-list = cellstr(get(handles.segmList,'String'));
-if isempty(list{1}); list = cell(0); end;    % remove empty entry from the list
+list = handles.Img{handles.Id}.I.modelMaterialNames;
+if isempty(list); list = cell(0); end;    % remove empty entry from the list
 number = numel(list);
 answer = mib_inputdlg(handles, sprintf('Please add a new name for this material:'),'Rename material', num2str(number+1));
 if ~isempty(answer)
@@ -533,13 +511,13 @@ end
 
 handles.Img{handles.Id}.I.modelMaterialNames = list;
 
-updateSegmentationLists(handles);
+userData = get(handles.segmTable, 'UserData');
+userData.prevAddTo = numel(list)+2;
+userData.prevMaterial = numel(list)+2;
+set(handles.segmTable, 'UserData',userData);
+updateSegmentationTable(handles);
 
 handles.Img{handles.Id}.I.generateModelColors();
-% if get(handles.modelShowCheck,'Value') % if model is shown, update the segmList as well
-%     set(handles.segmList,'String',[cellstr('all'); list(2:end)]);
-% end
-set(handles.segmAddList, 'value', numel(list)+2);
 imageRedraw(hObject, NaN, handles);
 guidata(handles.im_browser, handles);
 end
@@ -756,28 +734,6 @@ handles = ib_sizeExclusionFilter(handles, type);
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
 end
 
-function syncModelLists_Callback(hObject, ~, type)
-% sync all the list in the segmentation panel
-% type: 'material', 'selectfrom', 'addto'
-handles = guidata(hObject);
-if isempty(handles.Img{handles.Id}.I.modelMaterialNames); return; end;
-switch type
-    case 'material'
-        val = get(handles.segmList, 'value');
-    case 'selectfrom'
-        val = get(handles.segmSelList, 'value');
-        if val < 2; return; end;
-        val = val - 2;
-    case 'addto'
-        val = get(handles.segmAddList, 'value');
-        if val < 2; return; end;
-        val = val - 2;
-end
-set(handles.segmList, 'value', val);
-set(handles.segmSelList, 'value', val+2);
-set(handles.segmAddList, 'value', val+2);
-end
-
 function imAdjustBtn_Callback(~, ~, handles)
 % Open image adjustments dialog
 if strcmp(handles.Img{handles.Id}.I.img_info('ColorType'),'indexed')
@@ -896,7 +852,8 @@ wb = waitbar(0, 'Calculating statistics, please wait...','WindowStyle','modal');
 getDataOptions.blockModeSwitch = 0;
 if get(handles.segmMaskClickModelCheck, 'value')
     type = 'model';
-    colchannel = get(handles.segmSelList,'Value') - 2;
+    userData = get(handles.segmTable,'UserData');
+    colchannel = userData.prevMaterial - 2;
     if colchannel < 0;  % do not continue when All is selected
         msgbox(sprintf('Please select Material in the ''Select from list'' and press the ''Recalc.'' button in the Segmentation panel, Object Picker tool again!'),'Warning!','warn');
         delete(wb);
@@ -1164,17 +1121,6 @@ else
 end
 end
 
-% --- Executes on selection change in segmList.
-function segmList_Callback(hObject, eventdata, handles)
-unFocus(hObject);   % remove focus from hObject
-handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
-end
-
-% --- Executes on selection change in segmAddList.
-function segmAddList_Callback(hObject, eventdata, handles)
-unFocus(hObject);   % remove focus from hObject
-end
-
 % select stored dataset
 function bufferToggle_Callback(hObject, eventdata, handles)
 oldId = handles.Id; % get index of the previously selected buffer
@@ -1301,11 +1247,6 @@ end
 
 function liveStretchCheck_Callback(hObject, eventdata, handles)
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
-end
-
-% --- Executes on button press in seeAllMaterialsCheck.
-function seeAllMaterialsCheck_Callback(hObject, eventdata, handles)
-segmList_Callback(handles.segmList, eventdata, handles);
 end
 
 function showAnnotationsCheck_Callback(hObject, eventdata, handles)
@@ -1977,7 +1918,7 @@ brushSuperpixelsCheck(hObject, eventdata, handles);
 end
 
 function devTest_ClickedCallback(hObject, eventdata, handles)
-
+disp('ok')
 % % Update handles structure
 % %guidata(hObject, handles);
 % guidata(handles.I.im_browser, handles.I);
@@ -2032,3 +1973,4 @@ function devTest_ClickedCallback(hObject, eventdata, handles)
 %     end
 % end
 end
+

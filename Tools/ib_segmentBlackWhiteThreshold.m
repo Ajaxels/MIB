@@ -24,6 +24,7 @@ function handles = ib_segmentBlackWhiteThreshold(handles, hObject)
 % Updates
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 25.01.2016, IB, updated for 4D
+% 25.10.2016, IB, improved performance, updated for segmentation table
 
 % do black and white thresholding for segmentation
 switch get(hObject,'tag')
@@ -61,7 +62,10 @@ val2 = round(get(handles.segmHighSlider,'Value'));
 
 selected = get(handles.segmSelectedOnlyCheck,'Value');  % do only for selected material
 masked = get(handles.maskedAreaCheck, 'value');     % do only for masked material
-model_id = get(handles.segmSelList,'Value')-2;
+userData = get(handles.segmTable,'UserData');
+model_id = userData.prevMaterial - 2;  % get selected contour
+if model_id < 0 && selected == 1;  masked = 1; end;
+
 color_channel = get(handles.ColChannelCombo,'Value') - 1;
 if color_channel == 0
     msgbox('Please select the color channel!','Wrong color channel!','error');
@@ -78,14 +82,15 @@ if get(handles.segmBWthres3D,'Value') || get(handles.segmBWthres4D,'Value') % do
         t2 = handles.Img{handles.Id}.I.slices{5}(1);
         ib_do_backup(handles, 'selection', 1);
     end
-    handles.Img{handles.Id}.I.clearSelection(NaN, NaN, NaN, [t1, t2]);
+
     set(hObject,'BackgroundColor',[1 0 0]);
     drawnow;
     for t=t1:t2
-        img = handles.Img{handles.Id}.I.getData3D('image', t, 4, color_channel);  % get dataset
-        selection = zeros(size(img,1),size(img,2),size(img,4),'uint8');  % generate new selection
+        img = squeeze(handles.Img{handles.Id}.I.getData3D('image', t, 4, color_channel));  % get dataset
         
-        if masked == 1
+        if masked == 1 
+            selection = zeros(size(img),'uint8');  % generate new selection
+            
             mask = handles.Img{handles.Id}.I.getData3D('mask', t, 4);    % get mask
             STATS = regionprops(uint8(mask), 'BoundingBox');    % calculate the bounding box for the mask
             if numel(STATS) == 0; continue; end;
@@ -96,19 +101,19 @@ if get(handles.segmBWthres3D,'Value') || get(handles.segmBWthres4D,'Value') % do
             
             indeces(1,:) = [BBox(2), BBox(2)+BBox(5)-1];
             indeces(2,:) = [BBox(1), BBox(1)+BBox(4)-1];
-            indeces(3,:) = [1, size(handles.Img{handles.Id}.I.img,3)];
-            indeces(4,:) = [BBox(3), BBox(3)+BBox(6)-1];
+            indeces(3,:) = [BBox(3), BBox(3)+BBox(6)-1];
             % crop image to the masked area
-            img = img(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),color_channel,indeces(4,1):indeces(4,2));
+            img = img(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(3,1):indeces(3,2));
             % crop the mask
-            mask = mask(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(4,1):indeces(4,2));
+            mask = mask(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(3,1):indeces(3,2));
             
             % generate cropped selection
-            selection2 = zeros(size(img,1),size(img,2),size(img,4),'uint8');
-            selection2(img>=val1 & img <= val2) = 1;
+            selection2 = zeros(size(img),'uint8')+1;
+            selection2(img<val1 | img>val2) = 0;
+            
             selection2 = selection2 & mask;
             
-            if selected
+            if selected && model_id >= 0
                 if handles.Img{handles.Id}.I.blockModeSwitch
                     if handles.Img{handles.Id}.I.orientation==1     % xz
                         shiftX = max([ceil(handles.Img{handles.Id}.I.axesY(1)) 0]);
@@ -130,15 +135,16 @@ if get(handles.segmBWthres3D,'Value') || get(handles.segmBWthres4D,'Value') % do
                 end
                 Options.x = [indeces(2,1), indeces(2,2)]+shiftX;
                 Options.y = [indeces(1,1), indeces(1,2)]+shiftY;
-                Options.z = [indeces(4,1), indeces(4,2)]+shiftZ;
+                Options.z = [indeces(3,1), indeces(3,2)]+shiftZ;
                 model = handles.Img{handles.Id}.I.getData3D('model', NaN, 4, model_id, Options);
                 selection2(model ~= 1) = 0;
             end
-            selection(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(4,1):indeces(4,2)) = selection2;
+            selection(indeces(1,1):indeces(1,2),indeces(2,1):indeces(2,2),indeces(3,1):indeces(3,2)) = selection2;
         else
-            selection(img>=val1 & img <= val2) = 1;
+            selection = zeros(size(img),'uint8') + 1;  % generate new selection
+            selection(img < val1 | img > val2) = 0;
             
-            if selected
+            if selected && model_id >= 0
                 model = handles.Img{handles.Id}.I.getData3D('model', t, 4, model_id);
                 selection = selection & model;
             end
@@ -147,19 +153,19 @@ if get(handles.segmBWthres3D,'Value') || get(handles.segmBWthres4D,'Value') % do
     end
 else    % do segmentation for the current slice only
     ib_do_backup(handles, 'selection', 0);
-    img = handles.Img{handles.Id}.I.getCurrentSlice('image', color_channel);
-    selection = zeros(size(img,1),size(img,2),size(img,4),'uint8');  % generate new selection
-    selection(img>=val1 & img <= val2) = 1;
-    if masked == 1
+    img = squeeze(handles.Img{handles.Id}.I.getCurrentSlice('image', color_channel));
+    selection = zeros(size(img),'uint8')+1;  % generate new selection
+    selection(img<val1 | img>val2) = 0;
+    
+    if masked == 1 
         mask = handles.Img{handles.Id}.I.getCurrentSlice('mask');
         selection(mask ~= 1) = 0;
     end
-    if selected
+    if selected && model_id >= 0
         model = handles.Img{handles.Id}.I.getCurrentSlice('model');
         selection(model ~= model_id) = 0;
     end
     handles.Img{handles.Id}.I.setCurrentSlice('selection', selection);
 end
 set(hObject,'BackgroundColor',backgroundColor);
-
 end

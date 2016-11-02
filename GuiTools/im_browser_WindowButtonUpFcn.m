@@ -32,8 +32,9 @@ if iscell(handles.Img{handles.Id}.I.brush_selection)  % return after movement of
     end
     currSelection = handles.Img{handles.Id}.I.getSliceToShow('selection');
     handles.Img{handles.Id}.I.brush_selection{1} = imresize(handles.Img{handles.Id}.I.brush_selection{1}, size(currSelection),'method','nearest');
-
-    selcontour = get(handles.segmSelList,'Value') - 2;
+    
+    userData = get(handles.segmTable,'UserData');
+    selcontour = userData.prevMaterial - 2;
     if get(handles.segmSelectedOnlyCheck,'Value')
         currModel = handles.Img{handles.Id}.I.getSliceToShow('model');
         handles.Img{handles.Id}.I.brush_selection{1}(currModel~=selcontour) = 0;

@@ -7,9 +7,9 @@ function model_cm_Callback(hObject, eventdata, type)
 % hObject: handle to im_browser.m (see GCBO)
 % eventdata: eventdata structure 
 % type: a string with parameters for the function
+% @li ''showselected'' - toggle display of selected/all materials
 % @li ''rename'' - Rename material
 % @li ''set color'' - Set color of the selected material
-% @li ''smooth'' - Smooth material
 % @li ''statistics'' - Get statistics for material
 % @li ''isosurface'' - Show isosurface (Matlab)
 % @li ''volumeFiji'' - Show as volume (Fiji)
@@ -23,59 +23,90 @@ function model_cm_Callback(hObject, eventdata, type)
 %
 % Updates
 % 02.02.2016, updated for 4D datasets
+% 25.10.2016, IB, updated for segmentation table
 
 if isstruct(type)   % call from the Models menu entry
     type = 'statistics';
 end
 handles = guidata(hObject);
-if isempty(handles.Img{handles.Id}.I.modelMaterialNames); return; end;
-contIndex = get(handles.segmList,'Value');
+%if isempty(handles.Img{handles.Id}.I.modelMaterialNames); return; end;
+
+userData = get(handles.segmTable,'UserData');
+contIndex = userData.prevMaterial-2;
+
 % if contIndex==0 && ~strcmp(type, 'isosurface') && ~strcmp(type, 'volumeFiji') && ~strcmp(type, 'smooth')
 %     msgbox('Please select object in the Materials list');
 %     return;
 % end
 switch type
+    case 'showselected'
+        userData.showAll = 1 - userData.showAll;    % invert the showAll toggle status
+        set(handles.segmTable,'UserData', userData);
+        updateSegmentationTable(handles);
+        if userData.showAll == 0
+            set(hObject, 'Checked', 'on');
+        else
+            set(hObject, 'Checked', 'off');
+        end
     case 'rename'
+        if contIndex < 1; return; end;  % do not rename Mask/Exterior
         segmList = handles.Img{handles.Id}.I.modelMaterialNames;
-        segmListValue = get(handles.segmList,'Value');
-        %answer = inputdlg(sprintf('Please add a new name for this material:'),'Rename material',1,segmList(segmListValue));
-        answer = mib_inputdlg(handles, sprintf('Please add a new name for this material:'),'Rename material',segmList{segmListValue});
+        answer = mib_inputdlg(handles, sprintf('Please add a new name for this material:'), 'Rename material', segmList{contIndex});
         if ~isempty(answer)
-            segmList(segmListValue) = answer(1);
-            %set(handles.segmList,'String', segmList);
+            segmList(contIndex) = answer(1);
             handles.Img{handles.Id}.I.modelMaterialNames = segmList;
-            updateSegmentationLists(handles);
+            updateSegmentationTable(handles);
         end
     case 'set color'
-        figTitle = ['Set color for ' handles.Img{handles.Id}.I.modelMaterialNames{contIndex}];
-        c =  uisetcolor(handles.Img{handles.Id}.I.modelMaterialColors(contIndex,:),figTitle);
-        if length(c) ~= 1
-            handles.Img{handles.Id}.I.modelMaterialColors(contIndex,:) = c;
-        end;
-    case 'smooth'
-        smoothImage_Callback(NaN, NaN, handles, 'Model');
+        if contIndex == 1   % set color for the mask layer
+            c =  uisetcolor(handles.preferences.maskcolor,'Set color for Mask');
+            if length(c) ~= 1
+                handles.preferences.maskcolor = c;
+            end;
+        elseif contIndex > 2    % set color for the selected material
+            figTitle = ['Set color for ' handles.Img{handles.Id}.I.modelMaterialNames{contIndex-2}];
+            c =  uisetcolor(handles.Img{handles.Id}.I.modelMaterialColors(contIndex-2,:),figTitle);
+            if length(c) ~= 1
+                handles.Img{handles.Id}.I.modelMaterialColors(contIndex-2,:) = c;
+            end;
+        end
+        updateSegmentationTable(handles);
     case 'statistics'
         windowList = findall(0,'Type','figure');
         winStarted = 0;
+        % define type of the input: model or mask
+        if contIndex == 1   
+            statType = 'Mask';
+        else
+            statType = 'Model';
+        end
+        
         for i=1:numel(windowList) % re-initialize the window with keeping existing settings
             if strcmp(get(windowList(i),'tag'),'maskStatsDlg') % update imAdjustment window
-                handles = MaskStatsDlg(handles, 'Model', windowList(i));
+                handles = MaskStatsDlg(handles, statType, windowList(i));
                 winStarted = 1;
             end
         end
         if winStarted == 0  % re-initialize the window completely
-            handles = MaskStatsDlg(handles,'Model');    
+            handles = MaskStatsDlg(handles, statType);    
         end
         guidata(handles.im_browser, handles);
     case 'isosurface'
         options.fillBg = 0;
-        model = ib_getDataset('model', handles, NaN, NaN, options);
+        if contIndex == -1
+            model = ib_getDataset('mask', handles, NaN, NaN, options);
+            contIndex = 1;
+            modelMaterialColors = handles.preferences.maskcolor;
+        else
+            model = ib_getDataset('model', handles, NaN, NaN, options);
+            if userData.showAll == 1; contIndex = 0; end;      % show all materials
+            modelMaterialColors = handles.Img{handles.Id}.I.modelMaterialColors;
+        end
         if numel(model) > 1;
             msgbox(sprintf('!!! Error !!!\nPlease select which of ROIs you would like to render!'),'Error!','error');
             return;
         end
-        if get(handles.seeAllMaterialsCheck,'value') == 1; contIndex = 0; end;      % show all materials
-        
+                
         % define parameters for rendering
         prompt = {'Reduce the volume down to, width pixels [no volume reduction when 0]?',...
             'Smoothing 3d kernel, width (no smoothing when 0):',...
@@ -113,16 +144,35 @@ switch type
         end
         
         bb = handles.Img{handles.Id}.I.getBoundingBox();  % get bounding box
-        ib_renderModel(model{1}, contIndex, handles.Img{handles.Id}.I.pixSize, bb, handles.Img{handles.Id}.I.modelMaterialColors, image, Options);
+        ib_renderModel(model{1}, contIndex, handles.Img{handles.Id}.I.pixSize, bb, modelMaterialColors, image, Options);
     case 'volumeFiji'
         options.fillBg = 0;
-        model = ib_getDataset('model', handles, NaN, NaN, options);
-        if numel(model) > 1;
+        
+        if contIndex == -1
+            model = ib_getDataset('mask', handles, NaN, NaN, options);
+            contIndex = 1;
+            modelMaterialColors = handles.preferences.maskcolor;
+        else
+            model = ib_getDataset('model', handles, NaN, NaN, options);
+            if userData.showAll == 1; contIndex = 0; end;      % show all materials
+            modelMaterialColors = handles.Img{handles.Id}.I.modelMaterialColors;
+        end
+        
+        if numel(model) > 1
             msgbox(sprintf('Error!\nPlease select a ROI to render!'),'Error!','error');
             return;
         end
-        if get(handles.seeAllMaterialsCheck,'value') == 1; contIndex = 0; end;      % show all materials
-        ib_renderModelFiji(model{1}, contIndex, handles.Img{handles.Id}.I.pixSize, handles.Img{handles.Id}.I.modelMaterialColors);
+        ib_renderModelFiji(model{1}, contIndex, handles.Img{handles.Id}.I.pixSize, modelMaterialColors);
+    case 'unlinkaddto'
+        userData.unlink = 1 - userData.unlink;    % invert the unlink toggle status
+        userData.prevAddTo = userData.prevMaterial;
+        set(handles.segmTable,'UserData', userData);
+        if userData.unlink == 1
+            set(hObject, 'Checked', 'on');
+        else
+            set(hObject, 'Checked', 'off');
+        end
+        updateSegmentationTable(handles);
 end
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
 end

@@ -33,9 +33,12 @@ function handles = ib_segmentation_RegionGrowing(yxzCoordinate, modifier, handle
 % Updates
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 18.09.2016, changed .slices to cells
+% 25.10.2016, IB, updated for segmentation table
+
 tic
 switch3d = get(handles.actions3dCheck,'Value');     % use tool in 3d
-selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+userData = get(handles.segmTable,'UserData');
+selcontour = userData.prevMaterial - 2;  % get selected contour
 
 col_channel = get(handles.ColChannelCombo,'Value')-1;   %
 if col_channel == 0;

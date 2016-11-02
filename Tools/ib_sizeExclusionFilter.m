@@ -20,7 +20,7 @@ function handles = ib_sizeExclusionFilter(handles, type)
 %
 % Updates
 % 21.02.2016, IB, updated for 4D datasets
-
+% 25.10.2016, IB, updated for segmentation table
 
 title = 'Size filtration of objects';
 switch type
@@ -28,7 +28,8 @@ switch type
         prompt = {sprintf('Doing for the selection layer\n\nKeep objects larger than, px:'),...
                     'Keep objects smaller than, px:','Current layer only ["1"-current, "0"-3D mode, "NaN"-4D mode]:',sprintf('3d (Put 0 for 2D objects;\n6, 18, or 26 connection options for 3D objects)')};
     case 'model'
-        sel_model = get(handles.segmSelList,'Value')-2;
+        userData = get(handles.segmTable,'UserData');
+        sel_model = userData.prevMaterial - 2;
         prompt = {sprintf('Doing for material No: %d\n\nKeep objects larger than, px:',sel_model),...
                     'Keep objects smaller than, px:','Current layer only ["1"-current, "0"-3D mode, "NaN"-4D mode]:',sprintf('3d (Put 0 for 2D objects;\n6, 18, or 26 connection options for 3D objects)')};
     case 'mask'

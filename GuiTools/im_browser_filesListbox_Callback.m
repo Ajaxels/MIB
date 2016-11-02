@@ -15,8 +15,7 @@ function im_browser_filesListbox_Callback(hObject, eventdata, handles)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
-
+% 07.10.2016, added list of recent directories
 
 
 % Open the image after the double click
@@ -73,6 +72,20 @@ switch get(handles.im_browser, 'selectiontype')
             end;
             handles = handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 1);
             unFocus(hObject);   % remove focus from hObject
+            
+            % update list of recent directories
+            dirPos = ismember(handles.preferences.recentDirs, fileparts(fn));
+            if sum(dirPos) == 0
+                handles.preferences.recentDirs = [fileparts(fn) handles.preferences.recentDirs];    % add the new folder to the list of folders
+                if numel(handles.preferences.recentDirs) > 10    % trim the list
+                    handles.preferences.recentDirs = handles.preferences.recentDirs(1:10);
+                end
+            else
+                % resort the list and put the opened folder to the top of
+                % the list
+                handles.preferences.recentDirs = [handles.preferences.recentDirs(dirPos==1) handles.preferences.recentDirs(dirPos==0)];
+            end
+            set(handles.recentDirsPopup, 'String', handles.preferences.recentDirs);
         end
 end
 guidata(handles.im_browser, handles);

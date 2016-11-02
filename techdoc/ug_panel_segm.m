@@ -15,55 +15,47 @@ Model
 %%
 % In this example, the shown matrix represents a Model with 2 materials
 % encrypted with *1* (the upper left corner) and *2* (the lower right corner) for the |Image| of 4x4 pixels.
-%% 1. The Materials list box
-% The Materials list box shows the names of all materials of the model.
-% When the |Show all| checkbox is selected all existing materials would be 
-% displayed in <ug_panel_im_view.html the Image View panel> simultaneously. However, when this
-% checkbox is unchecked the only highlighted material would be shown.
-% Additional context menu is available after selection of material and 
-% pressing the right mouse button:
-% 
-% <<images\07_panel_segm_materials.jpg>>
-% 
-%
-% * *Rename...*, renames the highlighted material
-% * *Set color...*, allows setting of a color for the highlighted material. *_Note!_* it is also possible to change the colors
-% using the <ug_gui_menu_file_preferences.html Menu->File->Preferences dialig>
-% * *Smooth...*, smoothes the selected material of the model with the Gaussian 2D or 3D
-% filter
-% * *Get statistics...*, - starts the Statistics dialog to calculate quantification of objects in the selected
-% material of the model
-% Please refer to the <ug_gui_menu_mask_statistics.html Menu->Models->Model statistics...> section for details 
-% * *Show isosurface (Matlab)...*, visualize the highlighted material, as an isosurface. This functionality is powered by 
-% Matlab and <http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m view3d> function written by  Torsten Vogel. Use the '*r*' shortcut to rotate and '*z*'
-% to zoom. See more in the _Render model..._ section <ug_gui_menu_models.html here>.
-% * *Show as volume (Fiji)...*, visualization using volume rendering of the selected material of the model with Fiji 3D viewer,
-% please refer to the <im_browser_system_requirements.html Microscopy Image Browser System Requirements Fiji> for details
-% * *Sync all lists* - sets selection in the |Material|, |Select from| and |Add to| lists to the same value
-%% 2. The Select from list box
-% Specifies material for selection. In general use it does not matter which material is selected in this list. However when 
-% the |Fix selection to material| (*7.*) is checked all selection actions are limited to selected material. It is possible to
-% switch between Exterior (|Ext|) and any other material with the *E* shortcut <ug_gui_shortcuts.html shortcut>.
-%
-% Selection of material in the |Select from| list and pressing the right mouse button calls a context menu with additional
-% possibilities:
+%% 1. The Segmentation table
+% The Segmentation table displays the list of materials of the model. 
 %
 % 
-% <<images\07_panel_segm_selectfrom.jpg>>
-% 
-% 
-% * *Set this material as Mask*, generates a |Mask| layer from the selected material. *_Note!_* The existing |Mask| will be
-% erased without confirmation (Press Ctrl+Z for Undo)
-% * *NEW Selection (CURRENT)*, generates a new |Selection| layer from the selected material for the *currently* shown slice
-% * *ADD to Selection (CURRENT)*, adds the selected material to the |Selection| layer for the *currently* shown slice
-% * *Remove Material from Selection (CURRENT)*, removes the selected material from the |Selection| layer for the *currently* shown slice
-% * *NEW Selection (ALL)*, generates a new |Selection| layer from the selected material for the *whole* dataset
-% * *ADD to Selection (ALL)*, adds the selected material to the |Selection| layer for the *whole* dataset
-% * *Remove Material from Selection (ALL)*, removes the selected material from the |Selection| layer for the *whole* dataset
-% * *Sync all lists* - sets selection in the |Material|, |Select from| and |Add to| lists to the same value
-% 
+% <html>
+% A brief demonstration is available in the following video:<br>
+% <a href="https://youtu.be/_iwQI2DIDjk"><img style="vertical-align:middle;" src="images\youtube2.png"> https://youtu.be/_iwQI2DIDjk</a>
+% <br><br>
+% The segmentation table has 3 columns:
+% <ul>
+% <li>Column <b>"C"</b> shows the colors for each material. The mouse click on the first column starts a dialog for color selection</li>
+% <li>Colimn <b>"Material"</b> has a list of all materials. The right mouse click starts a popup menu with additional options for the selected material: </li>
+% <ul>
+% <li><b>Show selected material only</b> a toggle that switches visualization of materials in the Image View panel, when checked only the selected material is shown</li>
+% <li><b>Rename</b> rename the selected material</li>
+% <li><b>Set color</b> change color for the selected material</li>
+% <li><b>Get statistics</b> calculate properties for objects that belong to the selected material. Please refer to the <a href="ug_gui_menu_mask_statistics.html">Menu->Models->Model statistics...</a> section for details</li>
+% <li><b>Material to Selection</b> a copies objects of the selected material to the Selection layer with the following options:</li>
+% <img src="images\07_panel_segm_materials.jpg">
+% <ul>
+% <li><em>NEW (CURRENT)</em> generates a new Selection layer from the selected material for the currently shown slice</li>
+% <li><em>NEW (CURRENT)</em> adds the selected material to the Selection layer for the currently shown slice</li>
+% <li><em>NEW (CURRENT)</em> removes the selected material from the Selection layer for the currently shown slice</li>
+% <li><em>NEW (ALL SLICES)</em> generates a new Selection layer from the selected material for the whole dataset</li>
+% <li><em>NEW (ALL SLICES)</em> adds the selected material to the Selection layer for the whole dataset</li>
+% <li><em>NEW (ALL SLICES)</em> removes the selected material from the Selection layer for the whole dataset</li>
+% </ul>
+% <li><b>Material to Mask</b> a copies objects of the selected material to the Mask layer with the options similar to the previous entry</li>
+% <li><b>Show isosurface (Matlab)...</b> visualize the model or only the selected material (when <em>Show selected material only</em> is selected), as an isosurface. This functionality is powered by 
+% Matlab and <a href="http://www.mathworks.com/matlabcentral/fileexchange/334-view3d-m">view3d</a> function written by  Torsten Vogel. Use the <b>"r"</b> shortcut to rotate and <b>"z"</b> to zoom. 
+% See more in the <a hewd="ug_gui_menu_models.html">Render model...</a>section</li>
+% <li><b>Show as volume (Fiji)...</b> visualization of the model or selected material (when <em>Show selected material only</em> is selected) using volume rendering with Fiji 3D viewer,
+% please refer to the <a href="im_browser_system_requirements.html">Microscopy Image Browser System Requirements Fiji</a> for details</li>
+% <li><b>Unlink material from Add to</b> when unlinked, the Add to column is not changing its status during selection of Materials</li>
+% </ul>
+% <li>Column <b>"Add to"</b> defines destination material for the Selection layer during the <em>Add</em> and <em>Replace</em> actions. By default, this field is linked to the selected material, but it is unlinked when the 
+% <em>Fix selection to material</em> checkbox is selected or the <em>Unlink material from Add to</em> option is enabled</li>
+% </ul>
+% </html>
 %
-% There are |Ctrl+A| and |Alt+A| <ug_gui_shortcuts.html shortcuts> that can be used. Here is a table with possible results (the |Show Model| and |Show Mask|
+% There |Ctrl+A| and |Alt+A| <ug_gui_shortcuts.html shortcuts> can be used. Here is a table with possible results (the |Show Model| and |Show Mask|
 % checkboxes are located in <ug_panel_view_settings.html the |View Settings| panel>):
 %%
 %
@@ -75,64 +67,76 @@ Model
 % <tr style="background: #F0F8FF;"><td>All</td><td>OFF or ON</td><td>OFF</td><td>Nothing</td></tr>
 % <tr style="background: #F0F8FF;"><td>Ext or any material</td><td>OFF or ON</td><td>OFF</td><td>Background or selected material</td></tr>
 % <tr style="background: #F0F8FF;"><td>Any entry</td><td>OFF</td><td>ON</td><td>Mask</td></tr>
-% <tr style="background: #FFEBCD"><td>Any entry</td><td>ON</td><td>ON</td><td>Mask</td></tr>
+% <tr style="background: #F0F8FF"><td>Any entry</td><td>ON</td><td>ON</td><td>Mask</td></tr>
 % </table>
 % </html>
 %
-% The *Ctrl+A* shortcut will select objects only on the shown slice, while *Alt+A* will do that for
-% the whole dataset. The selection is sensitive to the |Fix selection to material| (*7.*) 
-% and the |Masked area| (*11.*) switches.
-%% 3. The Add to list box
-% Specifies to which material the selection should be assigned.
+% The *Ctrl+A* shortcut selects objects only on the shown slice, while *Alt+A* does that for
+% the whole dataset. The selection is sensitive to the |Fix selection to material| (*4.*) 
+% and the |Masked area| (*8.*) switches.
 %
-% For example, material *1* can be selected on all slices (|Segmentation Panel->Select from->1, press the Alt+A shortcut|) and then
-% copied to the second material *2* (|Segmentation Panel->Add to->2,
-% Shift+A|). The Shift+A shortcut moves selected areas from the |Selection|
-% layer to the |Model| layer, Material 2 for all slices of the dataset. Please refer to the <ug_panel_selection.html |Selection|> panel reference for more information.
+% <html>
+% <div style="background-color: #FFE0B2;">
+% <b>Programming tips:</b><br>
+% Information about selected materials is stored in the UserData field of
+% the segmentation table. It can be obtained using the command:<br>
+% <div style="font-family: monospace;">userData = get(handles.segmTable, 'UserData');</div><br>
+% The returned userData structure has fields:
+% <ul>
+% <li><em>prevMaterial</em> - index of selected entry in the Materials column</li>
+% <li><em>prevAddTo</em> - index of selected entry in the Add to column</li>
+% <li><em>showAll</em> - a toggle (0 or 1) to show all or only selected material</li>
+% <li><em>unlink</em> - a toggle (0 or 1) to unlink simultaneous selection of Material and Add to columns</li>
+% <li><em>jScroll</em> - a handle to Java UIScrollPane object</li>
+% <li><em>jTable</em> - a handle to Java UITablePeer object</li>
+% </ul>
+% If any of these parameters changed the UserData field of the table should
+% be updated:<br>
+% <div style="font-family: monospace;">set(handles.segmTable, 'UserData', userData);</div><br>
+% </div>
+% </html>
 %
-% Selection of matirial in the |Add to| list and pressing the right mouse button calls a context menu with additional
-% possibilities:
+%% 2. The + and - buttons
 %
 % 
-% <<images\07_panel_segm_addto.jpg>>
+% * the "*+*" button, press to add a new material to the model
+% * the "*-*" button, press to delete the selected material from the model
 %
 %
-% * *Mask statistics* - starts the Statistics dialog to calculate quantification of objects in the Mask layer
-% * *Sync all lists* - sets selection in the |Material|, |Select from| and
-% |Add to| lists to the same entry
+%% 3. The "D" checkbox, to select fast access tools 
+% This checkbox marks the favorite selection tools that are selected using the 'D' key shortcut. The chosen fast access tools are highlighted
+% with orange background in the |Selection type| popup menu. Any tool can
+% be selected as a favorite one.
 %
-%% 4. The + button
-% Press to add a new material to the model.
 %
-%% 5. The - button
-% Press to delete selected in the |Select from| list box (*2.*) material from the model.
+%% 4. The Fix selection to material check box
+% This check box ensures that all segmentation tools (*5.*) will be performed only
+% for material selected in the table.
 %
-%% 6. The "D" checkbox, to select fast access tools 
-% Allows to defining of the favorite selection tools that are called using the
-% 'D' key shortcut. The chosen fast access tools are highlighted
-% with orange background in the |Selection type| popup menu.
-%% 7. The Fix selection to material check box
-% This check box ensures that all segmentation tools (*8.*) will be performed only
-% for material selected in the |Select from| list (*2.*).
-%% 8. Segmentation tools panel
+%% 5. Segmentation tools panel
 % This panel hosts different tools for the segmentation.
 % <ug_panel_segm_tools.html See more here>.
 %
-%% 9. The Create button
+%% 6. The Create button
 % Starts a new model. The existing |Model| layer will be removed.
 %
-%% 10. The Load button
+%% 7. The Load button
 % Loads model from the disk. The following formats are accepted:
 %%
 % 
 % * Matlab (*.MAT), _default recommended format_
 % * Amira Mesh binary (*.AM); for models saved in <http://www.vsg3d.com/amira/overview Amira> format
+% * Hierarchial Data Format (*.H5); for data exchange with <http://ilastik.org/ Ilastik>
+% * Medical Research Concil format (*.MRC);  for data exchange with <http://bio3d.colorado.edu/imod/ IMOD>
 % * NRRD format (*.NRRD); for models saved in <http://www.slicer.org/ 3D slicer> format
 % * TIF format (*.TIF); 
+% * Hierarchial Data Format with XML header (*.XML); 
+% * all standard file formats can be opened when selecting "All files(*.*)"
 % 
 % Alternatively it is possible to use the <ug_gui_menu_models.html |Menu->Models->Load model|> .
-%% 11. The Masked area checkbox
-% This check box ensures that all segmentation tools (*8.*) will be limited only
+%
+%% 8. The Masked area checkbox
+% This check box ensures that all segmentation tools (*5.*) will be limited only
 % within the masked areas of the image.
 %
 %

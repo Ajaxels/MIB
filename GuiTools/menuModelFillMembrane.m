@@ -16,15 +16,16 @@ function menuModelFillMembrane(hObject, eventdata, handles)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 25.10.2016, IB, updated for segmentation table
 
 
 if handles.Img{handles.Id}.I.orientation ~= 4;
     msgbox('Please rotate the dataset to the XY orientation!','Error!','error','modal');
     return;
 end
-selected = get(handles.segmSelList,'Value');
-if selected < 3
+userData = get(handles.segmTable,'UserData');
+selected = userData.prevMaterial-2;
+if selected < 1
     msgbox('Please select a material!','Error!','error','modal');
     return;
 end;
@@ -34,7 +35,7 @@ if size(answer)==0; return; end;
 ib_do_backup(handles, 'model', 1);
 overlap = str2double(answer{1});
 wb = waitbar(0,'Filling membrane holes...','Name','Filling','WindowStyle','modal');
-handles.Img{handles.Id}.I.model = ib_fillMembranes(handles.Img{handles.Id}.I.model, selected-2, overlap);
+handles.Img{handles.Id}.I.model = ib_fillMembranes(handles.Img{handles.Id}.I.model, selected, overlap);
 waitbar(1,wb);
 delete(wb);
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);

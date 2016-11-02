@@ -66,7 +66,7 @@ handles.output = NaN;
 % set some default parameters
 handles.maxNumberOfSamplesPerClass = 500; 
 
-list = get(handles.h.segmList, 'string');   % list of materials
+list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;   % list of materials
 if handles.h.Img{handles.h.Id}.I.modelExist == 0 || numel(list) < 2
     errordlg(sprintf('!!! Error !!!\n\nA model with at least two materials is needed to proceed further!\n\nPlease create a new model with two materials - one for the objects and another one for the background. After that try again!\n\nPlease also refer to the Help section for details'),'Missing the model','modal');
     set(handles.trainClassifierBtn, 'enable', 'off');
@@ -84,10 +84,11 @@ classFilename = fullfile(handles.h.mypath,'RF_Temp',[fn '.forest']);
 set(handles.classifierFilenameEdit, 'string', classFilename);
 
 % populating material lists
-val = get(handles.h.segmSelList, 'value')-2;
+userData = get(handles.h.segmTable, 'UserData');
+val = userData.prevMaterial-2;
 set(handles.objectPopup, 'string', list);
 set(handles.objectPopup, 'value', max([val 1]));
-val = get(handles.h.segmAddList, 'value')-2;
+val = userData.prevAddTo-2;
 set(handles.backgroundPopup, 'string', list);
 set(handles.backgroundPopup, 'value', max([val 1]));
 

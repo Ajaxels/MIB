@@ -34,6 +34,7 @@ function imgRGB =  getRGBimage(obj, handles, options, sImgIn)
 % 30.11.2015 added image resampling for magnifications < 1 to the end of procedure
 % 18.09.2016, changed .slices to cells
 % 03.02.2016, added .t field to options
+% 26.10.2016, IB, updated for segmentation table
 
 if ~isfield(options, 'resize'); options.resize = 'yes'; end;
 if ~isfield(options, 'markerType'); options.markerType = NaN; end;
@@ -266,10 +267,11 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
     if strcmp(handles.Img{handles.Id}.I.model_type,'uint8') || strcmp(handles.Img{handles.Id}.I.model_type,'uint6')
         over_type = get(handles.segmShowTypePopup,'Value');  % if 1=filled, 2=contour
         M = sOver1;   % Model
-        selectedObject = get(handles.segmList,'Value');  % selected model object
+        userData = get(handles.segmTable,'UserData');
+        selectedObject = userData.prevMaterial-2;  % selected model object
         
         if over_type == 2       % see model as a countour
-            if get(handles.seeAllMaterialsCheck, 'value') == 1 % show all materials
+            if userData.showAll == 1 % show all materials
                 M2 = zeros(size(M),'uint8');
                 for ind = 1:numel(sList)
                     M3 = zeros(size(M2),'uint8');
@@ -278,7 +280,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                     M2(M3==1) = ind;
                 end
                 M = M2;
-            else
+            elseif selectedObject > 0
                 ind = selectedObject;    % only selected
                 M2 = zeros(size(M),'uint8');
                 M2(M==ind) = 1;
@@ -286,7 +288,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
             end
         end
         
-        if get(handles.seeAllMaterialsCheck, 'value') == 1 % show all materials
+        if userData.showAll == 1 % show all materials
              % simple example of the following code
 %             A = ones(3);
 %             B = randi(3, 3);
@@ -313,7 +315,7 @@ if isnan(sOver1(1,1,1)) == 0   % segmentation model
                 G(modIndeces) = G(modIndeces)*T + modColors(M(modIndeces),2) * (1-T);
                 B(modIndeces) = B(modIndeces)*T + modColors(M(modIndeces),3) * (1-T);
             end
-        else
+        elseif selectedObject > 0
             i = selectedObject;
             pntlist = find(M==i);
             if ~isempty(pntlist)

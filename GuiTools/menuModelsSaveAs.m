@@ -20,12 +20,15 @@ function menuModelsSaveAs(hObject, eventdata, handles)
 % 08.01.2016, Ilya Belevich, added export using the STL format
 % 11.02.2016, IB, updated for 4D data (only for *.mat)
 % 12.04.2016, IB, updated for saving in HDF5 format
+% 26.10.2016, IB, updated for segmentation table
 
 if  handles.Img{handles.Id}.I.modelExist == 0 || strcmp(handles.Img{handles.Id}.I.model_type, 'int8'); disp('Cancel: No segmentation model detected'); return; end;
 if isnan(handles.Img{handles.Id}.I.model(1,1,1)); errordlg('No model found!','Error!'); return; end;
 fn_out = handles.Img{handles.Id}.I.model_fn;
-selMaterial = get(handles.segmList,'Value');
-if get(handles.seeAllMaterialsCheck, 'value');     selMaterial = 0;  end;
+userData = get(handles.segmTable,'UserData');
+selMaterial = userData.prevMaterial-2;
+
+if userData.showAll==1;     selMaterial = 0;  end;  % save all materials
 if isempty(fn_out)
     fn_out = handles.mypath;
 end

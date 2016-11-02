@@ -219,7 +219,7 @@ end;
 handles.Img{handles.Id}.I.model_fn = options.model_fn;
 handles.Img{handles.Id}.I.model_var = options.model_var;
 
-updateSegmentationLists(handles);
+updateSegmentationTable(handles);
 handles.lastSegmSelection = 1;
 waitbar(1,wb);
 set(handles.modelShowCheck, 'value', 1);

@@ -12,7 +12,7 @@ function varargout = ib_watershedGui(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 25.10.2016, IB, updated for segmentation table
 
 
 % Edit the above text to modify the response to help ib_watershedGui
@@ -151,7 +151,7 @@ end
 % --- Executes on button press in updateMaterialsBtn.
 function updateMaterialsBtn_Callback(hObject, eventdata, handles)
 % populating lists of materials
-list = get(handles.h.segmList, 'string');
+list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;
 if handles.h.Img{handles.h.Id}.I.modelExist == 0 || isempty(list)
     set(handles.modelRadio, 'enable', 'off');
     set(handles.selectedMaterialPopup, 'enable', 'off');
@@ -163,14 +163,15 @@ if handles.h.Img{handles.h.Id}.I.modelExist == 0 || isempty(list)
     set(handles.signalMateriaPopup, 'backgroundcolor', 'r');
     
 else
-    list = get(handles.h.segmList, 'string');
+    userData = get(handles.h.segmTable,'UserData');
+    list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;
     set(handles.backgroundMateriaPopup, 'value', 1);
     set(handles.backgroundMateriaPopup, 'string', list);
     set(handles.backgroundMateriaPopup, 'BackgroundColor', 'w');
     set(handles.signalMateriaPopup, 'value', numel(list));
     set(handles.signalMateriaPopup, 'string', list);
     set(handles.signalMateriaPopup, 'BackgroundColor', 'w');
-    val = get(handles.h.segmSelList, 'value')-2;
+    val = userData.prevMaterial - 2;
     set(handles.selectedMaterialPopup, 'string', list);
     set(handles.selectedMaterialPopup, 'value', max([val 1]));
     set(handles.seedsSelectedMaterialPopup, 'string', list);

@@ -16,26 +16,20 @@ function segmSelectedOnlyCheck_Callback(hObject, eventdata, handles)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
-
-
+% 25.10.2016, IB updated for the segmentation table
 
 val = get(handles.segmSelectedOnlyCheck, 'value');
 if val == 1 % selected only
-    set(handles.segmSelList, 'BackgroundColor', [0.3, 0.3, 0.3]);
     set(handles.segmSelectedOnlyCheck, 'backgroundcolor', [1 .6 .784]);
-    
-    selMaterial = get(handles.segmSelList, 'value');    % do nothing when the All selected
-    if selMaterial == 1
-        msgbox('Please select material in the Select from list and try again!','Wrong material selection','error');
-        set(handles.segmSelList, 'BackgroundColor', [1, 1, 1]);
-        set(handles.segmSelectedOnlyCheck, 'backgroundcolor', [0.8310    0.8160    0.7840]);
-        set(handles.segmSelectedOnlyCheck, 'value', 0);
-        return;
-    end
 else
-    set(handles.segmSelList, 'BackgroundColor', [1, 1, 1]);
     set(handles.segmSelectedOnlyCheck, 'backgroundcolor', [0.8310    0.8160    0.7840]);
+    userData = get(handles.segmTable,'UserData');
+    if userData.unlink == 0
+        userData.prevAddTo = userData.prevMaterial;
+        set(handles.segmTable,'UserData',userData);
+    end
 end
+updateSegmentationTable(handles);
+
 unFocus(handles.segmSelectedOnlyCheck);   % remove focus from hObject
 end

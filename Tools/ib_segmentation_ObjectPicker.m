@@ -29,10 +29,13 @@ function handles = ib_segmentation_ObjectPicker(yxzCoordinate, modifier, handles
 % 04.09.2015, IB, updated to imageData.getData3D method
 % 23.03.2016, IB, improved picking of 3D objects
 % 29.03.2016, IB, optimized backup
+% 25.10.2016, IB, updated for segmentation table
 
 tic
 switch3d = get(handles.actions3dCheck,'Value');     % use tool in 3d
 options.blockModeSwitch = handles.Img{handles.Id}.I.blockModeSwitch;
+
+userData = get(handles.segmTable,'UserData');
 
 if get(handles.segmMaskClickModelCheck, 'value')
     type = 'model';
@@ -43,7 +46,7 @@ if get(handles.segmMaskClickModelCheck, 'value')
         msgbox(msg,'Error!','error','modal');
         return;
     end
-    colchannel = get(handles.segmSelList,'Value') - 2;
+    colchannel = userData.prevMaterial - 2;
 else
     type = 'mask';
     if handles.Img{handles.Id}.I.maskExist == 0
@@ -89,7 +92,7 @@ switch get(handles.filterSelectionPopup,'Value')
             
             % limit to the selected material of the model
             if get(handles.segmSelectedOnlyCheck,'Value') && strcmp(type, 'mask')
-                selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+                selcontour = userData.prevMaterial - 2;  % get selected contour
                 datasetImage = handles.Img{handles.Id}.I.getData3D('model', NaN, permuteSwitch, selcontour, options);
                 objSelection(datasetImage~=1) = 0;
             end
@@ -334,7 +337,7 @@ switch get(handles.filterSelectionPopup,'Value')
         end
 end
 
-selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+selcontour = userData.prevMaterial - 2;  % get selected contour
 if switch3d
     % limit to the selected material of the model
     if get(handles.segmSelectedOnlyCheck,'Value') && strcmp(type, 'mask')

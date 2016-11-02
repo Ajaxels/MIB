@@ -31,9 +31,12 @@ function handles = ib_segmentation_MagicWand(yxzCoordinate, modifier, handles)
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 18.09.2016, changed .slices() to .slices{:}; .slicesColor->.slices{3}
 % 29.03.2016, IB, optimized backup
+% 25.10.2016, IB, updated for segmentation table
+
 tic
 switch3d = get(handles.actions3dCheck,'Value');     % use tool in 3d
-selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+userData = get(handles.segmTable,'UserData');
+selcontour = userData.prevMaterial - 2;  % get selected contour
 threshold1 = str2double(get(handles.selectiontoolEdit,'String')); % getting low threshold shift for magic wand tool
 threshold2 = str2double(get(handles.magicupthresEdit,'String')); % getting up threshold shift for magic wand tool
 

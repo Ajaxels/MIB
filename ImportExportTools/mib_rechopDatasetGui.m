@@ -402,7 +402,7 @@ if get(handles.newRadio, 'Value')   % generate new stack mode
         
         for fnId=1:no_files
             [path, fn, ext] = fileparts(handles.filenames{fnId});
-            fn = fullfile(path, [fn '.mask']);     % Change extension
+            fn = fullfile(path, ['Mask_' fn '.mask']);     % Change extension
             if exist(fn, 'file') == 0
                 errordlg(sprintf('!!! Error !!!\n\nThe file for the Mask:\n%s\nwas not found!\nPlease check the filenames or unselect the Masks checkbox!', fn),'Missing the mask files');
                 delete(wb);
@@ -410,9 +410,11 @@ if get(handles.newRadio, 'Value')   % generate new stack mode
             end
             
             R = load(fn, '-mat');
+            field_name = fieldnames(R);
+            R = R.(field_name{1});
             
             if fnId == 1
-                imgDim = size(R.imOut);
+                imgDim = size(R);
             end
             
             yMin = (Yno(fnId)-1)*imgDim(1)+1;
@@ -422,7 +424,7 @@ if get(handles.newRadio, 'Value')   % generate new stack mode
             zMin = (Zno(fnId)-1)*imgDim(3)+1;
             zMax = min([(Zno(fnId)-1)*imgDim(3)+imgDim(3), stacks]);
             
-            imgOut(yMin:yMax, xMin:xMax, zMin:zMax) = R.imOut;
+            imgOut(yMin:yMax, xMin:xMax, zMin:zMax) = R;
             waitbar(fnId/no_files, wb);
         end
         opt.blockModeSwitch = 0;
@@ -542,7 +544,7 @@ else                                % fuse to existing
             
             if maskSw    % fuse into the mask
                 [path, fn, ext] = fileparts(handles.filenames{fnId});
-                fn = fullfile(path, [fn '.mask']);     % Change extension
+                fn = fullfile(path, ['Mask_' fn '.mask']);     % Change extension
                 
                 if exist(fn, 'file') == 0
                     errordlg(sprintf('!!! Error !!!\n\nThe file for the Mask:\n%s\nwas not found!\nPlease check the filenames or unselect the Masks checkbox!', fn),'Missing the mask files');

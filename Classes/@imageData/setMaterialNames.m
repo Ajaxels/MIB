@@ -68,7 +68,7 @@ if size(obj.modelMaterialColors,1) < numel(obj.modelMaterialNames)
     end
 end
 
-updateSegmentationLists(handles);
+updateSegmentationTable(handles);
 
 % store handles structure
 guidata(handles.im_browser, handles);

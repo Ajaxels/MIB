@@ -15,6 +15,7 @@ function varargout = ib_datasetInfoGui(varargin)
 %
 % Updates
 % 22.04.2016, IB, updated to use uiTree class instead of a table
+% 11.10.2016, fix of structures in sub elements
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,7 +79,15 @@ if repositionSwitch == 1
     
     handles.uiTree.setMultipleSelectionEnabled(1);  % enable multiple selections
 end
+%---listner test---% this one is needed to refresh handles with handles ofthe main program
+% guidata(handles.ib_datasetInfoGui, handles);
 refreshBtn_Callback(handles.refreshBtn, eventdata, handles);    % fill the Tree
+
+% % testing listner to change of slices
+% uncomment lines that are coming after "%---listner test---%" line (4 places in the text)
+%handles.changelayerSliderListener = addlistener(handles.hMain.changelayerSlider, 'ContinuousValueChange' , @(ObjH, EventData) refreshBtn_Callback(ObjH, EventData, handles));
+%---listner test---% main initialization of the listner
+% handles.changelayerListener = addlistener(handles.hMain.Img{handles.hMain.Id}.I, 'slices', 'PostSet', @(ObjH, EventData) refreshBtn_Callback(ObjH, EventData, handles)); 
 
 % update font and size
 if get(handles.uipanel1, 'fontsize') ~= handles.hMain.preferences.Font.FontSize ...
@@ -150,7 +159,11 @@ end
 
 % --- Executes on button press in refreshBtn.
 function refreshBtn_Callback(hObject, eventdata, handles)
+%---listner test---% this one is needed because the listner should get information about the recent state
+% handles = guidata(handles.ib_datasetInfoGui);
+
 handles.hMain = guidata(handles.hMain.im_browser);  % update handles of MIB
+
 % % populate uiTree
 import javax.swing.*
 import javax.swing.tree.*;
@@ -249,10 +262,28 @@ for keyId = 1:numel(keySet)
                 handles.treeModel.insertNodeInto(subChildNode2, subChildNode, subChildNode.getChildCount());
             end
         end
-    else
-        strVal = sprintf('%s: %s',keySet{keyId}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}));
-        subChildNode = uitreenode('v0','Extras', strVal, [], true);
+    elseif isstruct(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}))
+        fieldNames = fieldnames(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}));
+        subChildNode = uitreenode('v0',keySet{keyId}, keySet{keyId}, [], false);
+        for i=1:numel(fieldNames)
+            if isnumeric(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}).(fieldNames{i}))
+                strVal = sprintf('%s: %f',fieldNames{i}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}).(fieldNames{i}));
+            elseif isstruct(handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}).(fieldNames{i}))
+                % do nothing
+            else
+                strVal = sprintf('%s: %s',fieldNames{i}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}).(fieldNames{i}));    
+            end
+            subChildNode.add(uitreenode('v0', strVal,  strVal,  [], true));
+        end
         handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+    else
+        try
+            strVal = sprintf('%s: %s',keySet{keyId}, handles.hMain.Img{handles.hMain.Id}.I.img_info(keySet{keyId}));
+            subChildNode = uitreenode('v0','Extras', strVal, [], true);
+            handles.treeModel.insertNodeInto(subChildNode, childNode, childNode.getChildCount());
+        catch err
+            0;
+        end
     end
     % sync selected nodes
     if isfield(handles,'selectedNodeName')
@@ -317,6 +348,8 @@ end
 
 % --- Executes when user attempts to close ib_datasetInfoGui.
 function ib_datasetInfoGui_CloseRequestFcn(hObject, eventdata, handles)
+%---listner test---% have to delete listner after closing the window
+% delete(handles.changelayerListener);
 guidata(handles.hMain.im_browser, handles.hMain);
 delete(hObject);
 end

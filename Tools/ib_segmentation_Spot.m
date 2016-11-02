@@ -28,9 +28,11 @@ function handles = ib_segmentation_Spot(y, x, modifier, handles)
 % 20.06.2014, updated to improve performance
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 29.03.2016, IB, optimized backup
+% 25.10.2016, IB, updated for segmentation table
 
 switch3d = get(handles.actions3dCheck,'Value');     % use tool in 3d
-selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+userData = get(handles.segmTable,'UserData');
+selcontour = userData.prevMaterial - 2;  % get selected contour
 radius = str2double(get(handles.segmSpotSizeEdit,'String'))-1;
 radius = radius - 1;
 if radius < 1; radius = 0.5; end;

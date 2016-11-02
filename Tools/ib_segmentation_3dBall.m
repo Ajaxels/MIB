@@ -27,6 +27,7 @@ function handles = ib_segmentation_3dBall(y, x, z, modifier, handles)
 % Updates
 % 07.09.2015, IB, updated to use imageData.getData3D methods
 % 29.03.2016, IB, optimized backup
+% 25.10.2016, IB, updated for segmentation table
 
 radius = str2double(get(handles.segmSpotSizeEdit ,'String'))-1;
 minVox = min([handles.Img{handles.Id}.I.pixSize.x handles.Img{handles.Id}.I.pixSize.y handles.Img{handles.Id}.I.pixSize.z]);
@@ -60,7 +61,8 @@ ib_do_backup(handles, 'selection', 1, options);
 
 % limit selection to material of the model
 if get(handles.segmSelectedOnlyCheck,'Value')
-    selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+    userData = get(handles.segmTable,'UserData');
+    selcontour = userData.prevMaterial - 2;  % get selected contour
     model = handles.Img{handles.Id}.I.getData3D('model', NaN, 4, selcontour, options);
     selarea = selarea & model;
 end

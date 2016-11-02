@@ -32,7 +32,7 @@ function handles = ib_renderModelImaris(handles)
 % Igor Beati, Bitplane.
 %
 % Updates
-% 
+% 26.10.2016, IB, updated for segmentation table
 
 answer = inputdlg(sprintf('!!! ATTENTION !!!\n\nA volume that is currently open in Imaris will be removed!\nYou can preserve it by importing it into MIB and exporting it back to Imaris after the surface is generated.\n\nTo proceed further please define a smoothing factor,\na number, 0 or higher (IN IMAGE UNITS);\ncurrent voxel size: %.4f x %.4f x %.4f:', ...
     handles.Img{handles.Id}.I.pixSize.x, handles.Img{handles.Id}.I.pixSize.y, handles.Img{handles.Id}.I.pixSize.z),'Smoothing factor',1,{'0'});
@@ -63,13 +63,14 @@ end
 delete(wb);
 
 % define index of material to model, NaN - model all
-if get(handles.seeAllMaterialsCheck, 'value') == 1
+userData = get(handles.segmTable,'UserData');
+if userData.showAll == 1    % all materials
     materialStart = 1;  
     materialEnd = numel(handles.Img{handles.Id}.I.modelMaterialNames);  
     vNumberOfObjects = numel(handles.Img{handles.Id}.I.modelMaterialNames);
 else
-    materialStart = get(handles.segmList, 'value');  
-    materialEnd = get(handles.segmList, 'value');  
+    materialStart = userData.prevMaterial-2;  
+    materialEnd = userData.prevMaterial-2;  
     vNumberOfObjects = 1;
 end
 

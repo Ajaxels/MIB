@@ -33,9 +33,10 @@ function ib_moveLayers(hObject, eventdata, handles, obj_type_from, obj_type_to, 
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 18.09.2016, changed .slices to cells
-% 20.01.2016, replaced layers_id from current/all to 2D/3D; updated for 4D
-% 22.08.2016, fixed 3D case when the blockmode enabled from the YZ/XZ orientations
+% 18.09.2016, IB, changed .slices to cells
+% 20.01.2016, IB, replaced layers_id from current/all to 2D/3D; updated for 4D
+% 22.08.2016, IB, fixed 3D case when the blockmode enabled from the YZ/XZ orientations
+% 25.10.2016, IB, updated for segmentation table
 
 handles = guidata(hObject);
 t1 = tic;
@@ -47,8 +48,14 @@ if strcmp(handles.preferences.disableSelection, 'yes')
     return; 
 end;
 
-contSelIndex = get(handles.segmSelList,'Value')-2; % index of the selected material
-contAddIndex = get(handles.segmAddList,'Value')-2; % index of the target material
+userData = get(handles.segmTable, 'UserData');
+
+contSelIndex = userData.prevMaterial - 2;    % index of the selected material
+if strcmp(obj_type_from, 'model') && contSelIndex == - 1
+    obj_type_from = 'mask'; 
+end;
+contAddIndex = userData.prevAddTo - 2;       % index of the target material
+
 selected_sw = get(handles.segmSelectedOnlyCheck,'value');   % when 1- limit selection only for the selected material
 maskedAreaSw = get(handles.maskedAreaCheck,'Value');    % when checked will do add, replace, remove actions only in the masked areas
 
@@ -229,11 +236,6 @@ else    % move layers for 2D/3D and ROI and block modes
                 set(handles.maskShowCheck,'Value',1);
             case 'model'
                 if handles.Img{handles.Id}.I.modelExist == 0 || strcmp(handles.Img{handles.Id}.I.model_type, 'int8'); delete(wb); return; end;
-                if isnan(handles.Img{handles.Id}.I.model(1,1,1,1))
-                    addMaterialBtn_Callback(handles.createModelBtn, NaN, handles);     % create an empty model layer
-                    contSelIndex = get(handles.segmSelList,'Value')-2;
-                    contAddIndex = get(handles.segmAddList,'Value')-2;
-                end
                 model = ib_getDataset('model', handles, doNotTranspose, NaN, options);     %model = ib_getDataset('model', handles, 4, contAddIndex); <- seems to be slower
                 
                 handles.Img{handles.Id}.I.modelExist = 1;
@@ -305,11 +307,6 @@ else    % move layers for 2D/3D and ROI and block modes
                     return;
                 end;
                 handles.Img{handles.Id}.I.modelExist = 1;
-                if isnan(handles.Img{handles.Id}.I.model(1,1,1))
-                    addMaterialBtn_Callback(handles.createModelBtn, NaN, handles);     % create an empty model layer
-                    contSelIndex = get(handles.segmSelList,'Value')-2;
-                    contAddIndex = get(handles.segmAddList,'Value')-2;
-                end
                 
                 model = ib_getSlice('model', handles);     % model = ib_getSlice('model', handles, NaN, NaN, contAddIndex); <-this option seems to be slower
                 switch action_type

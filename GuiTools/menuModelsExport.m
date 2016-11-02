@@ -19,6 +19,7 @@ function menuModelsExport(hObject, eventdata, handles, parameter)
 % Updates
 % 04.09.2015, Ilya Belevich, updated to getData3D method
 % 01.02.2016, IB, updated for 4D
+% 26.10.2016, IB, updated for segmentation table
 
 if strcmp(parameter, 'matlab')
     prompt = {'Variable for the structure to keep the model:'};
@@ -39,10 +40,11 @@ if strcmp(parameter, 'matlab')
     disp(['Model export: created structure ' answer{1} ' in the Matlab workspace']);
 else
     options.type = 'model';
-    if get(handles.seeAllMaterialsCheck, 'value') == 0
-        options.modelIndex = get(handles.segmList, 'value');
-    else
+    userData = get(handles.segmTable,'UserData');
+    if userData.showAll     % export all materials
         options.modelIndex = NaN;   % render all materials
+    else
+        options.modelIndex = prevMaterial-2;
     end
     
     handles = ib_setImarisDataset(handles, options);

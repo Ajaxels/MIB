@@ -16,7 +16,7 @@ function roiRoiToSelectionBtn_Callback(hObject, eventdata, handles)
 % of the License, or (at your option) any later version.
 %
 % Updates
-%
+% 25.10.2016, IB, updated for segmentation table
 
 % get index of the ROI
 roiList = get(handles.roiList, 'string');
@@ -66,7 +66,8 @@ if get(handles.actions3dCheck,'Value')
     
     % limit to the selected material of the model
     if get(handles.segmSelectedOnlyCheck,'Value')
-        selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+        userData = get(handles.segmTable,'UserData');
+        selcontour = userData.prevMaterial - 2;  % get selected contour
         currModel = handles.Img{handles.Id}.I.getData3D('model', NaN, NaN, selcontour, backupOptions);
         selarea = bitand(selarea, currModel);
     end
@@ -83,7 +84,8 @@ else
     
     % limit to the selected material of the model
     if get(handles.segmSelectedOnlyCheck,'Value')
-        selcontour = get(handles.segmSelList,'Value') - 2;  % get selected contour
+        userData = get(handles.segmTable,'UserData');
+        selcontour = userData.prevMaterial - 2;  % get selected contour
         currModel = handles.Img{handles.Id}.I.getData2D('model', NaN, NaN, selcontour, NaN, backupOptions);
         selected_mask = bitand(selected_mask, currModel);
     end

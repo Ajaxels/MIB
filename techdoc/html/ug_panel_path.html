@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>Path Panel</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-07"><meta name="DC.source" content="ug_panel_path.m"><style type="text/css">
+      --><title>Path Panel</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-11-02"><meta name="DC.source" content="ug_panel_path.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,10 +66,12 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1>Path Panel</h1><!--introduction--><p>This panel is used to provide the path to the image dataset.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">1. Logical drive combo box.</a></li><li><a href="#3">2. '...' button</a></li><li><a href="#4">3. Current path edit box</a></li><li><a href="#5">4. Pixel Info field</a></li><li><a href="#6">5. Log button</a></li><li><a href="#7">6. Info button</a></li><li><a href="#8">7. Zoom Edit box</a></li><li><a href="#9">8. Help</a></li></ul></div><p><img vspace="5" hspace="5" src="images\04_panel_path.jpg" alt=""> </p><h2>1. Logical drive combo box.<a name="2"></a></h2><p>This combo box is used for fast selection of logical drives. It is initialized during the start of <tt>im_browser</tt> and will show only those logical drives that were available during the initialization.</p><h2>2. '...' button<a name="3"></a></h2><p>This button is one of the ways to select a folder. It uses <tt>uigetdir</tt> Matlab built-in function.</p><h2>3. Current path edit box<a name="4"></a></h2><p>Current path edit box shows the path of the current folder. The contents of the folder is shown in the <a href="ug_panel_dir.html"><tt>Directory Contents panel</tt></a>.</p><h2>4. Pixel Info field<a name="5"></a></h2><p>Pixel info field provides information about pixel location and intensity of pixels under the mouse pointer in <a href="ug_panel_im_view.html">the Image View panel</a> . The format is: <tt>X, Y (Red channel:Green channel:Blue channel)</tt>.</p><p>The right mouse click starts a context menu, that can be used for jumping to any point of the dataset.</p><h2>5. Log button<a name="6"></a></h2><p>Shows the log of actions that were performed for the current dataset. The action log is stored in the <tt>ImageDescription</tt> field in the TIF files. Each entry in the log list has a date/time stamp.</p><p>
+  </style></head><body><div class="content"><h1>Path Panel</h1><!--introduction--><p>This panel is used to provide the path to the image dataset.</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#2">1. Logical drive combo box.</a></li><li><a href="#3">2. '...' button</a></li><li><a href="#4">3. Current path edit box</a></li><li><a href="#5">4. List of recent directories</a></li><li><a href="#6">6. Pixel Info field</a></li><li><a href="#7">7. Log button</a></li><li><a href="#8">8. Info button</a></li><li><a href="#9">9. Zoom Edit box</a></li><li><a href="#10">9. Help</a></li></ul></div><p><img vspace="5" hspace="5" src="images\04_panel_path.jpg" alt=""> </p><h2>1. Logical drive combo box.<a name="2"></a></h2><p>This combo box is used for fast selection of logical drives. It is initialized during the start of <tt>im_browser</tt> and will show only those logical drives that were available during the initialization.</p><h2>2. '...' button<a name="3"></a></h2><p>This button is one of the ways to select a folder. It uses <tt>uigetdir</tt> Matlab built-in function.</p><h2>3. Current path edit box<a name="4"></a></h2><p>Current path edit box shows the path of the current folder. The contents of the folder is shown in the <a href="ug_panel_dir.html"><tt>Directory Contents panel</tt></a>.</p><h2>4. List of recent directories<a name="5"></a></h2><p>Opens the list of recent directories from where datasets were loaded. A brief demonstration is available in the following video:</p><p>
+<a href="https://youtu.be/xx7pGehTJXA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/xx7pGehTJXA</a>
+</p><h2>6. Pixel Info field<a name="6"></a></h2><p>Pixel info field provides information about pixel location and intensity of pixels under the mouse pointer in <a href="ug_panel_im_view.html">the Image View panel</a> . The format is: <tt>X, Y (Red channel:Green channel:Blue channel)</tt>.</p><p>The right mouse click starts a context menu, that can be used for jumping to any point of the dataset.</p><h2>7. Log button<a name="7"></a></h2><p>Shows the log of actions that were performed for the current dataset. The action log is stored in the <tt>ImageDescription</tt> field in the TIF files. Each entry in the log list has a date/time stamp.</p><p>
 A brief demonstration is available in the following video:<br>
 <a href="https://youtu.be/1ql4cRxZ334"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/1ql4cRxZ334</a>
-</p><p><img vspace="5" hspace="5" src="images\04a_actions_log.jpg" alt=""> </p><p>There are number of actions that are possible to do with the action log:</p><div><ul><li><b>Print to Matlab</b> - prints the action log in the Matlab command window</li><li><b>Copy to Clipboard</b> - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.</li><li><b>Insert after</b> - inserts a new entry after the one which is highlighted</li><li><b>Modify</b> - modifies the highlighted entry</li><li><b>Delete</b> - deletes the highlighted entry</li><li><b>Update</b> - the log is not updated automatically, so press this button to update it manually</li></ul></div><h2>6. Info button<a name="7"></a></h2><p>The <tt>Info</tt> button opens a window with a tree list of parameters for the opened dataset. It is possible to modify the parameters using the buttons.</p><p>The XY image resolution is stored in the <tt>XResolution</tt> and <tt>YResolution</tt> fields, and in the BoundingBox info in the <tt>ImageDescription</tt> field.</p><p><img vspace="5" hspace="5" src="images\05_image_description.jpg" alt=""> </p><h2>7. Zoom Edit box<a name="8"></a></h2><p>Zoom Edit box, allows selection of the desired zoom level.</p><h2>8. Help<a name="9"></a></h2><p>Access to this help page</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+</p><p><img vspace="5" hspace="5" src="images\04a_actions_log.jpg" alt=""> </p><p>There are number of actions that are possible to do with the action log:</p><div><ul><li><b>Print to Matlab</b> - prints the action log in the Matlab command window</li><li><b>Copy to Clipboard</b> - stores the action log in the clipboard, so it can be pasted with Ctrl+V (Windows OS) command.</li><li><b>Insert after</b> - inserts a new entry after the one which is highlighted</li><li><b>Modify</b> - modifies the highlighted entry</li><li><b>Delete</b> - deletes the highlighted entry</li><li><b>Update</b> - the log is not updated automatically, so press this button to update it manually</li></ul></div><h2>8. Info button<a name="8"></a></h2><p>The <tt>Info</tt> button opens a window with a tree list of parameters for the opened dataset. It is possible to modify the parameters using the buttons.</p><p>The XY image resolution is stored in the <tt>XResolution</tt> and <tt>YResolution</tt> fields, and in the BoundingBox info in the <tt>ImageDescription</tt> field.</p><p><img vspace="5" hspace="5" src="images\05_image_description.jpg" alt=""> </p><h2>9. Zoom Edit box<a name="9"></a></h2><p>Zoom Edit box, allows selection of the desired zoom level.</p><h2>9. Help<a name="10"></a></h2><p>Access to this help page</p><p><b>Back to</b> <a href="im_browser_product_page.html"><b>Index</b></a> <tt><b>--&gt;</b></tt> <a href="im_browser_user_guide.html"><b>User Guide</b></a> <tt><b>--&gt;</b></tt> <a href="ug_gui_panels.html"><b>Panels</b></a></p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Path Panel
 % This panel is used to provide the path to the image dataset.
@@ -84,12 +86,23 @@ A brief demonstration is available in the following video:<br>
 %% 1. Logical drive combo box.
 % This combo box is used for fast selection of logical drives. It is initialized during the start of 
 % |im_browser| and will show only those logical drives that were available during the initialization.
+%
 %% 2. '...' button
 % This button is one of the ways to select a folder. It uses |uigetdir| Matlab built-in function.
+%
 %% 3. Current path edit box
 % Current path edit box shows the path of the current folder. The contents of the folder is
 % shown in the <ug_panel_dir.html |Directory Contents panel|>. 
-%% 4. Pixel Info field
+%
+%% 4. List of recent directories
+% Opens the list of recent directories from where datasets were loaded.
+% A brief demonstration is available in the following video:
+%
+% <html>
+% <a href="https://youtu.be/xx7pGehTJXA"><img style="vertical-align:middle;" src="images\youtube2.png">  https://youtu.be/xx7pGehTJXA</a>
+% </html>
+%
+%% 6. Pixel Info field
 % Pixel info field provides information about pixel location and intensity of pixels under the
 % mouse pointer in <ug_panel_im_view.html the Image View panel> . The format is: |X, Y (Red channel:Green channel:Blue
 % channel)|. 
@@ -97,7 +110,7 @@ A brief demonstration is available in the following video:<br>
 % The right mouse click starts a context menu, that can be used for jumping
 % to any point of the dataset.
 %
-%% 5. Log button
+%% 7. Log button
 % Shows the log of actions that were performed for the current dataset. The
 % action log is stored in the |ImageDescription| field in the TIF files. Each entry in the log list has a date/time stamp.
 %
@@ -118,7 +131,7 @@ A brief demonstration is available in the following video:<br>
 % * *Delete* - deletes the highlighted entry
 % * *Update* - the log is not updated automatically, so press this button to update it manually
 % 
-%% 6. Info button
+%% 8. Info button
 % The |Info| button opens a window with a tree list of parameters for the opened dataset. It is possible to modify the parameters
 % using the buttons.
 %
@@ -128,10 +141,10 @@ A brief demonstration is available in the following video:<br>
 % <<images\05_image_description.jpg>>
 % 
 %
-%% 7. Zoom Edit box
+%% 9. Zoom Edit box
 % Zoom Edit box, allows selection of the desired zoom level.
 %
-%% 8. Help
+%% 9. Help
 % Access to this help page
 %
 %

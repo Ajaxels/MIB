@@ -200,7 +200,7 @@ redrawChannelMixerTable(handles);
 if size(handles.Img{handles.Id}.I.img,3) == 1; set(handles.ColChannelCombo,'Value',2); end;
 
 % 
-updateSegmentationLists(handles);
+updateSegmentationTable(handles);
 
 % update show mask checkbox
 if handles.Img{handles.Id}.I.maskExist == 0
@@ -247,7 +247,6 @@ else
     set(handles.imagePanel, 'Title', strVal1);    
 end
 
-% update additional windows
 windowList = findall(0,'Type','figure');
 for i=1:numel(windowList)
     if strcmp(get(windowList(i),'tag'),'imAdjustments') % update imAdjustment window

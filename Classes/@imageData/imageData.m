@@ -8,6 +8,17 @@ classdef imageData < matlab.mixin.Copyable
 	% as published by the Free Software Foundation; either version 2
 	% of the License, or (at your option) any later version.
 
+    properties (SetAccess = public, GetAccess = public, SetObservable = true)
+        slices
+        % coordinates of the shown slice borders
+        % @note dimensions are @code ([height, width, color, z],[min max]) @endcode
+        % @li (1,[min max]) - height
+        % @li (2,[min max]) - width
+        % @li (3,[min max]) - colors , array of color channels to show, for example [1, 3, 4]
+        % @li (4,[min max]) - z - value
+        % @li (5,[min max]) - t - time point
+    end
+    
     properties (SetAccess = public, GetAccess = public)
         axesX
         % a vector [min, max] with minimal and maximal coordinates of the axes X of the 'imageAxes' axes
@@ -130,14 +141,6 @@ classdef imageData < matlab.mixin.Copyable
         % a property to keep the Selection layer
         % @note The selection dimensions: @code [1:height, 1:width, 1:no_stacks] @endcode
         % @note When the imageData.model_type == ''uint6'', imageData.selection = NaN
-        slices
-        % coordinates of the shown slice borders
-        % @note dimensions are @code ([height, width, color, z],[min max]) @endcode
-        % @li (1,[min max]) - height
-        % @li (2,[min max]) - width
-        % @li (3,[min max]) - colors , array of color channels to show, for example [1, 3, 4]
-        % @li (4,[min max]) - z - value
-        % @li (5,[min max]) - t - time point
         storedSelection
         % a buffer to store selection with press of Ctrl+C button, and restore with Ctrl+V
         % @note dimensions are @code [1:height, 1:width] or NaN @endcode

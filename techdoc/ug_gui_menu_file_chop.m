@@ -34,7 +34,7 @@
 % * *Output format for models*, models can also be stored in several formats: Matlab, AmiraMesh, NRRD, TIF or HDF5. 
 % When the models are saved a "Labels_" prefix is added to the beginning of the filename.
 %
-% The masks saved in the Matlab format with _*.mask_ extension.
+% The masks saved in the Matlab format with _Mask_[FN].mask_ template, where [FN] is a filename of the corresponding image dataset.
 %
 %% Import...
 % The import command restores previously chopped or cropped datasets.
@@ -65,7 +65,7 @@
 % 
 % * *Filename of the selected image:* |Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.am|
 % * *Generated filename of the model:* |Labels_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mat|
-% * *Generated filename of the mask:* |Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask|
+% * *Generated filename of the mask:* |Mask_Huh7_CmVTag1_R2_Pos5_crop_chop_Z01-X01-Y01.mask|
 % 
 % *Important!* If the |Images| checkbox is selected please select only
 % files with images and do not select models nor mask files. The filenames

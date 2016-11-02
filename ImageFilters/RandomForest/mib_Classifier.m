@@ -119,7 +119,7 @@ if exist(dirOut, 'dir') == 0
     dirOut = get(handles.tempDirEdit, 'string');
 end
 
-list = get(handles.h.segmList, 'string');   % list of materials
+list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;   % list of materials
 if handles.h.Img{handles.h.Id}.I.modelExist == 0 || numel(list) < 2
     warndlg(sprintf('!!! Warning !!!\n\nFor a new training a model with at least two materials is needed to proceed further!\n\nPlease create a new model with two materials - one for the objects and another one for the background. After that try again!\n\nIf the classifier was trained earlier, it can be loaded in the Train & Predict section\n\nPlease also refer to the Help section for details'),'Missing the model','modal');
     set(handles.trainClassifierBtn, 'enable', 'off');
@@ -143,7 +143,8 @@ end
 function updateWidgets(handles)     % update widgets
 handles.h = guidata(handles.h.im_browser);  % update handles
 
-list = get(handles.h.segmList, 'string');   % list of materials
+list = handles.h.Img{handles.h.Id}.I.modelMaterialNames;   % list of materials
+userData = get(handles.h.segmTable, 'UserData');
 if isempty(list)
     set(handles.objectPopup, 'value', 1);
     set(handles.objectPopup, 'string', 'require 2 materials');
@@ -158,7 +159,7 @@ else
     set(handles.backgroundPopup, 'string', list);
     set(handles.backgroundPopup, 'value', 1);
     
-    val = get(handles.h.segmAddList, 'value')-2;
+    val = userData.prevAddTo-2;
     set(handles.objectPopup, 'string', list);
     set(handles.objectPopup, 'value', max([val 1]));
     set(handles.backgroundPopup, 'BackgroundColor', 'w');

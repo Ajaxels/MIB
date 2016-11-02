@@ -16,36 +16,38 @@ function removeMaterialBtn_Callback(hObject, eventdata, handles)
 %
 % Updates
 % 07.09.2015, IB updated to use imageData.getData3D methods
+% 25.10.2016, IB, updated for segmentation table
 
 % Remove material from the model
 unFocus(hObject);   % remove focus from hObject
-list = cellstr(get(handles.segmSelList,'String'));
-list = list(2:end); % trim the list to remove the 1st element ('All')
-value = get(handles.segmSelList,'Value')-1;
-number = numel(list);
-if value < 2; return; end;
 
-msg = sprintf('You are going to delete material "%s"\nwhich has a number: %d\n\nAre you sure?',handles.Img{handles.Id}.I.modelMaterialNames{value-1},value-1);
+userData = get(handles.segmTable,'UserData');
+if userData.prevMaterial < 3; return; end;  % can't delete Mask/Exterior
+
+modelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames;    % list of materials of the model
+value = userData.prevMaterial - 2;
+
+msg = sprintf('You are going to delete material "%s"\nwhich has a number: %d\n\nAre you sure?', modelMaterialNames{value}, value);
 button =  questdlg(msg,'Delete contour?','Yes','Cancel','Cancel');
 if strcmp(button, 'Cancel') == 1; return; end;
 
 options.blockModeSwitch=0;
 model = handles.Img{handles.Id}.I.getData3D('model',NaN, 4, NaN, options);
 
-model(model==value-1) = 0;
-model(model>value-1) = model(model>value-1) - 1;
-handles.Img{handles.Id}.I.modelMaterialColors(value-1,:) = [];  % remove color of the removed material
+model(model==value) = 0;
+model(model>value) = model(model>value) - 1;
+handles.Img{handles.Id}.I.modelMaterialColors(value,:) = [];  % remove color of the removed material
 handles.Img{handles.Id}.I.setData3D('model', model, NaN, 4, NaN, options);
-modelMaterialNames = handles.Img{handles.Id}.I.modelMaterialNames;
+
 index = 1;
 handles.Img{handles.Id}.I.modelMaterialNames = {};
 for i=1:numel(modelMaterialNames)
-    if i ~= value-1
+    if i ~= value
         handles.Img{handles.Id}.I.modelMaterialNames(index,1) = modelMaterialNames(i);
         index = index + 1;
     end
 end
-updateSegmentationLists(handles);
+updateSegmentationTable(handles);
 handles.lastSegmSelection = 1;
 handles.Img{handles.Id}.I.plotImage(handles.imageAxes, handles, 0);
 end

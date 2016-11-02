@@ -13,7 +13,7 @@ function varargout = preferencesDlg(varargin)
 % of the License, or (at your option) any later version.
 %
 % Updates
-% 
+% 26.10.2016, IB, updated for segmentation table
 
  
 
@@ -122,7 +122,8 @@ set(handles.colorSelectionBtn, 'BackgroundColor', handles.preferences.selectionc
 
 % updating options for color palettes
 mainWindowHandles = guidata(handles.im_browser);
-materialsNumber = numel(get(mainWindowHandles.segmList, 'string'));
+materialsNumber = numel(mainWindowHandles.Img{mainWindowHandles.Id}.I.modelMaterialNames);
+
 if materialsNumber > 12
     paletteList = {'Matlab Jet','Matlab Gray','Matlab Bone','Matlab HSV', 'Matlab Cool', 'Matlab Hot','Random Colors'};
     set(handles.paletteTypePopup, 'string', paletteList);
@@ -411,7 +412,8 @@ if isempty(position) && (~strcmp(parameter, 'reverse') && ~strcmp(parameter, 'im
 end
 
 mainWindowHandles = guidata(handles.im_browser);
-materialsNumber = numel(get(mainWindowHandles.segmList, 'string'));
+materialsNumber = numel(mainWindowHandles.Img{mainWindowHandles.Id}.I.modelMaterialNames);
+
 rng('shuffle');     % randomize generator
 
 switch parameter
@@ -596,8 +598,8 @@ end
 % update font size
 handles.preferences.fontSizeDir = str2double(get(handles.fontSizeDirEdit, 'string'));
 set(mainWindowHandles.filesListbox, 'fontsize', handles.preferences.fontSizeDir);
-if get(mainWindowHandles.text2, 'fontsize') ~= handles.preferences.Font.FontSize || ...
-    ~strcmp(get(mainWindowHandles.text2, 'fontname'), handles.preferences.Font.FontName)
+if get(mainWindowHandles.zoomText, 'fontsize') ~= handles.preferences.Font.FontSize || ...
+    ~strcmp(get(mainWindowHandles.zoomText, 'fontname'), handles.preferences.Font.FontName)
     ib_updateFontSize(mainWindowHandles.im_browser, handles.preferences.Font);
     ib_updateFontSize(handles.preferencesDlg, handles.preferences.Font);
 end
@@ -818,7 +820,7 @@ paletteList = get(handles.paletteTypePopup, 'string');
 if ischar(paletteList); paletteList = cellstr(paletteList); end;
 set(handles.paletteColorNumberPopup, 'value',1);
 mainWindowHandles = guidata(handles.im_browser);
-materialsNumber = numel(get(mainWindowHandles.segmList, 'string'));
+materialsNumber = numel(mainWindowHandles.Img{mainWindowHandles.Id}.I.modelMaterialNames);
 
 switch paletteList{selectedVal}
     case 'Default, 6 colors'

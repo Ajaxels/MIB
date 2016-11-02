@@ -1357,7 +1357,11 @@ classdef Measure < matlab.mixin.Copyable
                 
                 pos(:,1) = tempData.spline.x;
                 pos(:,2) = tempData.spline.y;
-                position = obj.drawROI(handles, 'impoly', pos);
+                if finetuneCheck 
+                    position = obj.drawROI(handles, 'impoly', pos);
+                else
+                    position = pos;
+                end
             end
             
             % get Z-value
