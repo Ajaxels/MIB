@@ -50,6 +50,7 @@ function handles = ib_contrastNormalizationMemoryOptimized(handles, type_switch)
 % Updates
 % 18.01.2016, IB, added fix for memory function on linux and macos
 % 06.04.2016, IB, added NormalizeZ, NormalizeT modes
+% 03.11.2016, IB, allow to have gaps in selection/mask in the Z-mode
 
 if strcmp(handles.Img{handles.Id}.I.img_info('ColorType'),'indexed')
     msgbox(sprintf('Please convert to grayscale or truecolor data format first!\nMenu->Image->Mode->'),'Change format!','error','modal');
@@ -156,12 +157,33 @@ if ~strcmp(type_switch, 'normalT')
                 std_val(z) = std2(curr_img);
             else
                 mask = handles.Img{handles.Id}.I.getSlice(layer_id, z, NaN, colorChannel, NaN, options);
+                if max(mask(:)) == 0; 
+                    mean_val(z) = NaN;
+                    std_val(z) = NaN;
+                    continue;
+                end
                 mean_val(z) = mean2(curr_img(mask==1));
                 std_val(z) = std2(curr_img(mask==1));
             end
         end
-        imgMean = mean(mean_val);
-        imgStd = mean(std_val);
+        
+        % find nan indices
+        nanIds = find(isnan(mean_val));
+        valIds = find(~isnan(mean_val));
+        
+        imgMean = mean(mean_val(valIds));
+        imgStd = mean(std_val(valIds));
+        
+        % fill gaps in the vectors
+        for i=1:numel(nanIds)
+            valIndex = find(valIds > nanIds(i), 1);
+            if isempty(valIndex)
+                valIndex = find(valIds < nanIds(i), 1, 'last');
+            end
+            mean_val(nanIds(i)) = mean_val(valIds(valIndex));
+            std_val(nanIds(i)) = std_val(valIds(valIndex));
+        end
+        
         
         if strcmp(type_switch, 'bgMean')    % intensities based on mean background value in the mask area
             for z=z1:z2

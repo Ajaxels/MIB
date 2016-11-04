@@ -75,7 +75,7 @@ switch type
         windowList = findall(0,'Type','figure');
         winStarted = 0;
         % define type of the input: model or mask
-        if contIndex == 1   
+        if contIndex == -1   
             statType = 'Mask';
         else
             statType = 'Model';

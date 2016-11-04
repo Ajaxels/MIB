@@ -4,10 +4,11 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
-%% 1.30 02.11.2016
+%% 1.301 04.11.2016
 % * Improved and simplified the Segmentation panel
 % * Added list of recent directories
 % * Added "Mask_" prefix to filename when saving masks
+% * The contrast normalization over selected areas in Z does not require selection of all slices
 % * Fix of substructures in Dataset Info dialog
 % * Fix of fine-tune checkbox for the freehand mode of the measure tool
 % * Improved performance of black-and-white thresholding

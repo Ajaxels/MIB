@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2349470540" file="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac.prj" location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a" name="MIB_Mac" preferred-package-location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2049519669" file="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac.prj" location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a" name="MIB_Mac" preferred-package-location="/Volumes/ZEISS XRM/im_browser_distrib_R2016a/MIB_Mac/for_redistribution" preferred-package-type="package.type.app" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB_Mac</param.appname>
     <param.icon>${PROJECT_ROOT}/MIB_Mac_resources/icon.icns</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_24.png</file>
       <file>${PROJECT_ROOT}/MIB_Mac_resources/icon_16.png</file>
     </param.icons>
-    <param.version>1.22</param.version>
+    <param.version>1.233</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company>University of Helsinki</param.company>
@@ -136,7 +136,6 @@ If it is defined, set it to the concatenation of these strings:
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/connectOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/findOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/getOmeroJars.m</file>
-      <file>/Users/ibelev/Documents/MATLAB/OMERO_5/helper/JavaImageToMatlab.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/loadOmero.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/omeroVersion.m</file>
       <file>/Users/ibelev/Documents/MATLAB/OMERO_5/unloadOmero.m</file>
