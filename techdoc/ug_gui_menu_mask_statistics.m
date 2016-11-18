@@ -169,7 +169,8 @@
 % * *EquivDiameter* - calculates the diameter of a circle with the same area as the object. Computed as |sqrt(4*Area/pi)|.
 % * *EulerNumber* - calculates the number of objects in the region minus the number of holes in those objects, _i.e._ the
 % object with 1 hole has the Euler number 0, while the object with 2 holes has the Euler number -1.
-% * *Extent* - calculates the ratio of pixels in the object to pixels in the total bounding box. Computed as the Area divided by the area of the bounding box. 
+% * *Extent* - calculates the ratio of pixels in the object to pixels in the total bounding box. Computed as the Area divided by the area of the bounding box.
+% * *FirstAxisLength* - length of the major 2D axis of the object, in contrast to |MajorAxisLength| this property returns the real length of the object rather than that for the ellipse
 % * *FilledArea* - calculates the number of pixels of the filled object.
 % * *Holes Area* - finds holes and calculates total number of pixels within them.
 % * *MajorAxisLength* - calculates the length (in pixels) of the major axis of the ellipse that has the same normalized second
@@ -178,7 +179,8 @@
 % * *Orientation* - calculates the angle (in degrees ranging from -90 to +90 degrees) between the x-axis and the major axis of
 % the ellipse that has the same second-moments as the object.
 % * *Perimeter* - calculates the distance around the boundary of the object. It is computed as the perimeter by calculating the 
-% distance between each adjoining pair of pixels around the border of the region.
+% distance between each adjoining pair of pixels around the border of the region
+% * *SecondAxisLength* - length of the minor 2D axis of the object, in contrast to |MinorAxisLength| this property returns the real length of the object rather than that for the ellipse
 % * *Solidity* - calculates the proportion of the pixels in the convex hull that are also in the object. Computed as
 % |Area/ConvexArea|.
 %

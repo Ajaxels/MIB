@@ -4,10 +4,15 @@
 % <im_browser_product_page.html Back to Index>
 %
 %
-%% 1.301 04.11.2016
+%%
+%% 1.302 18.11.2016
 % * Improved and simplified the Segmentation panel
 % * Added list of recent directories
 % * Added "Mask_" prefix to filename when saving masks
+% * Added "FirstAxisLength" and "SecondAxisLength" properties to the Get
+% Statistics dialog for calculation of exact lengths of the objects (ver 1.302)
+% * Added default state of the link channels checkbox to selected in the
+% Display adjustment dialog (ver 1.302)
 % * The contrast normalization over selected areas in Z does not require selection of all slices
 % * Fix of substructures in Dataset Info dialog
 % * Fix of fine-tune checkbox for the freehand mode of the measure tool

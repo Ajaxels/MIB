@@ -76,7 +76,7 @@ switch parameter
             options.customSections = 1;     % to load part of the dataset, for AM only
         end
         [img, img_info, ~] = ib_loadImages(fn, options, handles);
-        if isnan(img);
+        if isnan(img(1));
             if handles.preferences.uint8
                 handles.Img{handles.Id}.I = imageData(handles, 'uint8');    % create instanse for keeping images
             else
@@ -157,7 +157,7 @@ switch parameter
             'File info');
     case {'addchannel' 'addchannel_nth'}   % add color channel
         [img, img_info, ~] = ib_loadImages(fn, options, handles);
-        if isnan(img); return; end;
+        if isnan(img(1)); return; end;
         
         if isKey(img_info, 'lutColors')
             lutColors = img_info('lutColors');

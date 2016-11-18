@@ -502,6 +502,7 @@ for t=t1:t2
             customProps = {'EndpointsLength','CurveLengthInUnits','CurveLengthInPixels','HolesArea'};
             shapeProps = {'Solidity', 'Perimeter', 'Orientation', 'MinorAxisLength', 'MajorAxisLength', 'FilledArea', 'Extent', 'EulerNumber',...
                 'EquivDiameter', 'Eccentricity', 'ConvexArea', 'Area'};
+            shapeProps3D = {'FirstAxisLength','SecondAxisLength'};     % these properties are calculated by regionprops3
             intProps = {'SumIntensity','StdIntensity','MeanIntensity','MaxIntensity','MinIntensity'};
             intCustomProps = 'Correlation';
             commonProps = {'PixelIdxList', 'Centroid'};
@@ -522,6 +523,16 @@ for t=t1:t2
             prop1 = property(ismember(property,shapeProps));
             if ~isempty(prop1)
                 STATS2 = regionprops(CC, prop1);
+                fieldNames = fieldnames(STATS2);
+                for i=1:numel(fieldNames)
+                    [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
+                end
+            end
+            
+            % calculate regionprop3 shape properties
+            prop1 = property(ismember(property, shapeProps3D));
+            if ~isempty(prop1)
+                STATS2 = regionprops3(CC, prop1{:});
                 fieldNames = fieldnames(STATS2);
                 for i=1:numel(fieldNames)
                     [STATS.(fieldNames{i})] = STATS2.(fieldNames{i});
@@ -961,7 +972,7 @@ else                            % object based statistics
     set(handles.secondChannelCombo, 'Enable', 'off');
     if object2d_Sw == 1
         list ={'Area','ConvexArea','CurveLengthInPixels','CurveLengthInUnits','Eccentricity','EndpointsLength','EquivDiameter','EulerNumber',...
-            'Extent','FilledArea','HolesArea','MajorAxisLength','MinorAxisLength','Orientation',...
+            'Extent','FilledArea','HolesArea','MajorAxisLength','FirstAxisLength','MinorAxisLength','SecondAxisLength','Orientation',...
             'Perimeter','Solidity'};
         set(handles.propertyCombo, 'value',  handles.obj2DType);
     else

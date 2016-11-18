@@ -33,9 +33,9 @@ for col_ch=1:size(handles.Img{handles.Id}.I.img,3)
         data(col_ch) = true;
     end
 end
-set(handles.ColChannelCombo,'String',col_channels);
+set(handles.ColChannelCombo,'String', col_channels);
 if numel(col_channels) >= storeVal
-    set(handles.ColChannelCombo,'Value',storeVal);
+    set(handles.ColChannelCombo,'Value', storeVal);
 end
 
 % update channelMixerTable

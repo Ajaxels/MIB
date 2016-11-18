@@ -196,10 +196,11 @@ else    % 2D filters
                         img(:,:,color_ch,id) = imfilter(img(:,:,color_ch,id), filter2d, 'replicate');
                     end
                 case 'Log'
-                    tempImg = imfilter(double(img(:,:,color_ch,id)), filter2d, 'replicate');
-                    minVal = min(min(tempImg));
-                    maxVal = max(max(tempImg));
-                    img(:,:,color_ch,id) = (tempImg-minVal)/(maxVal-minVal)*double(intmax(class(img)));
+                    %tempImg = imfilter(double(img(:,:,color_ch,id)), filter2d, 'replicate');
+                    %minVal = min(min(tempImg));
+                    %maxVal = max(max(tempImg));
+                    %img(:,:,color_ch,id) = (tempImg-minVal)/(maxVal-minVal)*double(intmax(class(img)));
+                    img(:,:,color_ch,id) = imfilter(img(:,:,color_ch,id), filter2d, 'replicate');
                 otherwise
                     img(:,:,color_ch,id) = imfilter(img(:,:,color_ch,id), filter2d, 'replicate');
             end

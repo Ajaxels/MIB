@@ -9,8 +9,7 @@ function timePnt = getCurrentTimePoint(obj)
 
 %| 
 % @b Examples:
-% @code timePnt = imageData.getCurrentTimePoint();      // get the time point  @endcode
-% @code timePnt = getCurrentTimePoint(obj);      // Call within the class, get the time point @endcode
+% @code timePnt = mibImage.getCurrentTimePoint();      // get the time point  @endcode
 
 % Copyright (C) 27.02.2016, Ilya Belevich, University of Helsinki (ilya.belevich @ helsinki.fi)
 % 

@@ -18,6 +18,8 @@ function output = regionprops3( input, varargin )
 %  direction of the major axis
 %  
 %  'MajorAxisLength' : returns the length of the major axis
+%  'FirstAxisLength' : returns the length of the major axis
+%  'SecondAxisLength' : returns the length of the second axis
 %
 %  'Centroid' : returns the centroid of the object
 %
@@ -35,6 +37,8 @@ function output = regionprops3( input, varargin )
 
 % 09.12.2014 modified by Ilya Belevich ilya.belevich @ helsinki.fi to fix
 % situations when object has only a single pixel
+% 14.11.2016, modified by Ilya Belevich, ilya.belevich @ helsinki.fi to add
+% 'FirstAxisLength', 'SecondAxisLength' parameters
 
 if sum(strcmpi(varargin,'IsPixList'));
     if isstruct(input)
@@ -64,13 +68,23 @@ for ii = 1:length(pixList)
 
     [eValues, idx] = sort(eValues,'descend');
     
-    if flag || sum(strcmpi(varargin,'MajorAxis')) 
+    if flag || sum(strcmpi(varargin,'MajorAxis'))
         output(ii).MajorAxis = eVectors(:,idx(1))';
     end
     
     if flag || sum(strcmpi(varargin,'MajorAxisLength'))
         distMat = sum(pixs.*repmat(eVectors(:,idx(1))',size(pixs,1),1),2);
         output(ii).MajorAxisLength = range(distMat);
+    end
+    
+    if flag || sum(strcmpi(varargin,'FirstAxisLength'))
+        distMat = sum(pixs.*repmat(eVectors(:,idx(1))',size(pixs,1),1),2);
+        output(ii).FirstAxisLength = range(distMat);
+    end
+    
+    if flag || sum(strcmpi(varargin,'SecondAxisLength'))
+        distMat = sum(pixs.*repmat(eVectors(:,idx(2))',size(pixs,1),1),2);
+        output(ii).SecondAxisLength = range(distMat);
     end
     
     if flag || sum(strcmpi(varargin,'AllAxes')) 

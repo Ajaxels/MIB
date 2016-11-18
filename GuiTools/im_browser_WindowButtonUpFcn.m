@@ -1,4 +1,4 @@
-function im_browser_WindowButtonUpFcn(hObject, eventdata, handles, brush_switch)
+function mibGUI_WindowButtonUpFcn(hObject, eventdata, handles, brush_switch)
 % function im_browser_WindowButtonUpFcn(hObject, eventdata, handles, brush_switch)
 % callback for release of the mouse button
 %
