@@ -288,10 +288,10 @@ if ~isempty(dotIndex)
     fn_out = fn_out(1:dotIndex-1);
 end
 if isempty(strfind(fn_out,'/')) && isempty(strfind(fn_out,'\'))
-    fn_out = fullfile(handles.mypath, fn_out);
+    fn_out = fullfile(handles.h.mypath, fn_out);
 end
 if isempty(fn_out)
-    fn_out = handles.mypath;
+    fn_out = handles.h.mypath;
 end
 
 Filters = {'*.ann;',  'Matlab format (*.ann)';...

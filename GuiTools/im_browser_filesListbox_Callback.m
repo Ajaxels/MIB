@@ -62,7 +62,7 @@ switch get(handles.im_browser, 'selectiontype')
                 fn = fullfile(handles.mypath, filename{1});
                 [img, img_info, ~] = ib_loadImages(cellstr(fn), options, handles);
             end
-            if ~isnan(img(1));
+            if ~isnan(img(1))
                 handles = handles.Img{handles.Id}.I.replaceDataset(img, handles, img_info);
                 handles.lastSegmSelection = 1;  % last selected contour for use with the 'e' button
             else
@@ -77,7 +77,7 @@ switch get(handles.im_browser, 'selectiontype')
             dirPos = ismember(handles.preferences.recentDirs, fileparts(fn));
             if sum(dirPos) == 0
                 handles.preferences.recentDirs = [fileparts(fn) handles.preferences.recentDirs];    % add the new folder to the list of folders
-                if numel(handles.preferences.recentDirs) > 10    % trim the list
+                if numel(handles.preferences.recentDirs) > 16    % trim the list
                     handles.preferences.recentDirs = handles.preferences.recentDirs(1:10);
                 end
             else

@@ -5,7 +5,7 @@
 %
 %
 %%
-%% 1.302 18.11.2016
+%% 1.303 28.11.2016
 % * Improved and simplified the Segmentation panel
 % * Added list of recent directories
 % * Added "Mask_" prefix to filename when saving masks
@@ -17,6 +17,8 @@
 % * Fix of substructures in Dataset Info dialog
 % * Fix of fine-tune checkbox for the freehand mode of the measure tool
 % * Improved performance of black-and-white thresholding
+% * Fix of add matarial bug (ver 1.303)
+% * Fix of export annotations to a file for MacOS (ver 1.303)
 %
 %% 1.233 07.10.2016 
 % * Completely rewritten alignment tool, now it is much faster and more reliable

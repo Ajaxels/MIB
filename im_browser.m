@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.302 / 18.11.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.303 / 28.11.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -504,12 +504,12 @@ if ~isempty(answer)
 else
     return;
 end
-    
+
 if ~handles.Img{handles.Id}.I.modelExist
     createModelBtn_Callback(handles.createModelBtn,eventdata, handles); % make an empty model
 end
-
 handles.Img{handles.Id}.I.modelMaterialNames = list;
+handles.Img{handles.Id}.I.generateModelColors();
 
 userData = get(handles.segmTable, 'UserData');
 userData.prevAddTo = numel(list)+2;
@@ -517,7 +517,6 @@ userData.prevMaterial = numel(list)+2;
 set(handles.segmTable, 'UserData',userData);
 updateSegmentationTable(handles);
 
-handles.Img{handles.Id}.I.generateModelColors();
 imageRedraw(hObject, NaN, handles);
 guidata(handles.im_browser, handles);
 end
