@@ -78,13 +78,21 @@ for ii = 1:length(pixList)
     end
     
     if flag || sum(strcmpi(varargin,'FirstAxisLength'))
-        distMat = sum(pixs.*repmat(eVectors(:,idx(1))',size(pixs,1),1),2);
-        output(ii).FirstAxisLength = range(distMat);
+            if size(pixs,1) > 1
+                distMat = sum(pixs.*repmat(eVectors(:,idx(1))', size(pixs,1),1),2);
+                output(ii).FirstAxisLength = range(distMat);
+            else
+                output(ii).FirstAxisLength = 1;
+            end
     end
     
     if flag || sum(strcmpi(varargin,'SecondAxisLength'))
-        distMat = sum(pixs.*repmat(eVectors(:,idx(2))',size(pixs,1),1),2);
-        output(ii).SecondAxisLength = range(distMat);
+        if size(pixs,1) > 1
+            distMat = sum(pixs.*repmat(eVectors(:,idx(2))',size(pixs,1),1),2);
+            output(ii).SecondAxisLength = range(distMat);
+        else
+            output(ii).SecondAxisLength = 1;
+        end
     end
     
     if flag || sum(strcmpi(varargin,'AllAxes')) 

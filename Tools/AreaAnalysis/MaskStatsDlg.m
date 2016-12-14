@@ -756,7 +756,7 @@ switch parameter
             val = data(handles.indices(rowId,1),2);
             objId = data(handles.indices(rowId,1), 1);
             labelList(rowId) = {sprintf('%s',  num2str(val))};
-            positionList(rowId,:) = [data(handles.indices(rowId,1), 3),  handles.STATS(objId).Centroid(1),  handles.STATS(objId).Centroid(2)];
+            positionList(rowId,:) = [data(handles.indices(rowId,1), 3),  handles.STATS(objId).Centroid(1),  handles.STATS(objId).Centroid(2) data(handles.indices(rowId,1), 4)];
         end
         if strcmp(parameter, 'removeLabel')
             handles.h.Img{handles.h.Id}.I.hLabels.removeLabels(positionList);   % remove labels by position

@@ -129,7 +129,7 @@ else
     set(handles.im_browser,'Renderer','opengl');
 end
 
-dateTag = 'ver. 1.303 / 28.11.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
+dateTag = 'ver. 1.304 / 09.12.2016'; % ATTENTION! it is important to have the version number between "ver." and "/"
 %dateTag = ''; % it is important to have the version number between "ver." and "/"
 title = ['Microscopy Image Browser ' dateTag];
 
@@ -164,8 +164,8 @@ try
         img = imread(fullfile(handles.pathMIB, 'Resources', 'splash'));  % load splash screen
         
         % get numbers for the brush size change
-        handles.brushSizeNumbers = 1-imread(fullfile(handles.pathMIB, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
-        handles.dejavufont = 1-imread(fullfile(handles.pathMIB, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
+        handles.brushSizeNumbers = 1 - imread(fullfile(handles.pathMIB, 'Resources', 'numbers.png'));   % height=16, letter size = 8, +1 pixel border
+        handles.dejavufont = 1 - imread(fullfile(handles.pathMIB, 'Resources', 'DejaVuSansMono.png'));   % table with DejaVu font, Pt = 8, 10, 12, 14, 16, 18, 20
     else
         handles.pathMIB = fileparts(which('im_browser'));
         img = imread(fullfile(handles.pathMIB, 'Resources', 'splash'));  % load splash screen
@@ -200,6 +200,7 @@ try
 %    end
 catch err
     sprintf('%s', err.identifier);
+    disp(err);
 end
 
 %% Adding listeners, using Yair Altman, suggestion:
@@ -395,6 +396,12 @@ try
     userData.jTable = userData.jScroll.getViewport.getComponent(0);
 catch err
     warndlg('Please wait for MIB to load completely before interacting with the main window!');
+    sprintf('%s', err.identifier);
+    sprintf('%s', err.message);
+    disp(err);
+    disp('Trying again...')
+    userData.jScroll = findjobj(handles.segmTable);
+    userData.jTable = userData.jScroll.getViewport.getComponent(0);
 end
 userData.jScroll.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);  % add vertical scroll bar
 userData.jTable.setAutoResizeMode(userData.jTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
@@ -416,6 +423,8 @@ try
     jFilesListbox = handle(jFilesListbox, 'CallbackProperties');
     set(jFilesListbox, 'MousePressedCallback',{@scrollbarClick_Callback, handles.filesListbox, 1});
 catch err
+    sprintf('%s', err.identifier);
+    disp(err);
 end
 
 if exist('frame','var')     % close splash window
@@ -1973,3 +1982,15 @@ disp('ok')
 % end
 end
 
+% --- Executes on button press in selectionAddBtn.
+function selectionAddBtn_Callback(hObject, eventdata, handles)
+switch get(hObject, 'Tag')
+    case 'selectionAddBtn'
+        action = 'add';
+    case 'selectionSubtractBtn'
+        action = 'subtract';
+    case 'selectionReplaceBtn'
+        action = 'replace';
+end
+selectionButton_Callback(hObject, eventdata, handles, action);
+end
