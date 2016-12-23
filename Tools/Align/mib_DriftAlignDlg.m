@@ -478,8 +478,13 @@ if get(handles.singleStacksModeRadio,'value')   % align the currently opened dat
                                 shY(i) = shY(i-1);
                                 breakBegin = 0;
                             else
-                                shX(i) = shX(i-1) + shiftX(index)-shiftX(index-1)-(bb(i,1)-bb(i-1,1));
-                                shY(i) = shY(i-1) + shiftY(index)-shiftY(index-1)-(bb(i,2)-bb(i-1,2));
+                                if index > 1
+                                    shX(i) = shX(i-1) + shiftX(index)-shiftX(index-1)-(bb(i,1)-bb(i-1,1));
+                                    shY(i) = shY(i-1) + shiftY(index)-shiftY(index-1)-(bb(i,2)-bb(i-1,2));
+                                else
+                                    shX(i) = shX(i-1) + shiftX(index)-(bb(i,1)-bb(i-1,1));
+                                    shY(i) = shY(i-1) + shiftY(index)-(bb(i,2)-bb(i-1,2));
+                                end
                             end
                             index = index + 1;
                         end

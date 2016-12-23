@@ -5,7 +5,7 @@
 %
 %
 %%
-%% 1.304 09.12.2016
+%% 1.305 23.12.2016
 % * Improved and simplified the Segmentation panel
 % * Added list of recent directories
 % * Added "Mask_" prefix to filename when saving masks
@@ -20,6 +20,7 @@
 % * Fix of add matarial bug (ver 1.303)
 % * Fix of export annotations to a file for MacOS (ver 1.303)
 % * Fix startup crashes for compiled MIB on some windows configurations (ver 1.304)
+% * Fix a bug in the masked-based image alignment tool (ver 1.305)
 %
 %% 1.233 07.10.2016 
 % * Completely rewritten alignment tool, now it is much faster and more reliable

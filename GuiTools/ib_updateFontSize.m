@@ -61,3 +61,9 @@ set(tempList, Font);
 tempList = findall(hFig,'Type','uibuttongroup');    % set font to uibuttongroup
 set(tempList, Font);
 
+tempList = findall(hFig, 'Style', 'pushbutton');    % set font for push buttons
+set(tempList, Font);
+
+tempList = findall(hFig, 'Style', 'popupmenu');    % set font for popupmenus
+set(tempList, Font);
+

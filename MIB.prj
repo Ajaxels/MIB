@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="3655692747" file="C:\MATLAB\Scripts\im_browser_distrib_R2016a\MIB.prj" location="C:\MATLAB\Scripts\im_browser_distrib_R2016a" name="MIB" preferred-package-location="C:\MATLAB\Scripts\im_browser_distrib_R2016a\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2722102504" file="C:\MATLAB\Scripts\im_browser_distrib_R2016a\MIB.prj" location="C:\MATLAB\Scripts\im_browser_distrib_R2016a" name="MIB" preferred-package-location="C:\MATLAB\Scripts\im_browser_distrib_R2016a\MIB\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MIB</param.appname>
     <param.icon>${PROJECT_ROOT}\MIB_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\MIB_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\MIB_resources\icon_16.png</file>
     </param.icons>
-    <param.version>1.304</param.version>
+    <param.version>1.305</param.version>
     <param.authnamewatermark>Ilya Belevich</param.authnamewatermark>
     <param.email>ilya.belevich@helsinki.fi</param.email>
     <param.company />
